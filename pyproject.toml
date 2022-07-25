@@ -1,0 +1,52 @@
+[tool.briefcase]
+project_name = "hello"
+bundle = "com.example"
+version = "0.0.1"
+url = "https://example.com/hello"
+license = "BSD license"
+author = 'Jane Developer'
+author_email = "jane@example.com"
+
+[tool.briefcase.app.hello]
+formal_name = "hello"
+description = "My first application"
+icon = "src/hello/resources/hello"
+sources = ['src/hello']
+requires = [
+]
+
+
+[tool.briefcase.app.hello.macOS]
+requires = [
+    'toga-cocoa>=0.3.0.dev34',
+    'std-nslog~=1.0.0'
+]
+
+[tool.briefcase.app.hello.linux]
+requires = [
+    'toga-gtk>=0.3.0.dev34',
+]
+system_requires = [
+    'libgirepository1.0-dev',
+    'libcairo2-dev',
+    'libpango1.0-dev',
+    'libwebkitgtk-3.0-0',
+    'gir1.2-webkit-3.0',
+]
+
+[tool.briefcase.app.hello.windows]
+requires = [
+    'toga-winforms>=0.3.0.dev34',
+]
+
+# Mobile deployments
+[tool.briefcase.app.hello.iOS]
+requires = [
+    'toga-iOS>=0.3.0.dev34',
+    'std-nslog~=1.0.0'
+]
+
+[tool.briefcase.app.hello.android]
+requires = [
+    'toga-android>=0.3.0.dev34'
+]
