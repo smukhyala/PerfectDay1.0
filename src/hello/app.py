@@ -1,18 +1,19 @@
 """
-My testing facility.
+PerfectDay, IOS app by Sanjay Mukhyala summer 2022.
 """
+### Imports
 from __future__ import print_function, unicode_literals, absolute_import
-
 import toga
+import json
 from toga.style import Pack
 from toga.style.pack import *
-
 import random as ran
 import math as math
 import requests as req
 import time as time
 import datetime as dt
 
+### Dictionary for reoccuring user defined data points
 user_data = {
 "HighTemp": 0,
 "LowTemp": 0,
@@ -24,35 +25,31 @@ user_data = {
 "OriginalName": "nameless",
 "CityChoice": "San Francisco",
 "WeatherEvaluation": "nothing.",
-"Preference": "fahrenheit"
+### Fixed value, do not interfere
+"Preference": "Fahrenheit"
 }
 
-#### Universally defined variables
+### Condition valuation counts + message string
 goodConditionCount = 0
 badConditionCount = 0
 weatherEvaluation = ""
 
-# Temperature
-def kelvin_to_celcius_fahrenheit(kelvin):
-    celcius = kelvin - 273.15
-    fahrenheit = celcius * (9/5) + 32
-    return celcius, fahrenheit
+### Temperature conversion
+def kelvin_to_fahrenheit(kelvin):
+    fahrenheit = (kelvin - 273.15) * (9/5) + 32
+    return fahrenheit
 
-# Important
+### API INFORMATION DO NOT DELETE + HIDE ME LATER
 BaseURL = "http://api.openweathermap.org/data/2.5/weather?"
 OpenMainKey = "b12c5e04c89021d40208a84f66ebd3bb"
-
-name = user_data["OriginalName"]
-
-
-
 
 def fetchCityData(City):
     NewURL = BaseURL + "appid=" + OpenMainKey + "&q=" + City
     return(req.get(NewURL).json())
 
 weatherData = fetchCityData(user_data["CityChoice"])
-# Defining and sorting through the dictionary
+
+### Defining and sorting through the dictionary values
 temp_kelvin = weatherData['main']['temp']
 low_temp_kelvin = weatherData['main']['temp_min']
 high_temp_kelvin = weatherData['main']['temp_max']
@@ -63,46 +60,65 @@ sunrise = dt.datetime.utcfromtimestamp(weatherData['sys']['sunrise'] + weatherDa
 sunset = dt.datetime.utcfromtimestamp(weatherData['sys']['sunset'] + weatherData['timezone'])
 wind_speed = weatherData['wind']['speed']
 
-# Using the temperature conversion
-temp_celcius, temp_fahrenheit = kelvin_to_celcius_fahrenheit(temp_kelvin)
-feels_celcius, feels_fahrenheit = kelvin_to_celcius_fahrenheit(feels_temp_kelvin)
-low_temp_celcius, low_temp_fahrenheit = kelvin_to_celcius_fahrenheit(low_temp_kelvin)
-high_temp_celcius, high_temp_fahrenheit = kelvin_to_celcius_fahrenheit(high_temp_kelvin)
+### Using the temperature conversion
+temp_fahrenheit = kelvin_to_fahrenheit(temp_kelvin)
+feels_fahrenheit = kelvin_to_fahrenheit(feels_temp_kelvin)
+low_temp_fahrenheit = kelvin_to_fahrenheit(low_temp_kelvin)
+high_temp_fahrenheit = kelvin_to_fahrenheit(high_temp_kelvin)
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### TOGA CREATING UI
 def build(app):
-
-    ########### LOCATION AND BASIC WEATHER OUTPUT
+    ### Left box (main content)
     left_box = toga.Box()
     left_box.style.update(direction=COLUMN, padding=10, flex = 1)
 
+
+
+
+    ### City components
     cityInput = toga.TextInput(placeholder = "Brooklyn, Houston, etc...")
     cityInput.style.update(width = 450, padding_left = 10, padding_bottom = 10)
-
     def updateCityText(user_data):
         return(f'Your current city is {user_data["CityChoice"]} (default San Francisco).\nChange your city:')
-
     cityLabel = toga.Label(f'Your current city is {user_data["CityChoice"]} (default San Francisco).\nChange your city:', style=Pack(text_align=LEFT))
     cityLabel.style.update(padding_left = 10, padding_right = 10, padding_top = 20)
 
 
 
+
+    ### Results components
     def updateResultsText(weatherData):
         City = user_data["CityChoice"]
-        return(f"Weather Results:\n\nThe temperature in {City}: {temp_celcius:.2f} degrees Celcius or {temp_fahrenheit:.2f} degrees Fahrenheit.\n" +
-            f"The temperature in {City} feels like: {feels_celcius:.2f} degrees Celcius or {feels_fahrenheit:.2f} degrees Fahrenheit.\n" +
-            f"The lowest temperature in {City}: {low_temp_celcius:.2f} degrees Celcius or {low_temp_fahrenheit:.2f} degrees Fahrenheit.\n" +
-            f"The highest temperature in {City}: {high_temp_celcius:.2f} degrees Celcius or {high_temp_fahrenheit:.2f} degrees Fahrenheit.\n" +
+        return(f"Weather Results:\n\nThe temperature in {City}: {temp_fahrenheit:.2f} degrees Fahrenheit.\n" +
+            f"The temperature in {City} feels like: {feels_fahrenheit:.2f} degrees Fahrenheit.\n" +
+            f"The lowest temperature in {City}: {low_temp_fahrenheit:.2f} degrees Fahrenheit.\n" +
+            f"The highest temperature in {City}: {high_temp_fahrenheit:.2f} degrees Fahrenheit.\n" +
             f"The humidity in {City}: {weatherData['main']['humidity']}%.\n" +
             f"The wind Speed in {City}: {wind_speed} m/s.\n"+
             f"The general weather in {City} is {description}.\n" +
             f"The sun rises in {City} at {sunrise} AM local time.\n" +
             f"The sun sets in {City} at {sunset} PM local time.")
-
     resultstext = updateResultsText(weatherData)
     resultsLabel = toga.Label(resultstext)
     resultsLabel.style.update(direction = COLUMN, flex=1, padding = 10)
-
     def cityLabelToResultsTextSaveFunction(widget):
         user_data["CityChoice"] = cityInput.value
         weatherData = fetchCityData(cityInput.value)
@@ -110,66 +126,50 @@ def build(app):
         resultsLabel.text = resultstext
         cityText = updateCityText(user_data)
         cityLabel.text = cityText
-
     searchButtonCity = toga.Button('Search', on_press = cityLabelToResultsTextSaveFunction)
     searchButtonCity.style.update(width = 100, padding_left = 10, padding_right = 10)
 
 
 
 
-
+    ### Activity components
     activityInput = toga.TextInput(placeholder = "Soccer, hiking, running, picnic, etc...")
     activityInput.style.update(width = 450, padding_left = 10, padding_bottom = 10)
-
     def updateActivityText(user_data):
         return(f'Your current activity is {user_data["ActivityChoice"]}.\nChange your activity:')
-
     activityLabel = toga.Label(f'Your current activity is {user_data["ActivityChoice"]}.\nChange your activity:', style=Pack(text_align=LEFT))
     activityLabel.style.update(padding_left = 10, padding_right = 10, padding_top = 20)
-
     def activityLabelSaveFunction(widget):
         user_data["ActivityChoice"] = activityInput.value
         activityText = updateActivityText(user_data)
         activityLabel.text = activityText
-
     saveButtonActivity = toga.Button('Save', on_press = activityLabelSaveFunction)
     saveButtonActivity.style.update(width = 100, padding_left = 10, padding_right = 10)
 
 
 
 
+    ### Name components
     nameInput = toga.TextInput(placeholder = "James Alan, Johm Smith, etc...")
     nameInput.style.update(width = 450, padding_left = 10, padding_bottom = 10)
-
     def updateNameText(user_data):
+        name = user_data["OriginalName"]
         return(f'Welcome to PerfectDay. \nThis is a tool created to optimize your outdoor scheduling needs.\n\nYour current name is {user_data["OriginalName"]}.\nChange your name:')
-
     nameLabel = toga.Label(f'Welcome to PerfectDay. \nThis is a tool created to optimize your outdoor scheduling needs.\n\n' +
     f'Your current name is {user_data["OriginalName"]}.\nChange your name:', style=Pack(text_align=LEFT))
     nameLabel.style.update(padding_left = 10, padding_right = 10, padding_top = 0)
-
     def nameLabelSaveFunction(widget):
         user_data["OriginalName"] = nameInput.value
         nameText = updateNameText(user_data)
         nameLabel.text = nameText
-
     saveButtonName = toga.Button('Save', on_press = nameLabelSaveFunction)
     saveButtonName.style.update(width = 100, padding_left = 10, padding_right = 10)
 
 
 
-    def celciusSaveFunction(widget):
-        user_data["preference"] = "Celcius"
 
-    def fahrenheitSaveFunction(widget):
-        user_data["preference"] = "Fahrenheit"
 
-    celciusButton = toga.Button('Celcius', on_press = celciusSaveFunction)
-    celciusButton.style.update(padding_left = 10, width = 150, padding_top = 20)
-
-    fahrenheitButton = toga.Button('Fahrenheit', on_press = fahrenheitSaveFunction)
-    fahrenheitButton.style.update(padding_bottom = 20, width = 150, padding_left = 10)
-
+    ### Adding each part to left box
     left_box.add(nameLabel)
     left_box.add(nameInput)
     left_box.add(saveButtonName)
@@ -179,41 +179,24 @@ def build(app):
     left_box.add(cityLabel)
     left_box.add(cityInput)
     left_box.add(searchButtonCity)
-    left_box.add(celciusButton)
-    left_box.add(fahrenheitButton)
 
-    def locationFunction(widget):
-        print("Location selection...")
-    def conditionsFunction(widget):
-        print("Conditions selection...")
-    def settingsFunction(widget):
-        print("Settings selection...")
-
-    location = toga.Group("Location")
-    conditions = toga.Group("Conditions")
-    settings = toga.Group("Settings")
-
-    executeLocationFunction = toga.Command(locationFunction, label = "Local Weather", icon = "/Users/sanjay/projects/python_coding/beeware/hello/src/hello/Icons/Weather.png", group = location)
-    executeConditionsFunction = toga.Command(conditionsFunction, label = "Conditions", icon = "/Users/sanjay/projects/python_coding/beeware/hello/src/hello/Icons/QuestionMark.png", group = conditions)
-    executeSettingsFunction = toga.Command(settingsFunction, label = "Settings", icon = "/Users/sanjay/projects/python_coding/beeware/hello/src/hello/Icons/Settings.png", group = settings)
-
-    #####Displays
+    ### Displaying all components
     main_box = toga.Box(id = 'box', style = Pack(direction = COLUMN))
     main_box.add(left_box)
     main_box.add(resultsLabel)
-    app.commands.add(executeLocationFunction, executeConditionsFunction, executeSettingsFunction)
-    #app.main_window.toolbar.add(executeLocationFunction, executeConditionsFunction, executeSettingsFunction)
 
 
 
 
 
 
-    ############# CONDITIONS WITH SLIDERS
+
+
+
+    ### Defining all the user criteria with sliders
     highTempLabel = toga.Label("Your highest temperature: " + str(int(0)))
     highTempLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10, padding_top = 20)
     def highTempSliderFunction(widget):
-        #print(int(widget.value*100))
         user_data["HighTemp"] = widget.value*100
         highTempLabel.text = "Your highest temperature: " + str(int(widget.value*100))
     highTempSlider = toga.Slider(on_change = highTempSliderFunction)
@@ -223,10 +206,12 @@ def build(app):
     main_box.add(highTempLabel)
     main_box.add(highTempSlider)
 
+
+
+
     lowTempLabel = toga.Label("Your lowest temperature: " + str(int(0)))
     lowTempLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
     def lowTempSliderFunction(widget):
-        #print(int(widget.value*100))
         user_data["LowTemp"] = widget.value*100
         lowTempLabel.text = "Your lowest temperature: " + str(int(widget.value*100))
     lowTempSlider = toga.Slider(on_change = lowTempSliderFunction)
@@ -236,10 +221,12 @@ def build(app):
     main_box.add(lowTempLabel)
     main_box.add(lowTempSlider)
 
+
+
+
     highWindLabel = toga.Label("Your highest wind speed (m/s): " + str(int(0)))
     highWindLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
     def highWindSliderFunction(widget):
-        #print(int(widget.value*100))
         user_data["HighWind"] = widget.value*100
         highWindLabel.text = "Your highest wind speed (m/s): " + str(int(widget.value*100))
     highWindSlider = toga.Slider(on_change = highWindSliderFunction)
@@ -249,10 +236,12 @@ def build(app):
     main_box.add(highWindLabel)
     main_box.add(highWindSlider)
 
+
+
+
     lowWindLabel = toga.Label("Your lowest wind speed (m/s): " + str(int(0)))
     lowWindLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
     def lowWindSliderFunction(widget):
-        #print(int(widget.value*100))
         user_data["LowWind"] = widget.value*100
         lowWindLabel.text = "Your lowest wind speed (m/s): " + str(int(widget.value*100))
     lowWindSlider = toga.Slider(on_change = lowWindSliderFunction)
@@ -262,10 +251,12 @@ def build(app):
     main_box.add(lowWindLabel)
     main_box.add(lowWindSlider)
 
+
+
+
     highHumidityLabel = toga.Label("Your highest temperature: " + str(int(0)))
     highHumidityLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
     def highHumiditySliderFunction(widget):
-        #print(int(widget.value*100))
         user_data["HighHumidity"] = widget.value*100
         highHumidityLabel.text = "Your highest humidity (%): " + str(int(widget.value*100))
     highHumiditySlider = toga.Slider(on_change = highHumiditySliderFunction)
@@ -275,10 +266,12 @@ def build(app):
     main_box.add(highHumidityLabel)
     main_box.add(highHumiditySlider)
 
+
+
+
     lowHumidityLabel = toga.Label("Your lowest temperature: " + str(int(0)))
     lowHumidityLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
     def lowHumiditySliderFunction(widget):
-        #print(int(widget.value*100))
         user_data["LowHumidity"] = widget.value*100
         lowHumidityLabel.text = "Your lowest humidity (%): " + str(int(widget.value*100))
     lowHumiditySlider = toga.Slider(on_change = lowHumiditySliderFunction)
@@ -289,58 +282,64 @@ def build(app):
     main_box.add(lowHumiditySlider)
 
 
-    saveButton = toga.Button("Save87", on_press = judgeWeather)
+
+
+    ### Saving criteria and displaying the verdict
+    saveButton = toga.Button("Final Save", on_press = judgeWeather)
     saveButton.style.update(width = 100, padding_left = 10, padding_right = 10, padding_top = 10)
 
-    verdictLabel = toga.Label("Our verdict is" + weatherEvaluation)
+    ############# FIX ME
+    def updateVerdictText(judgeWeather):
+        return(f"Our verdict is {weatherEvaluation}")
+    verdictText = updateVerdictText(judgeWeather)
+    verdictLabel = toga.Label(verdictText)
+    verdictLabel.style.update(width = 100, padding_left = 10, padding_right = 10, padding_top = 10)
 
     main_box.add(saveButton)
+    main_box.add(verdictLabel)
 
 
 
 
-
-
-
-
-
-
-
-
-    ###################    CONTAINERS
-    mainContainer = toga.ScrollContainer(content=main_box, horizontal = False, vertical = True)
-
-    #mainContainer.add('Location', main_box)
-    #mainContainer.add('Conditions', cbox)
+    ### SCROLL CONTAINER DO NOT DELETE
+    mainContainer = toga.ScrollContainer(content = main_box, horizontal = False, vertical = True)
     return mainContainer
 
-    """
-    Construct and show the Toga application.
-
-    Usually, you would add your application to a main content box.
-    We then create a main window (with a name matching the app), and
-    show the main window.
-    """
-
-
-
+### Toga running main function + setup
 def main():
     return toga.App('Hello', 'org.SanjayMukhyala.PerfectDay', startup = build)
-
 if __name__ == '__main__':
     main().main_loop()
 
 
-#### Main function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Main function and logic
 def judgeWeather(build):
-    # Intro
-    #ok = req.response
-    print("we are in!")
-    # Counts
+    ### Intro (Just in case)
+    ### print("We are in!")
+
+    ### Counts
     goodConditionCount = 0
     badConditionCount = 0
 
-    #### Acheiving criteria through user input
+    ### Assigning slider values to variables
     activity = user_data["ActivityChoice"]
     idealLowTemp = user_data["LowTemp"]
     idealHighTemp = user_data["HighTemp"]
@@ -349,14 +348,19 @@ def judgeWeather(build):
     idealLowHumidity = user_data["LowHumidity"]
     idealHighHumidity = user_data["HighHumidity"]
 
-    #### Defining good and bad weather occurences for the specifed user-criteria (chosen above)
-    preference = user_data["Preference"]#input("\nWould you like fahrenheit or celcius? Please enter in lowecase text only with the provided spelling: ")
+    ### Open and append the file
+    with open("PerfectDay.json", "a") as fp:
+        json.dump(user_data, fp)
 
-    # Temperature
-    if preference == "fahrenheit":
+    ### Open and read the file after the appending
+    f = open("PerfectDay.json", "r")
+
+    ### Defining good and bad weather occurences for the specifed user-criteria (chosen above)
+    ### Temperature
+    preference = user_data["Preference"]
+    if preference == "Fahrenheit":
         if (int(idealLowTemp) <= low_temp_fahrenheit) and (high_temp_fahrenheit <= int(idealHighTemp)):
             goodConditionCount = goodConditionCount + 2
-            #badConditionCount = badConditionCount
         elif (int(idealLowTemp) <= low_temp_fahrenheit) and (int(idealHighTemp) < high_temp_fahrenheit):
             goodConditionCount = goodConditionCount + 1
             badConditionCount = badConditionCount + 1
@@ -364,43 +368,24 @@ def judgeWeather(build):
             goodConditionCount = goodConditionCount + 1
             badConditionCount = badConditionCount + 1
         elif (low_temp_fahrenheit < int(idealLowTemp)) and (int(idealHighTemp) < high_temp_fahrenheit):
-            #goodConditionCount = goodConditionCount
-            badConditionCount = badConditionCount + 2
-
-    elif preference == "celcius":
-        if (int(idealLowTemp) <= low_temp_celcius) and (high_temp_celcius <= int(idealHighTemp)):
-            goodConditionCount = goodConditionCount + 2
-            #badConditionCount = badConditionCount
-        elif (int(idealLowTemp) <= low_temp_celcius) and (int(idealHighTemp) < high_temp_celcius):
-            goodConditionCount = goodConditionCount + 1
-            badConditionCount = badConditionCount + 1
-        elif (low_temp_celcius < int(idealLowTemp)) and (high_temp_celcius <= int(idealHighTemp)):
-            goodConditionCount = goodConditionCount + 1
-            badConditionCount = badConditionCount + 1
-        elif (low_temp_celcius < int(idealLowTemp)) and (int(idealHighTemp) < high_temp_celcius):
-            #goodConditionCount = goodConditionCount
             badConditionCount = badConditionCount + 2
 
     else:
         print("Incorrect input, we will use measurements in fahrenheit.")
         preference = "fahrenheit"
 
-    # Other forecasts
+    ### Other forecasts
     if (int(idealLowWindSpeed)) <= wind_speed <= (int(idealHighWindSpeed)):
         goodConditionCount = goodConditionCount + 1
-        #badConditionCount = badConditionCount
     elif (wind_speed < (int(idealLowWindSpeed))) or ((int(idealHighWindSpeed)) < wind_speed):
-        #goodConditionCount = goodConditionCount
         badConditionCount = badConditionCount + 1
 
     if (int(idealLowHumidity)) <= humidity <= (int(idealHighHumidity)):
         goodConditionCount = goodConditionCount + 1
-        #badConditionCount = badConditionCount
     elif (humidity < (int(idealLowHumidity))) or ((int(idealHighHumidity)) < humidity):
-        #goodConditionCount = goodConditionCount
         badConditionCount = badConditionCount + 1
 
-    # Determining optimality of the conditions
+    ### Determining the final verdict
     if goodConditionCount - badConditionCount >= 3:
         weatherEvaluation = "optimal! What a PerfectDay!"
     elif goodConditionCount - badConditionCount == 2:
@@ -410,4 +395,5 @@ def judgeWeather(build):
     elif goodConditionCount - badConditionCount < 1:
         weatherEvaluation = "suboptimal, see another day's forecast or a different location."
 
-    print(f"Our verdict is {weatherEvaluation}")
+    ### Just in case
+    ### print(f"Our verdict is {weatherEvaluation}")
