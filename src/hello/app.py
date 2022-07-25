@@ -240,6 +240,7 @@ def build(app):
     highWindLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
     def highWindSliderFunction(widget):
         #print(int(widget.value*100))
+        user_data["HighWind"] = widget.value*100
         highWindLabel.text = "Your highest wind speed (m/s): " + str(int(widget.value*100))
     highWindSlider = toga.Slider(on_change = highWindSliderFunction)
     highWindSlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10)
@@ -252,6 +253,7 @@ def build(app):
     lowWindLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
     def lowWindSliderFunction(widget):
         #print(int(widget.value*100))
+        user_data["LowWind"] = widget.value*100
         lowWindLabel.text = "Your lowest wind speed (m/s): " + str(int(widget.value*100))
     lowWindSlider = toga.Slider(on_change = lowWindSliderFunction)
     lowWindSlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10)
@@ -264,6 +266,7 @@ def build(app):
     highHumidityLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
     def highHumiditySliderFunction(widget):
         #print(int(widget.value*100))
+        user_data["HighHumidity"] = widget.value*100
         highHumidityLabel.text = "Your highest humidity (%): " + str(int(widget.value*100))
     highHumiditySlider = toga.Slider(on_change = highHumiditySliderFunction)
     highHumiditySlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10)
@@ -276,6 +279,7 @@ def build(app):
     lowHumidityLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
     def lowHumiditySliderFunction(widget):
         #print(int(widget.value*100))
+        user_data["LowHumidity"] = widget.value*100
         lowHumidityLabel.text = "Your lowest humidity (%): " + str(int(widget.value*100))
     lowHumiditySlider = toga.Slider(on_change = lowHumiditySliderFunction)
     lowHumiditySlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10)
@@ -285,7 +289,7 @@ def build(app):
     main_box.add(lowHumiditySlider)
 
 
-    saveButton = toga.Button("Save", on_press = judgeWeather(build))
+    saveButton = toga.Button("Save87", on_press = judgeWeather)
     saveButton.style.update(width = 100, padding_left = 10, padding_right = 10, padding_top = 10)
 
     verdictLabel = toga.Label("Our verdict is" + weatherEvaluation)
@@ -348,7 +352,6 @@ def judgeWeather(build):
     #### Defining good and bad weather occurences for the specifed user-criteria (chosen above)
     preference = user_data["Preference"]#input("\nWould you like fahrenheit or celcius? Please enter in lowecase text only with the provided spelling: ")
 
-
     # Temperature
     if preference == "fahrenheit":
         if (int(idealLowTemp) <= low_temp_fahrenheit) and (high_temp_fahrenheit <= int(idealHighTemp)):
@@ -399,7 +402,7 @@ def judgeWeather(build):
 
     # Determining optimality of the conditions
     if goodConditionCount - badConditionCount >= 3:
-        weatherEvaluation = "optimal!"
+        weatherEvaluation = "optimal! What a PerfectDay!"
     elif goodConditionCount - badConditionCount == 2:
         weatherEvaluation = "decent."
     elif goodConditionCount - badConditionCount == 1:
