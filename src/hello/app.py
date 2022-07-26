@@ -126,8 +126,6 @@ def build(app):
         resultsLabel.text = resultstext
         cityText = updateCityText(user_data)
         cityLabel.text = cityText
-    searchButtonCity = toga.Button('Search', on_press = cityLabelToResultsTextSaveFunction)
-    searchButtonCity.style.update(width = 100, padding_left = 10, padding_right = 10)
 
 
 
@@ -143,14 +141,12 @@ def build(app):
         user_data["ActivityChoice"] = activityInput.value
         activityText = updateActivityText(user_data)
         activityLabel.text = activityText
-    saveButtonActivity = toga.Button('Save', on_press = activityLabelSaveFunction)
-    saveButtonActivity.style.update(width = 100, padding_left = 10, padding_right = 10)
 
 
 
 
     ### Name components
-    nameInput = toga.TextInput(placeholder = "James Alan, Johm Smith, etc...")
+    nameInput = toga.TextInput(placeholder = "James Alan, John Smith, etc...")
     nameInput.style.update(width = 450, padding_left = 10, padding_bottom = 10)
     def updateNameText(user_data):
         name = user_data["OriginalName"]
@@ -162,23 +158,30 @@ def build(app):
         user_data["OriginalName"] = nameInput.value
         nameText = updateNameText(user_data)
         nameLabel.text = nameText
-    saveButtonName = toga.Button('Save', on_press = nameLabelSaveFunction)
-    saveButtonName.style.update(width = 100, padding_left = 10, padding_right = 10)
 
 
+
+
+    ### Centralized Save Button
+    def mainBlockSaveFunction(widget):
+        nameLabelSaveFunction(widget)
+        activityLabelSaveFunction(widget)
+        cityLabelToResultsTextSaveFunction(widget)
+
+    mainBlockSave = toga.Button("Final Save", on_press = mainBlockSaveFunction)
+    mainBlockSave.style.update(width = 100, padding_left = 10, padding_right = 10, padding_top = 15)
 
 
 
     ### Adding each part to left box
     left_box.add(nameLabel)
     left_box.add(nameInput)
-    left_box.add(saveButtonName)
     left_box.add(activityLabel)
     left_box.add(activityInput)
-    left_box.add(saveButtonActivity)
     left_box.add(cityLabel)
     left_box.add(cityInput)
-    left_box.add(searchButtonCity)
+
+    left_box.add(mainBlockSave)
 
     ### Displaying all components
     main_box = toga.Box(id = 'box', style = Pack(direction = COLUMN))
@@ -196,6 +199,8 @@ def build(app):
     ### Defining all the user criteria with sliders
     highTempLabel = toga.Label("Your highest temperature: " + str(int(0)))
     highTempLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10, padding_top = 20)
+
+
     def highTempSliderFunction(widget):
         user_data["HighTemp"] = widget.value*100
         highTempLabel.text = "Your highest temperature: " + str(int(widget.value*100))
@@ -284,16 +289,18 @@ def build(app):
 
 
 
-    ### Saving criteria and displaying the verdict
-    saveButton = toga.Button("Final Save", on_press = judgeWeather)
-    saveButton.style.update(width = 100, padding_left = 10, padding_right = 10, padding_top = 10)
+
 
     ############# FIX ME
-    def updateVerdictText(judgeWeather):
-        return(f"Our verdict is {weatherEvaluation}")
-    verdictText = updateVerdictText(judgeWeather)
+    def updateVerdictText():
+        user_data["WeatherEvaluation"] = f"Our verdict is {weatherEvaluation}"
+    verdictText = user_data["WeatherEvaluation"]
     verdictLabel = toga.Label(verdictText)
     verdictLabel.style.update(width = 100, padding_left = 10, padding_right = 10, padding_top = 10)
+
+    ### Saving criteria and displaying the verdict
+    saveButton = toga.Button("Judge Weather", on_press = judgeWeather)
+    saveButton.style.update(width = 150, padding_left = 10, padding_right = 10, padding_top = 10)
 
     main_box.add(saveButton)
     main_box.add(verdictLabel)
@@ -329,11 +336,10 @@ if __name__ == '__main__':
 
 
 
-
 ### Main function and logic
-def judgeWeather(build):
+def judgeWeather(dsfsdfsd):
     ### Intro (Just in case)
-    ### print("We are in!")
+    print("We are in!")
 
     ### Counts
     goodConditionCount = 0
@@ -389,11 +395,12 @@ def judgeWeather(build):
     if goodConditionCount - badConditionCount >= 3:
         weatherEvaluation = "optimal! What a PerfectDay!"
     elif goodConditionCount - badConditionCount == 2:
-        weatherEvaluation = "decent."
+        weatherEvaluation = "decent, almost a PerfectDay."
     elif goodConditionCount - badConditionCount == 1:
-        weatherEvaluation = "viable."
+        weatherEvaluation = "viable, somewhat a PerfectDay."
     elif goodConditionCount - badConditionCount < 1:
-        weatherEvaluation = "suboptimal, see another day's forecast or a different location."
+        weatherEvaluation = "suboptimal, not a PerfectDay. See another day's forecast or a different location."
 
     ### Just in case
-    ### print(f"Our verdict is {weatherEvaluation}")
+    print(f"Our verdict is {weatherEvaluation}")
+    #verdictLabel.text = f"Our verdict is {weatherEvaluation}"
