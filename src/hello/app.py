@@ -287,16 +287,84 @@ def build(app):
     main_box.add(lowHumiditySlider)
 
 
+    def judgeWeather(dsfsdfsd):
+        ### Intro (Just in case)
+        print("We are in!")
 
+        ### Counts
+        goodConditionCount = 0
+        badConditionCount = 0
+
+        ### Assigning slider values to variables
+        activity = user_data["ActivityChoice"]
+        idealLowTemp = user_data["LowTemp"]
+        idealHighTemp = user_data["HighTemp"]
+        idealLowWindSpeed = user_data["LowWind"]
+        idealHighWindSpeed = user_data["HighWind"]
+        idealLowHumidity = user_data["LowHumidity"]
+        idealHighHumidity = user_data["HighHumidity"]
+
+        ### Open and append the file
+        with open("PerfectDay.json", "a") as fp:
+            json.dump(user_data, fp)
+
+        ### Open and read the file after the appending
+        f = open("PerfectDay.json", "r")
+
+        ### Defining good and bad weather occurences for the specifed user-criteria (chosen above)
+        ### Temperature
+        preference = user_data["Preference"]
+        if preference == "Fahrenheit":
+            if (int(idealLowTemp) <= low_temp_fahrenheit) and (high_temp_fahrenheit <= int(idealHighTemp)):
+                goodConditionCount = goodConditionCount + 2
+            elif (int(idealLowTemp) <= low_temp_fahrenheit) and (int(idealHighTemp) < high_temp_fahrenheit):
+                goodConditionCount = goodConditionCount + 1
+                badConditionCount = badConditionCount + 1
+            elif (low_temp_fahrenheit < int(idealLowTemp)) and (high_temp_fahrenheit <= int(idealHighTemp)):
+                goodConditionCount = goodConditionCount + 1
+                badConditionCount = badConditionCount + 1
+            elif (low_temp_fahrenheit < int(idealLowTemp)) and (int(idealHighTemp) < high_temp_fahrenheit):
+                badConditionCount = badConditionCount + 2
+
+        else:
+            print("Incorrect input, we will use measurements in fahrenheit.")
+            preference = "fahrenheit"
+
+        ### Other forecasts
+        if (int(idealLowWindSpeed)) <= wind_speed <= (int(idealHighWindSpeed)):
+            goodConditionCount = goodConditionCount + 1
+        elif (wind_speed < (int(idealLowWindSpeed))) or ((int(idealHighWindSpeed)) < wind_speed):
+            badConditionCount = badConditionCount + 1
+
+        if (int(idealLowHumidity)) <= humidity <= (int(idealHighHumidity)):
+            goodConditionCount = goodConditionCount + 1
+        elif (humidity < (int(idealLowHumidity))) or ((int(idealHighHumidity)) < humidity):
+            badConditionCount = badConditionCount + 1
+
+        ### Determining the final verdict
+        if goodConditionCount - badConditionCount >= 3:
+            weatherEvaluation = "optimal! What a PerfectDay!"
+        elif goodConditionCount - badConditionCount == 2:
+            weatherEvaluation = "decent, almost a PerfectDay."
+        elif goodConditionCount - badConditionCount == 1:
+            weatherEvaluation = "viable, somewhat a PerfectDay."
+        elif goodConditionCount - badConditionCount < 1:
+            weatherEvaluation = "suboptimal, not a PerfectDay. See another day's forecast or a different location."
+
+        ### Just in case
+        print(f"Our verdict is {weatherEvaluation}")
+        user_data["WeatherEvaluation"] = f"Our verdict is {weatherEvaluation}"
+        verdictLabel.text = user_data["WeatherEvaluation"]
 
 
 
     ############# FIX ME
     def updateVerdictText():
-        user_data["WeatherEvaluation"] = f"Our verdict is {weatherEvaluation}"
-    verdictText = user_data["WeatherEvaluation"]
+        weatherEvaluation = user_data["WeatherEvaluation"]
+        return("Our verdict is " + weatherEvaluation)
+    verdictText = updateVerdictText()
     verdictLabel = toga.Label(verdictText)
-    verdictLabel.style.update(width = 100, padding_left = 10, padding_right = 10, padding_top = 10)
+    verdictLabel.style.update(width = 1000, padding_left = 10, padding_right = 10, padding_top = 10)
 
     ### Saving criteria and displaying the verdict
     saveButton = toga.Button("Judge Weather", on_press = judgeWeather)
@@ -337,70 +405,3 @@ if __name__ == '__main__':
 
 
 ### Main function and logic
-def judgeWeather(dsfsdfsd):
-    ### Intro (Just in case)
-    print("We are in!")
-
-    ### Counts
-    goodConditionCount = 0
-    badConditionCount = 0
-
-    ### Assigning slider values to variables
-    activity = user_data["ActivityChoice"]
-    idealLowTemp = user_data["LowTemp"]
-    idealHighTemp = user_data["HighTemp"]
-    idealLowWindSpeed = user_data["LowWind"]
-    idealHighWindSpeed = user_data["HighWind"]
-    idealLowHumidity = user_data["LowHumidity"]
-    idealHighHumidity = user_data["HighHumidity"]
-
-    ### Open and append the file
-    with open("PerfectDay.json", "a") as fp:
-        json.dump(user_data, fp)
-
-    ### Open and read the file after the appending
-    f = open("PerfectDay.json", "r")
-
-    ### Defining good and bad weather occurences for the specifed user-criteria (chosen above)
-    ### Temperature
-    preference = user_data["Preference"]
-    if preference == "Fahrenheit":
-        if (int(idealLowTemp) <= low_temp_fahrenheit) and (high_temp_fahrenheit <= int(idealHighTemp)):
-            goodConditionCount = goodConditionCount + 2
-        elif (int(idealLowTemp) <= low_temp_fahrenheit) and (int(idealHighTemp) < high_temp_fahrenheit):
-            goodConditionCount = goodConditionCount + 1
-            badConditionCount = badConditionCount + 1
-        elif (low_temp_fahrenheit < int(idealLowTemp)) and (high_temp_fahrenheit <= int(idealHighTemp)):
-            goodConditionCount = goodConditionCount + 1
-            badConditionCount = badConditionCount + 1
-        elif (low_temp_fahrenheit < int(idealLowTemp)) and (int(idealHighTemp) < high_temp_fahrenheit):
-            badConditionCount = badConditionCount + 2
-
-    else:
-        print("Incorrect input, we will use measurements in fahrenheit.")
-        preference = "fahrenheit"
-
-    ### Other forecasts
-    if (int(idealLowWindSpeed)) <= wind_speed <= (int(idealHighWindSpeed)):
-        goodConditionCount = goodConditionCount + 1
-    elif (wind_speed < (int(idealLowWindSpeed))) or ((int(idealHighWindSpeed)) < wind_speed):
-        badConditionCount = badConditionCount + 1
-
-    if (int(idealLowHumidity)) <= humidity <= (int(idealHighHumidity)):
-        goodConditionCount = goodConditionCount + 1
-    elif (humidity < (int(idealLowHumidity))) or ((int(idealHighHumidity)) < humidity):
-        badConditionCount = badConditionCount + 1
-
-    ### Determining the final verdict
-    if goodConditionCount - badConditionCount >= 3:
-        weatherEvaluation = "optimal! What a PerfectDay!"
-    elif goodConditionCount - badConditionCount == 2:
-        weatherEvaluation = "decent, almost a PerfectDay."
-    elif goodConditionCount - badConditionCount == 1:
-        weatherEvaluation = "viable, somewhat a PerfectDay."
-    elif goodConditionCount - badConditionCount < 1:
-        weatherEvaluation = "suboptimal, not a PerfectDay. See another day's forecast or a different location."
-
-    ### Just in case
-    print(f"Our verdict is {weatherEvaluation}")
-    #verdictLabel.text = f"Our verdict is {weatherEvaluation}"
