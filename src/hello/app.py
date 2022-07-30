@@ -209,103 +209,103 @@ def build(app):
     main_box.add(left_box)
     main_box.add(resultsLabel)
 
+    def createNewActivityView():
+        ### Defining all the user criteria with sliders
+        highTempLabel = toga.Label("Your highest temperature: " + str(int(0)))
+        highTempLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10, padding_top = 20)
 
+        def highTempSliderFunction(widget):
+            user_data["HighTemp"] = widget.value*100
+            highTempLabel.text = "Your highest temperature: " + str(int(widget.value*100))
 
+        highTempSlider = toga.Slider(on_change = highTempSliderFunction)
+        highTempSlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10)
+        highTempSlider.tick_count = 101
+        highTempSlider.value = 0.0
 
-    ### Defining all the user criteria with sliders
-    highTempLabel = toga.Label("Your highest temperature: " + str(int(0)))
-    highTempLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10, padding_top = 20)
+        main_box.add(highTempLabel)
+        main_box.add(highTempSlider)
 
-    def highTempSliderFunction(widget):
-        user_data["HighTemp"] = widget.value*100
-        highTempLabel.text = "Your highest temperature: " + str(int(widget.value*100))
+        lowTempLabel = toga.Label("Your lowest temperature: " + str(int(0)))
+        lowTempLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
 
-    highTempSlider = toga.Slider(on_change = highTempSliderFunction)
-    highTempSlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10)
-    highTempSlider.tick_count = 101
-    highTempSlider.value = 0.0
+        def lowTempSliderFunction(widget):
+            user_data["LowTemp"] = widget.value*100
+            lowTempLabel.text = "Your lowest temperature: " + str(int(widget.value*100))
 
-    main_box.add(highTempLabel)
-    main_box.add(highTempSlider)
+        lowTempSlider = toga.Slider(on_change = lowTempSliderFunction)
+        lowTempSlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10)
+        lowTempSlider.tick_count = 101
+        lowTempSlider.value = 0.0
 
-    lowTempLabel = toga.Label("Your lowest temperature: " + str(int(0)))
-    lowTempLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
+        main_box.add(lowTempLabel)
+        main_box.add(lowTempSlider)
 
-    def lowTempSliderFunction(widget):
-        user_data["LowTemp"] = widget.value*100
-        lowTempLabel.text = "Your lowest temperature: " + str(int(widget.value*100))
+        highWindLabel = toga.Label("Your highest wind speed (m/s): " + str(int(0)))
+        highWindLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
 
-    lowTempSlider = toga.Slider(on_change = lowTempSliderFunction)
-    lowTempSlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10)
-    lowTempSlider.tick_count = 101
-    lowTempSlider.value = 0.0
+        def highWindSliderFunction(widget):
+            user_data["HighWind"] = widget.value*100
+            highWindLabel.text = "Your highest wind speed (m/s): " + str(int(widget.value*100))
 
-    main_box.add(lowTempLabel)
-    main_box.add(lowTempSlider)
+        highWindSlider = toga.Slider(on_change = highWindSliderFunction)
+        highWindSlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10)
+        highWindSlider.tick_count = 101
+        highWindSlider.value = 0.0
 
-    highWindLabel = toga.Label("Your highest wind speed (m/s): " + str(int(0)))
-    highWindLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
+        main_box.add(highWindLabel)
+        main_box.add(highWindSlider)
 
-    def highWindSliderFunction(widget):
-        user_data["HighWind"] = widget.value*100
-        highWindLabel.text = "Your highest wind speed (m/s): " + str(int(widget.value*100))
+        lowWindLabel = toga.Label("Your lowest wind speed (m/s): " + str(int(0)))
+        lowWindLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
 
-    highWindSlider = toga.Slider(on_change = highWindSliderFunction)
-    highWindSlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10)
-    highWindSlider.tick_count = 101
-    highWindSlider.value = 0.0
+        def lowWindSliderFunction(widget):
+            user_data["LowWind"] = widget.value*100
+            lowWindLabel.text = "Your lowest wind speed (m/s): " + str(int(widget.value*100))
 
-    main_box.add(highWindLabel)
-    main_box.add(highWindSlider)
+        lowWindSlider = toga.Slider(on_change = lowWindSliderFunction)
+        lowWindSlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10)
+        lowWindSlider.tick_count = 101
+        lowWindSlider.value = 0.0
 
-    lowWindLabel = toga.Label("Your lowest wind speed (m/s): " + str(int(0)))
-    lowWindLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
+        main_box.add(lowWindLabel)
+        main_box.add(lowWindSlider)
 
-    def lowWindSliderFunction(widget):
-        user_data["LowWind"] = widget.value*100
-        lowWindLabel.text = "Your lowest wind speed (m/s): " + str(int(widget.value*100))
+        highHumidityLabel = toga.Label("Your highest temperature: " + str(int(0)))
+        highHumidityLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
 
-    lowWindSlider = toga.Slider(on_change = lowWindSliderFunction)
-    lowWindSlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10)
-    lowWindSlider.tick_count = 101
-    lowWindSlider.value = 0.0
+        def highHumiditySliderFunction(widget):
+            user_data["HighHumidity"] = widget.value*100
+            highHumidityLabel.text = "Your highest humidity (%): " + str(int(widget.value*100))
 
-    main_box.add(lowWindLabel)
-    main_box.add(lowWindSlider)
+        highHumiditySlider = toga.Slider(on_change = highHumiditySliderFunction)
+        highHumiditySlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10)
+        highHumiditySlider.tick_count = 101
+        highHumiditySlider.value = 0.0
 
-    highHumidityLabel = toga.Label("Your highest temperature: " + str(int(0)))
-    highHumidityLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
+        main_box.add(highHumidityLabel)
+        main_box.add(highHumiditySlider)
 
-    def highHumiditySliderFunction(widget):
-        user_data["HighHumidity"] = widget.value*100
-        highHumidityLabel.text = "Your highest humidity (%): " + str(int(widget.value*100))
+        lowHumidityLabel = toga.Label("Your lowest temperature: " + str(int(0)))
+        lowHumidityLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
 
-    highHumiditySlider = toga.Slider(on_change = highHumiditySliderFunction)
-    highHumiditySlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10)
-    highHumiditySlider.tick_count = 101
-    highHumiditySlider.value = 0.0
+        def lowHumiditySliderFunction(widget):
+            user_data["LowHumidity"] = widget.value*100
+            lowHumidityLabel.text = "Your lowest humidity (%): " + str(int(widget.value*100))
 
-    main_box.add(highHumidityLabel)
-    main_box.add(highHumiditySlider)
+        lowHumiditySlider = toga.Slider(on_change = lowHumiditySliderFunction)
+        lowHumiditySlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10)
+        lowHumiditySlider.tick_count = 101
+        lowHumiditySlider.value = 0.0
 
-    lowHumidityLabel = toga.Label("Your lowest temperature: " + str(int(0)))
-    lowHumidityLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
+        main_box.add(lowHumidityLabel)
+        main_box.add(lowHumiditySlider)
 
-    def lowHumiditySliderFunction(widget):
-        user_data["LowHumidity"] = widget.value*100
-        lowHumidityLabel.text = "Your lowest humidity (%): " + str(int(widget.value*100))
-
-    lowHumiditySlider = toga.Slider(on_change = lowHumiditySliderFunction)
-    lowHumiditySlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10)
-    lowHumiditySlider.tick_count = 101
-    lowHumiditySlider.value = 0.0
-
-    main_box.add(lowHumidityLabel)
-    main_box.add(lowHumiditySlider)
+    showSliderButton = toga.Button("New Activity",  on_press = createNewActivityView)
+    main_box.add(showSliderButton)
 
     ### Visual addition of the central save
     main_box.add(mainBlockSave)
-
 
 
 
