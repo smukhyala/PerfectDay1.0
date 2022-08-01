@@ -27,9 +27,10 @@ user_data = {
 "ActivityChoice": "nothing",
 "OriginalName": "nameless",
 "CityChoice": "San Francisco",
-### Fixed value, do not interfere
-"Preference": "Fahrenheit"
 }
+
+### Fixed value, do not interfere
+Preference = "Fahrenheit"
 
 ### Condition valuation counts + message string
 goodConditionCount = 0
@@ -115,6 +116,7 @@ def build(app):
         resultsLabel.text = resultstext
         cityText = updateCityText(user_data)
         cityLabel.text = cityText
+        cityInput.clear()
 
     ### Activity components
     ##### FIX ME
@@ -134,6 +136,7 @@ def build(app):
         user_data["title"] = user_data["ActivityChoice"]
         activityText = updateActivityText(user_data)
         activityLabel.text = activityText
+        activityInput.clear()
 
     ### Acivity detailed list handling
     def selection_handler(widget, row):
@@ -156,6 +159,7 @@ def build(app):
         user_data["OriginalName"] = nameInput.value
         nameText = updateNameText(user_data)
         nameLabel.text = nameText
+        nameInput.clear()
 
     ### Centralized Save Button
     def mainBlockSaveFunction(widget):
@@ -164,12 +168,10 @@ def build(app):
         cityLabelToResultsTextSaveFunction(widget)
         judgeWeather(filler)
 
-
         ### Open and append the file
         with open("PerfectDay.json", "w") as fp:
             data["activities"].append(user_data)
-            json.dump(data, fp)
-
+            json.dump(data, fp, indent = 4)
 
 
 
@@ -193,10 +195,6 @@ def build(app):
     left_box.add(activityList)
     left_box.add(nameLabel)
     left_box.add(nameInput)
-    left_box.add(activityLabel)
-    left_box.add(activityInput)
-    left_box.add(cityLabel)
-    left_box.add(cityInput)
 
     ### Displaying all components
     main_box = toga.Box(id = 'box', style = Pack(direction = COLUMN))
@@ -207,6 +205,10 @@ def build(app):
     def createNewActivityView(widget):
 
         if (len(mainViewBox.children) == 0):
+            mainViewBox.add(activityLabel)
+            mainViewBox.add(activityInput)
+            mainViewBox.add(cityLabel)
+            mainViewBox.add(cityInput)
             ### Defining all the user criteria with sliders
             highTempLabel = toga.Label("Your highest temperature: " + str(int(0)))
             highTempLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10, padding_top = 20)
@@ -339,7 +341,7 @@ def build(app):
 
         ### Defining good and bad weather occurences for the specifed user-criteria (chosen above)
         ### Temperature
-        preference = user_data["Preference"]
+        preference = Preference
         if preference == "Fahrenheit":
             if (int(idealLowTemp) <= low_temp_fahrenheit) and (high_temp_fahrenheit <= int(idealHighTemp)):
                 goodConditionCount = goodConditionCount + 2
