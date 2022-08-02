@@ -13,26 +13,11 @@ import requests as req
 import time as time
 import datetime as dt
 
-### Dictionary for reoccuring user defined data points (UPDATE: REMOVE)
-user_data = {
-"title": "",
-"subtitle": "",
-"icon": "",
-"HighTemp": 0,
-"LowTemp": 0,
-"HighWind": 0,
-"LowWind": 0,
-"HighHumidity": 0,
-"LowHumidity": 0,
-"ActivityChoice": "nothing",
-"UserName": "nameless",
-"CityChoice": "San Francisco"}
-
 ### Convenient globals
+user_name = "nameless"
 goodConditionCount = 0
 badConditionCount = 0
 weatherEvaluation = ""
-filler = ""
 
 ### Temperature conversion
 def kelvin_to_fahrenheit(kelvin):
@@ -45,30 +30,14 @@ OpenMainKey = "b12c5e04c89021d40208a84f66ebd3bb"
 
 def fetchCityData(City):
     NewURL = BaseURL + "appid=" + OpenMainKey + "&q=" + City
-    return(req.get(NewURL).json())
-
-weatherData = fetchCityData(user_data["CityChoice"])
-print(fetchCityData(user_data["CityChoice"]))
-
-### Defining and sorting through the dictionary values
-temp_kelvin = weatherData['list'][0]['main']['temp']
-low_temp_kelvin = weatherData['list'][0]['main']['temp_min']
-high_temp_kelvin = weatherData['list'][0]['main']['temp_max']
-feels_temp_kelvin = weatherData['list'][0]['main']['feels_like']
-humidity = weatherData['list'][0]['main']['humidity']
-description = weatherData['list'][0]['weather'][0]['description']
-wind_speed = weatherData['list'][0]['wind']['speed']
-
-### Using the temperature conversion
-temp_fahrenheit = kelvin_to_fahrenheit(temp_kelvin)
-feels_fahrenheit = kelvin_to_fahrenheit(feels_temp_kelvin)
-low_temp_fahrenheit = kelvin_to_fahrenheit(low_temp_kelvin)
-high_temp_fahrenheit = kelvin_to_fahrenheit(high_temp_kelvin)
+    APIRequest = req.get(NewURL).json()
+    #print(APIRequest)
+    return(APIRequest)
 
 ### Open and read the file after the appending
 f = open("PerfectDay.json", "r")
 data = json.load(f)
-user_data["UserName"] = data["user"]
+user_name = data["user"]
 print(json.dumps(data, indent=4, sort_keys=True))
 
 
@@ -76,15 +45,34 @@ print(json.dumps(data, indent=4, sort_keys=True))
 
 ### TOGA CREATING UI
 def build(app):
+    ### Dictionary for reoccuring user defined data points (UPDATE: REMOVE)
+    user_data = {
+    "title": "",
+    "subtitle": "",
+    "icon": "",
+    "HighTemp": 0,
+    "LowTemp": 0,
+    "HighWind": 0,
+    "LowWind": 0,
+    "HighHumidity": 0,
+    "LowHumidity": 0,
+    "ActivityChoice": "nothing",
+    "CityChoice": "San Francisco"}
+
     ### Main content
     main_box = toga.Box(id = 'box', style = Pack(direction = COLUMN))
     BlockCreationBox = toga.Box()
     BlockCreationBox.style.update(direction=COLUMN, padding=10, flex = 1)
 
+    ### Welcome label
+    welcomeLabel = toga.Label('Welcome to PerfectDay. This is a tool created to optimize your outdoor scheduling needs.\n\n')
+    welcomeLabel.style.update(width = 750, padding_left = 20, padding_bottom = 10, padding_top = 10)
+    main_box.add(welcomeLabel)
+
     ### City components
     cityInput = toga.TextInput(placeholder = "Brooklyn, Houston, etc...")
     cityInput.style.update(width = 450, padding_left = 10, padding_bottom = 10)
-    def updateCityText(user_data):
+    def updateCityText():
         return(f'Your current city is {user_data["CityChoice"]} (default San Francisco).\nChange your city:')
     cityLabel = toga.Label(f'Your current city is {user_data["CityChoice"]} (default San Francisco).\nChange your city:', style=Pack(text_align=LEFT))
     cityLabel.style.update(padding_left = 10, padding_right = 10, padding_top = 20)
@@ -99,17 +87,12 @@ def build(app):
             f"The humidity in {City}: {humidity}%.\n" +
             f"The wind speed in {City}: {wind_speed} m/s.\n"+
             f"The general weather in {City} is {description}.")
-    resultstext = updateResultsText(weatherData)
-    resultsLabel = toga.Label(resultstext)
-    resultsLabel.style.update(direction = COLUMN, flex=1, padding = 10)
     def cityLabelToResultsTextSaveFunction(widget):
-        user_data["CityChoice"] = cityInput.value
+        if cityInput.value != "":
+            user_data["CityChoice"] = cityInput.value
         user_data["subtitle"] = user_data["CityChoice"]
-        weatherData = fetchCityData(cityInput.value)
-        resultstext = updateResultsText(weatherData)
-        resultsLabel.text = resultstext
-        cityText = updateCityText(user_data)
-        cityLabel.text = cityText
+        weatherData = fetchCityData(user_data["CityChoice"])
+        cityLabel.text = updateCityText()
         cityInput.clear()
 
     ### Activity components
@@ -129,20 +112,19 @@ def build(app):
         data = data["activities"],
         on_select = selection_handler
     )
-    activityList.style.update(width = 450, padding = 10)
+    activityList.style.update(width = 450, padding_left = 20, padding_top = 10, padding_bottom = 10)
 
     ### Name components
     nameInput = toga.TextInput(placeholder = "James Alan, John Smith, etc...")
-    nameInput.style.update(width = 450, padding_left = 10, padding_bottom = 10)
-    def updateNameText(user_data):
-        name = user_data["UserName"]
-        return(f'Welcome to PerfectDay. \nThis is a tool created to optimize your outdoor scheduling needs.\n\nHi {user_data["UserName"]}.\nChange your name:')
-    nameLabel = toga.Label(f'Welcome to PerfectDay. \nThis is a tool created to optimize your outdoor scheduling needs.\n\nHi {user_data["UserName"]}.\nChange your name:', style=Pack(text_align=LEFT))
-    nameLabel.style.update(padding_left = 10, padding_right = 10, padding_top = 0)
+    nameInput.style.update(width = 450, padding_left = 20)
+    def updateNameText():
+        name = user_name
+        return(f'Hi {user_name}.\nChange your name:')
+    nameLabel = toga.Label(f'Hi {user_name}.\nChange your name:', style=Pack(text_align=LEFT))
+    nameLabel.style.update(padding_left = 20, padding_right = 10, padding_top = 0)
     def nameLabelSaveFunction(widget):
-        user_data["UserName"] = nameInput.value
-        nameText = updateNameText(user_data)
-        nameLabel.text = nameText
+        user_name = nameInput.value
+        nameLabel.text = updateNameText()
         nameInput.clear()
 
     ### Centralized Save Button
@@ -150,7 +132,7 @@ def build(app):
         nameLabelSaveFunction(widget)
         activityLabelSaveFunction(widget)
         cityLabelToResultsTextSaveFunction(widget)
-        judgeWeather(filler)
+        judgeWeather("")
 
         f = open("PerfectDay.json", "r")
         data = json.load(f)
@@ -165,7 +147,7 @@ def build(app):
     main_box.add(nameLabel)
     main_box.add(nameInput)
     main_box.add(BlockCreationBox)
-    main_box.add(resultsLabel)
+    #main_box.add(resultsLabel)
 
     def createNewActivityView(widget):
 
@@ -292,6 +274,24 @@ def build(app):
         ### Counts
         goodConditionCount = 0
         badConditionCount = 0
+
+        ### Using fetch and weather data
+        weatherData = fetchCityData(user_data["CityChoice"])
+
+        ### Defining and sorting through the dictionary values
+        temp_kelvin = weatherData['list'][0]['main']['temp']
+        low_temp_kelvin = weatherData['list'][0]['main']['temp_min']
+        high_temp_kelvin = weatherData['list'][0]['main']['temp_max']
+        feels_temp_kelvin = weatherData['list'][0]['main']['feels_like']
+        humidity = weatherData['list'][0]['main']['humidity']
+        description = weatherData['list'][0]['weather'][0]['description']
+        wind_speed = weatherData['list'][0]['wind']['speed']
+
+        ### Using the temperature conversion
+        temp_fahrenheit = kelvin_to_fahrenheit(temp_kelvin)
+        feels_fahrenheit = kelvin_to_fahrenheit(feels_temp_kelvin)
+        low_temp_fahrenheit = kelvin_to_fahrenheit(low_temp_kelvin)
+        high_temp_fahrenheit = kelvin_to_fahrenheit(high_temp_kelvin)
 
         ### Assigning slider values to variables
         activity = user_data["ActivityChoice"]
