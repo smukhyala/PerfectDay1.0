@@ -13,7 +13,7 @@ import requests as req
 import time as time
 import datetime as dt
 
-### Dictionary for reoccuring user defined data points
+### Dictionary for reoccuring user defined data points (UPDATE: REMOVE)
 user_data = {
 "title": "",
 "subtitle": "",
@@ -25,14 +25,10 @@ user_data = {
 "HighHumidity": 0,
 "LowHumidity": 0,
 "ActivityChoice": "nothing",
-"OriginalName": "nameless",
-"CityChoice": "San Francisco",
-}
+"UserName": "nameless",
+"CityChoice": "San Francisco"}
 
-### Fixed value, do not interfere
-Preference = "Fahrenheit"
-
-### Condition valuation counts + message string
+### Convenient globals
 goodConditionCount = 0
 badConditionCount = 0
 weatherEvaluation = ""
@@ -43,7 +39,7 @@ def kelvin_to_fahrenheit(kelvin):
     fahrenheit = (kelvin - 273.15) * (9/5) + 32
     return fahrenheit
 
-### API INFORMATION DO NOT DELETE + HIDE ME LATER
+### API INFORMATION DO NOT DELETE (HIDE IN GIT)
 BaseURL = "http://api.openweathermap.org/data/2.5/forecast?"
 OpenMainKey = "b12c5e04c89021d40208a84f66ebd3bb"
 
@@ -72,9 +68,8 @@ high_temp_fahrenheit = kelvin_to_fahrenheit(high_temp_kelvin)
 ### Open and read the file after the appending
 f = open("PerfectDay.json", "r")
 data = json.load(f)
-user_data["OriginalName"] = data["user"]
+user_data["UserName"] = data["user"]
 print(json.dumps(data, indent=4, sort_keys=True))
-
 
 
 
@@ -82,10 +77,9 @@ print(json.dumps(data, indent=4, sort_keys=True))
 ### TOGA CREATING UI
 def build(app):
     ### Main content
-    left_box = toga.Box()
-    left_box.style.update(direction=COLUMN, padding=10, flex = 1)
-    mainViewBox = toga.Box()
-    mainViewBox.style.update(direction=COLUMN, padding=10, flex = 1)
+    main_box = toga.Box(id = 'box', style = Pack(direction = COLUMN))
+    BlockCreationBox = toga.Box()
+    BlockCreationBox.style.update(direction=COLUMN, padding=10, flex = 1)
 
     ### City components
     cityInput = toga.TextInput(placeholder = "Brooklyn, Houston, etc...")
@@ -119,23 +113,13 @@ def build(app):
         cityInput.clear()
 
     ### Activity components
-    ##### FIX ME
     activityInput = toga.TextInput(placeholder = "Soccer, hiking, running, picnic, etc...")
     activityInput.style.update(width = 450, padding_left = 10, padding_bottom = 10)
-    def updateActivityText(user_data):
-        return(f'Your current activities are {totalActivities}.\nChange your activity:')
-    totalActivities = ""
-    i = 0
-    for x in data["activities"]:
-        i == totalActivities if i == 0 else totalActivities + ', ' + x["ActivityChoice"]
-        i = i + 1
-    activityLabel = toga.Label(f'Your current activities are {totalActivities}.\nChange your activity:', style=Pack(text_align=LEFT))
+    activityLabel = toga.Label('Add an activity:', style=Pack(text_align=LEFT))
     activityLabel.style.update(padding_left = 10, padding_right = 10, padding_top = 20)
     def activityLabelSaveFunction(widget):
         user_data["ActivityChoice"] = activityInput.value
         user_data["title"] = user_data["ActivityChoice"]
-        activityText = updateActivityText(user_data)
-        activityLabel.text = activityText
         activityInput.clear()
 
     ### Acivity detailed list handling
@@ -151,12 +135,12 @@ def build(app):
     nameInput = toga.TextInput(placeholder = "James Alan, John Smith, etc...")
     nameInput.style.update(width = 450, padding_left = 10, padding_bottom = 10)
     def updateNameText(user_data):
-        name = user_data["OriginalName"]
-        return(f'Welcome to PerfectDay. \nThis is a tool created to optimize your outdoor scheduling needs.\n\nHi {user_data["OriginalName"]}.\nChange your name:')
-    nameLabel = toga.Label(f'Welcome to PerfectDay. \nThis is a tool created to optimize your outdoor scheduling needs.\n\nHi {user_data["OriginalName"]}.\nChange your name:', style=Pack(text_align=LEFT))
+        name = user_data["UserName"]
+        return(f'Welcome to PerfectDay. \nThis is a tool created to optimize your outdoor scheduling needs.\n\nHi {user_data["UserName"]}.\nChange your name:')
+    nameLabel = toga.Label(f'Welcome to PerfectDay. \nThis is a tool created to optimize your outdoor scheduling needs.\n\nHi {user_data["UserName"]}.\nChange your name:', style=Pack(text_align=LEFT))
     nameLabel.style.update(padding_left = 10, padding_right = 10, padding_top = 0)
     def nameLabelSaveFunction(widget):
-        user_data["OriginalName"] = nameInput.value
+        user_data["UserName"] = nameInput.value
         nameText = updateNameText(user_data)
         nameLabel.text = nameText
         nameInput.clear()
@@ -168,47 +152,28 @@ def build(app):
         cityLabelToResultsTextSaveFunction(widget)
         judgeWeather(filler)
 
+        f = open("PerfectDay.json", "r")
+        data = json.load(f)
+        f.close()
         ### Open and append the file
         with open("PerfectDay.json", "w") as fp:
             data["activities"].append(user_data)
             json.dump(data, fp, indent = 4)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    ### Adding each part to left box
-    left_box.add(activityList)
-    left_box.add(nameLabel)
-    left_box.add(nameInput)
-
-    ### Displaying all components
-    main_box = toga.Box(id = 'box', style = Pack(direction = COLUMN))
-    main_box.add(left_box)
-    main_box.add(mainViewBox)
+    ### Displaying all active components
+    main_box.add(activityList)
+    main_box.add(nameLabel)
+    main_box.add(nameInput)
+    main_box.add(BlockCreationBox)
     main_box.add(resultsLabel)
 
     def createNewActivityView(widget):
 
-        if (len(mainViewBox.children) == 0):
-            mainViewBox.add(activityLabel)
-            mainViewBox.add(activityInput)
-            mainViewBox.add(cityLabel)
-            mainViewBox.add(cityInput)
+        if (len(BlockCreationBox.children) == 0):
+            BlockCreationBox.add(activityLabel)
+            BlockCreationBox.add(activityInput)
+            BlockCreationBox.add(cityLabel)
+            BlockCreationBox.add(cityInput)
             ### Defining all the user criteria with sliders
             highTempLabel = toga.Label("Your highest temperature: " + str(int(0)))
             highTempLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10, padding_top = 20)
@@ -222,8 +187,8 @@ def build(app):
             highTempSlider.tick_count = 101
             highTempSlider.value = 0.0
 
-            mainViewBox.add(highTempLabel)
-            mainViewBox.add(highTempSlider)
+            BlockCreationBox.add(highTempLabel)
+            BlockCreationBox.add(highTempSlider)
 
             lowTempLabel = toga.Label("Your lowest temperature: " + str(int(0)))
             lowTempLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
@@ -237,8 +202,8 @@ def build(app):
             lowTempSlider.tick_count = 101
             lowTempSlider.value = 0.0
 
-            mainViewBox.add(lowTempLabel)
-            mainViewBox.add(lowTempSlider)
+            BlockCreationBox.add(lowTempLabel)
+            BlockCreationBox.add(lowTempSlider)
 
             highWindLabel = toga.Label("Your highest wind speed (m/s): " + str(int(0)))
             highWindLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
@@ -252,8 +217,8 @@ def build(app):
             highWindSlider.tick_count = 101
             highWindSlider.value = 0.0
 
-            mainViewBox.add(highWindLabel)
-            mainViewBox.add(highWindSlider)
+            BlockCreationBox.add(highWindLabel)
+            BlockCreationBox.add(highWindSlider)
 
             lowWindLabel = toga.Label("Your lowest wind speed (m/s): " + str(int(0)))
             lowWindLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
@@ -267,8 +232,8 @@ def build(app):
             lowWindSlider.tick_count = 101
             lowWindSlider.value = 0.0
 
-            mainViewBox.add(lowWindLabel)
-            mainViewBox.add(lowWindSlider)
+            BlockCreationBox.add(lowWindLabel)
+            BlockCreationBox.add(lowWindSlider)
 
             highHumidityLabel = toga.Label("Your highest temperature: " + str(int(0)))
             highHumidityLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
@@ -282,8 +247,8 @@ def build(app):
             highHumiditySlider.tick_count = 101
             highHumiditySlider.value = 0.0
 
-            mainViewBox.add(highHumidityLabel)
-            mainViewBox.add(highHumiditySlider)
+            BlockCreationBox.add(highHumidityLabel)
+            BlockCreationBox.add(highHumiditySlider)
 
             lowHumidityLabel = toga.Label("Your lowest temperature: " + str(int(0)))
             lowHumidityLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
@@ -297,13 +262,13 @@ def build(app):
             lowHumiditySlider.tick_count = 101
             lowHumiditySlider.value = 0.0
 
-            mainViewBox.add(lowHumidityLabel)
-            mainViewBox.add(lowHumiditySlider)
+            BlockCreationBox.add(lowHumidityLabel)
+            BlockCreationBox.add(lowHumiditySlider)
             ### Visual addition of the central save
-            mainViewBox.add(mainBlockSave)
+            BlockCreationBox.add(mainBlockSave)
 
         showSliderButton.enabled = False
-        main_box.add(mainViewBox)
+        main_box.add(BlockCreationBox)
 
     showSliderButton = toga.Button("New Activity",  on_press = createNewActivityView)
     showSliderButton.style.update(width = 300, padding = 10)
@@ -312,18 +277,16 @@ def build(app):
     ### Using the centralized saving system
     def resetSliders(widget):
         mainBlockSaveFunction(widget)
-        main_box.remove(mainViewBox)
+        main_box.remove(BlockCreationBox)
         showSliderButton.enabled = True
 
     mainBlockSave = toga.Button("Save Preferences", on_press = resetSliders)
     mainBlockSave.style.update(width = 250, padding_left = 10, padding_right = 10, padding_top = 15)
 
 
-
-
-    ### Judgeweather (logic of the program)
+    ### Judge Weather
     def judgeWeather(filler):
-        ### Intro (Just in case)
+        ### Intro
         print("We are in!")
 
         ### Counts
@@ -341,22 +304,16 @@ def build(app):
 
         ### Defining good and bad weather occurences for the specifed user-criteria (chosen above)
         ### Temperature
-        preference = Preference
-        if preference == "Fahrenheit":
-            if (int(idealLowTemp) <= low_temp_fahrenheit) and (high_temp_fahrenheit <= int(idealHighTemp)):
-                goodConditionCount = goodConditionCount + 2
-            elif (int(idealLowTemp) <= low_temp_fahrenheit) and (int(idealHighTemp) < high_temp_fahrenheit):
-                goodConditionCount = goodConditionCount + 1
-                badConditionCount = badConditionCount + 1
-            elif (low_temp_fahrenheit < int(idealLowTemp)) and (high_temp_fahrenheit <= int(idealHighTemp)):
-                goodConditionCount = goodConditionCount + 1
-                badConditionCount = badConditionCount + 1
-            elif (low_temp_fahrenheit < int(idealLowTemp)) and (int(idealHighTemp) < high_temp_fahrenheit):
-                badConditionCount = badConditionCount + 2
-
-        else:
-            print("Incorrect input, we will use measurements in fahrenheit.")
-            preference = "fahrenheit"
+        if (int(idealLowTemp) <= low_temp_fahrenheit) and (high_temp_fahrenheit <= int(idealHighTemp)):
+            goodConditionCount = goodConditionCount + 2
+        elif (int(idealLowTemp) <= low_temp_fahrenheit) and (int(idealHighTemp) < high_temp_fahrenheit):
+            goodConditionCount = goodConditionCount + 1
+            badConditionCount = badConditionCount + 1
+        elif (low_temp_fahrenheit < int(idealLowTemp)) and (high_temp_fahrenheit <= int(idealHighTemp)):
+            goodConditionCount = goodConditionCount + 1
+            badConditionCount = badConditionCount + 1
+        elif (low_temp_fahrenheit < int(idealLowTemp)) and (int(idealHighTemp) < high_temp_fahrenheit):
+            badConditionCount = badConditionCount + 2
 
         ### Other forecasts
         if (int(idealLowWindSpeed)) <= wind_speed <= (int(idealHighWindSpeed)):
@@ -379,7 +336,7 @@ def build(app):
         elif goodConditionCount - badConditionCount < 1:
             weatherEvaluation = "suboptimal, not a PerfectDay. See another day's forecast or a different location."
 
-        ### Just in case
+        ### Console and assigning the label
         print(f"Our verdict is {weatherEvaluation}")
         weatherEvaluation = f"Our verdict is {weatherEvaluation}"
         verdictLabel.text = weatherEvaluation
