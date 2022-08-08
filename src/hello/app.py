@@ -38,7 +38,7 @@ def fetchCityData(City):
 f = open("PerfectDay.json", "r")
 data = json.load(f)
 user_name = data["user"]
-print(json.dumps(data, indent=4, sort_keys=True))
+#print(json.dumps(data, indent=4, sort_keys=True))
 
 
 
@@ -108,49 +108,94 @@ def build(app):
     ### Acivity detailed list handling
     def selection_handler(widget, row):
         print('Row {} of widget {} was selected.'.format(row, widget))
+        return row
     activityList = toga.DetailedList(
         data = data["activities"],
-        on_select = selection_handler
+        on_select = selection_handler,
     )
-    activityList.style.update(width = 450, padding_left = 20, padding_top = 10, padding_bottom = 10)
+    activityList.style.update(width = 450, padding_left = 20, padding_bottom = 10)
+
+    ### Delete buttons
+    specifyRowDelete = selection_handler(activityList, 2)
+    def deleteActivitiesFunction(widget):
+        print(f"Activity: {activityList.selection.ActivityChoice}. | City: {activityList.selection.CityChoice}.")
+        data["activities"].pop(2)
+        activityList.data = data["activities"]
+
+    deleteActivitiesButton = toga.Button("Delete", on_press = deleteActivitiesFunction)
+    deleteActivitiesButton.style.update(width = 150, padding_left = 10, padding_bottom = 10)
 
     ### Name components
+    userNameChangeBox = toga.Box()
+    userNameChangeBox.style.update(direction=COLUMN, padding=10, flex = 1)
+
     nameInput = toga.TextInput(placeholder = "James Alan, John Smith, etc...")
-    nameInput.style.update(width = 450, padding_left = 20)
+    nameInput.style.update(width = 450, padding_left = 10)
     def updateNameText():
         name = user_name
+        data["user"] = user_name
         return(f'Hi {user_name}.\nChange your name:')
     nameLabel = toga.Label(f'Hi {user_name}.\nChange your name:', style=Pack(text_align=LEFT))
-    nameLabel.style.update(padding_left = 20, padding_right = 10, padding_top = 0)
+    nameLabel.style.update(padding_left = 10, padding_right = 10)
     def nameLabelSaveFunction(widget):
         user_name = nameInput.value
         nameLabel.text = updateNameText()
         nameInput.clear()
+    nameLabelSaveButton = toga.Button("Save", on_press = nameLabelSaveFunction)
+    nameLabelSaveButton.style.update(width = 200, padding_left = 10)
+
+    def changeUserFunction(widget):
+        if (len(BlockCreationBox.children) == 0):
+            userNameChangeBox.add(nameLabel)
+            userNameChangeBox.add(nameInput)
+            userNameChangeBox.add(nameLabelSaveButton)
+        changeUserButton.enabled = False
+        main_box.add(userNameChangeBox)
+    changeUserButton = toga.Button("Change User", on_press = changeUserFunction)
+    changeUserButton.style.update(width = 200, padding = 10)
+
+    ### Uniqueness
+    def activityUniqueness(activities, key):
+        for blocks in activities:
+            #print(key, blocks["ActivityChoice"] + blocks["CityChoice"])
+            if key == blocks["ActivityChoice"] + blocks["CityChoice"]:
+                return True
 
     ### Centralized Save Button
     def mainBlockSaveFunction(widget):
         nameLabelSaveFunction(widget)
         activityLabelSaveFunction(widget)
         cityLabelToResultsTextSaveFunction(widget)
-        judgeWeather("")
 
+        ### Open and append the file
         f = open("PerfectDay.json", "r")
         data = json.load(f)
         f.close()
-        ### Open and append the file
-        with open("PerfectDay.json", "w") as fp:
-            data["activities"].append(user_data)
-            json.dump(data, fp, indent = 4)
+        neededKey = user_data["ActivityChoice"] + user_data["CityChoice"]
+
+        ### Checking uniqueness
+        if(not(activityUniqueness(data["activities"], neededKey))):
+            with open("PerfectDay.json", "w") as fp:
+                data["activities"].append(user_data)
+                json.dump(data, fp, indent = 4)
+                activityList.data = data["activities"]
+        else:
+            uniqueErrorLabel = toga.Label("Try again, you have entered the same combination of city and activity.")
+            uniqueErrorLabel.style.update(padding = 100)
+            uniqueErrorWindow = toga.Window()
+            uniqueErrorWindow.app = toga.App('Hello', 'org.SanjayMukhyala.PerfectDay', startup = build)
+            #uniqueErrorWindow.confirm_dialog(title = "Activity Error", message = "Try again, you have entered the same combination of city and activity.", on_result = None)
+            uniqueErrorWindow.content = uniqueErrorLabel
+            uniqueErrorWindow.show()
 
     ### Displaying all active components
     main_box.add(activityList)
-    main_box.add(nameLabel)
-    main_box.add(nameInput)
+    main_box.add(deleteActivitiesButton)
     main_box.add(BlockCreationBox)
+    main_box.add(changeUserButton)
     #main_box.add(resultsLabel)
 
     def createNewActivityView(widget):
-
         if (len(BlockCreationBox.children) == 0):
             BlockCreationBox.add(activityLabel)
             BlockCreationBox.add(activityInput)
@@ -267,83 +312,94 @@ def build(app):
 
 
     ### Judge Weather
-    def judgeWeather(filler):
+    def judgeWeather(activityData):
         ### Intro
-        print("We are in!")
+        #print("We are in!")
 
         ### Counts
         goodConditionCount = 0
         badConditionCount = 0
 
         ### Using fetch and weather data
-        weatherData = fetchCityData(user_data["CityChoice"])
+        weatherData = fetchCityData(activityData["CityChoice"])
 
         ### Defining and sorting through the dictionary values
-        temp_kelvin = weatherData['list'][0]['main']['temp']
-        low_temp_kelvin = weatherData['list'][0]['main']['temp_min']
-        high_temp_kelvin = weatherData['list'][0]['main']['temp_max']
-        feels_temp_kelvin = weatherData['list'][0]['main']['feels_like']
-        humidity = weatherData['list'][0]['main']['humidity']
-        description = weatherData['list'][0]['weather'][0]['description']
-        wind_speed = weatherData['list'][0]['wind']['speed']
+        goodDays = []
+        for forecast in weatherData['list']:
+            temp_kelvin = forecast['main']['temp']
+            low_temp_kelvin = forecast['main']['temp_min']
+            high_temp_kelvin = forecast['main']['temp_max']
+            feels_temp_kelvin = forecast['main']['feels_like']
+            humidity = forecast['main']['humidity']
+            description = forecast['weather'][0]['description']
+            wind_speed = forecast['wind']['speed']
 
-        ### Using the temperature conversion
-        temp_fahrenheit = kelvin_to_fahrenheit(temp_kelvin)
-        feels_fahrenheit = kelvin_to_fahrenheit(feels_temp_kelvin)
-        low_temp_fahrenheit = kelvin_to_fahrenheit(low_temp_kelvin)
-        high_temp_fahrenheit = kelvin_to_fahrenheit(high_temp_kelvin)
+            ### Using the temperature conversion
+            temp_fahrenheit = kelvin_to_fahrenheit(temp_kelvin)
+            feels_fahrenheit = kelvin_to_fahrenheit(feels_temp_kelvin)
+            low_temp_fahrenheit = kelvin_to_fahrenheit(low_temp_kelvin)
+            high_temp_fahrenheit = kelvin_to_fahrenheit(high_temp_kelvin)
 
-        ### Assigning slider values to variables
-        activity = user_data["ActivityChoice"]
-        idealLowTemp = user_data["LowTemp"]
-        idealHighTemp = user_data["HighTemp"]
-        idealLowWindSpeed = user_data["LowWind"]
-        idealHighWindSpeed = user_data["HighWind"]
-        idealLowHumidity = user_data["LowHumidity"]
-        idealHighHumidity = user_data["HighHumidity"]
+            ### Assigning slider values to variables
+            activity = activityData["ActivityChoice"]
+            idealLowTemp = activityData["LowTemp"]
+            idealHighTemp = activityData["HighTemp"]
+            idealLowWindSpeed = activityData["LowWind"]
+            idealHighWindSpeed = activityData["HighWind"]
+            idealLowHumidity = activityData["LowHumidity"]
+            idealHighHumidity = activityData["HighHumidity"]
 
-        ### Defining good and bad weather occurences for the specifed user-criteria (chosen above)
-        ### Temperature
-        if (int(idealLowTemp) <= low_temp_fahrenheit) and (high_temp_fahrenheit <= int(idealHighTemp)):
-            goodConditionCount = goodConditionCount + 2
-        elif (int(idealLowTemp) <= low_temp_fahrenheit) and (int(idealHighTemp) < high_temp_fahrenheit):
-            goodConditionCount = goodConditionCount + 1
-            badConditionCount = badConditionCount + 1
-        elif (low_temp_fahrenheit < int(idealLowTemp)) and (high_temp_fahrenheit <= int(idealHighTemp)):
-            goodConditionCount = goodConditionCount + 1
-            badConditionCount = badConditionCount + 1
-        elif (low_temp_fahrenheit < int(idealLowTemp)) and (int(idealHighTemp) < high_temp_fahrenheit):
-            badConditionCount = badConditionCount + 2
+            ### Defining good and bad weather occurences for the specifed user-criteria (chosen above)
+            ### Temperature
+            if (int(idealLowTemp) <= low_temp_fahrenheit) and (high_temp_fahrenheit <= int(idealHighTemp)):
+                goodConditionCount = goodConditionCount + 2
+            elif (int(idealLowTemp) <= low_temp_fahrenheit) and (int(idealHighTemp) < high_temp_fahrenheit):
+                goodConditionCount = goodConditionCount + 1
+                badConditionCount = badConditionCount + 1
+            elif (low_temp_fahrenheit < int(idealLowTemp)) and (high_temp_fahrenheit <= int(idealHighTemp)):
+                goodConditionCount = goodConditionCount + 1
+                badConditionCount = badConditionCount + 1
+            elif (low_temp_fahrenheit < int(idealLowTemp)) and (int(idealHighTemp) < high_temp_fahrenheit):
+                badConditionCount = badConditionCount + 2
 
-        ### Other forecasts
-        if (int(idealLowWindSpeed)) <= wind_speed <= (int(idealHighWindSpeed)):
-            goodConditionCount = goodConditionCount + 1
-        elif (wind_speed < (int(idealLowWindSpeed))) or ((int(idealHighWindSpeed)) < wind_speed):
-            badConditionCount = badConditionCount + 1
+            ### Other forecasts
+            if (int(idealLowWindSpeed)) <= wind_speed <= (int(idealHighWindSpeed)):
+                goodConditionCount = goodConditionCount + 1
+            elif (wind_speed < (int(idealLowWindSpeed))) or ((int(idealHighWindSpeed)) < wind_speed):
+                badConditionCount = badConditionCount + 1
 
-        if (int(idealLowHumidity)) <= humidity <= (int(idealHighHumidity)):
-            goodConditionCount = goodConditionCount + 1
-        elif (humidity < (int(idealLowHumidity))) or ((int(idealHighHumidity)) < humidity):
-            badConditionCount = badConditionCount + 1
+            if (int(idealLowHumidity)) <= humidity <= (int(idealHighHumidity)):
+                goodConditionCount = goodConditionCount + 1
+            elif (humidity < (int(idealLowHumidity))) or ((int(idealHighHumidity)) < humidity):
+                badConditionCount = badConditionCount + 1
 
-        ### Determining the final verdict
-        if goodConditionCount - badConditionCount >= 3:
-            weatherEvaluation = "optimal! What a PerfectDay!"
-        elif goodConditionCount - badConditionCount == 2:
-            weatherEvaluation = "decent, almost a PerfectDay."
-        elif goodConditionCount - badConditionCount == 1:
-            weatherEvaluation = "viable, somewhat a PerfectDay."
-        elif goodConditionCount - badConditionCount < 1:
-            weatherEvaluation = "suboptimal, not a PerfectDay. See another day's forecast or a different location."
+            ### Determining the final verdict
+            if goodConditionCount - badConditionCount >= 3:
+                weatherEvaluation = "optimal! What a PerfectDay!"
+                goodDays.append(f"{forecast['dt_txt']} in {activityData['CityChoice']}")
+            elif goodConditionCount - badConditionCount == 2:
+                weatherEvaluation = "decent, almost a PerfectDay."
+            elif goodConditionCount - badConditionCount == 1:
+                weatherEvaluation = "viable, somewhat a PerfectDay."
+            elif goodConditionCount - badConditionCount < 1:
+                weatherEvaluation = "suboptimal, not a PerfectDay. See another day's forecast or a different location."
 
-        ### Console and assigning the label
-        print(f"Our verdict is {weatherEvaluation}")
-        weatherEvaluation = f"Our verdict is {weatherEvaluation}"
-        verdictLabel.text = weatherEvaluation
+            ### Console and assigning the label
+            print(f"Our verdict is {weatherEvaluation} on {forecast['dt_txt']} in {activityData['CityChoice']}.")
+
+        return goodDays
+
+    verdictLabel = toga.Label("")
+    verdictLabel.style.update(width = 100000, padding_left = 10, padding_right = 10, padding_top = 10)
+
+    for activity in data["activities"]:
+        print(f"Calling judgeWeather on {activity['CityChoice']}")
+        goodDays = judgeWeather(activity)
+        weatherEvaluation = f"Your PerfectDays are {goodDays}.\n"
+        verdictLabel.text = verdictLabel.text + weatherEvaluation
+        print(goodDays)
 
     ### Bottom-most verdict message
-    verdictLabel = toga.Label("")
-    verdictLabel.style.update(width = 1000, padding_left = 10, padding_right = 10, padding_top = 10)
     main_box.add(verdictLabel)
 
     ### SCROLL CONTAINER DO NOT DELETE
