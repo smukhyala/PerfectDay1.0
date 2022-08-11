@@ -9,20 +9,18 @@ from toga.style import Pack
 from toga.style.pack import *
 import random as ran
 import math as math
-import requests as req
 import time as time
+import requests as req
 import datetime as dt
+import subprocess
+
+daemonLog = subprocess.Popen(["python", "src/hello/daemon.py"])
 
 ### Convenient globals
 user_name = "nameless"
 goodConditionCount = 0
 badConditionCount = 0
 weatherEvaluation = ""
-
-### Temperature conversion
-def kelvin_to_fahrenheit(kelvin):
-    fahrenheit = (kelvin - 273.15) * (9/5) + 32
-    return fahrenheit
 
 ### API INFORMATION DO NOT DELETE (HIDE IN GIT)
 BaseURL = "http://api.openweathermap.org/data/2.5/forecast?"
@@ -35,11 +33,15 @@ def fetchCityData(City):
     return(APIRequest)
 
 ### Open and read the file after the appending
-f = open("PerfectDay.json", "r")
+f = open("AllActivities.json", "r")
 data = json.load(f)
 user_name = data["user"]
 #print(json.dumps(data, indent=4, sort_keys=True))
 
+### Temperature conversion
+def kelvin_to_fahrenheit(kelvin):
+    fahrenheit = (kelvin - 273.15) * (9/5) + 32
+    return fahrenheit
 
 
 
@@ -107,18 +109,17 @@ def build(app):
 
     ### Acivity detailed list handling
     def selection_handler(widget, row):
-        print('Row {} of widget {} was selected.'.format(row, widget))
+        #print('Row {} of widget {} was selected.'.format(row, widget))
         return row
     activityList = toga.DetailedList(
         data = data["activities"],
-        on_select = selection_handler,
-    )
+        on_select = selection_handler)
     activityList.style.update(width = 450, padding_left = 20, padding_bottom = 10)
 
     ### Delete buttons
     specifyRowDelete = selection_handler(activityList, 2)
     def deleteActivitiesFunction(widget):
-        print(f"Activity: {activityList.selection.ActivityChoice}. | City: {activityList.selection.CityChoice}.")
+        #print(f"Activity: {activityList.selection.ActivityChoice}. | City: {activityList.selection.CityChoice}.")
         data["activities"].pop(2)
         activityList.data = data["activities"]
 
@@ -168,14 +169,14 @@ def build(app):
         cityLabelToResultsTextSaveFunction(widget)
 
         ### Open and append the file
-        f = open("PerfectDay.json", "r")
+        f = open("AllActivities.json", "r")
         data = json.load(f)
         f.close()
         neededKey = user_data["ActivityChoice"] + user_data["CityChoice"]
 
         ### Checking uniqueness
         if(not(activityUniqueness(data["activities"], neededKey))):
-            with open("PerfectDay.json", "w") as fp:
+            with open("AllActivities.json", "w") as fp:
                 data["activities"].append(user_data)
                 json.dump(data, fp, indent = 4)
                 activityList.data = data["activities"]
@@ -192,7 +193,7 @@ def build(app):
     main_box.add(activityList)
     main_box.add(deleteActivitiesButton)
     main_box.add(BlockCreationBox)
-    main_box.add(changeUserButton)
+    #main_box.add(changeUserButton)
     #main_box.add(resultsLabel)
 
     def createNewActivityView(widget):
@@ -314,7 +315,8 @@ def build(app):
     ### Judge Weather
     def judgeWeather(activityData):
         ### Intro
-        #print("We are in!")
+        print("We are in!")
+        goodDays = []
 
         ### Counts
         goodConditionCount = 0
@@ -324,7 +326,6 @@ def build(app):
         weatherData = fetchCityData(activityData["CityChoice"])
 
         ### Defining and sorting through the dictionary values
-        goodDays = []
         for forecast in weatherData['list']:
             temp_kelvin = forecast['main']['temp']
             low_temp_kelvin = forecast['main']['temp_min']
@@ -376,7 +377,7 @@ def build(app):
             ### Determining the final verdict
             if goodConditionCount - badConditionCount >= 3:
                 weatherEvaluation = "optimal! What a PerfectDay!"
-                goodDays.append(f"{forecast['dt_txt']} in {activityData['CityChoice']}")
+                goodDays.append(f"{forecast['dt_txt']}")
             elif goodConditionCount - badConditionCount == 2:
                 weatherEvaluation = "decent, almost a PerfectDay."
             elif goodConditionCount - badConditionCount == 1:
@@ -385,19 +386,22 @@ def build(app):
                 weatherEvaluation = "suboptimal, not a PerfectDay. See another day's forecast or a different location."
 
             ### Console and assigning the label
-            print(f"Our verdict is {weatherEvaluation} on {forecast['dt_txt']} in {activityData['CityChoice']}.")
+            print("Our verdict is {} on {} in {}.{}".format(weatherEvaluation, forecast["dt_txt"], activityData['CityChoice'], "\n"))
 
         return goodDays
 
-    verdictLabel = toga.Label("")
-    verdictLabel.style.update(width = 100000, padding_left = 10, padding_right = 10, padding_top = 10)
-
+    allActivities = []
     for activity in data["activities"]:
         print(f"Calling judgeWeather on {activity['CityChoice']}")
-        goodDays = judgeWeather(activity)
-        weatherEvaluation = f"Your PerfectDays are {goodDays}.\n"
-        verdictLabel.text = verdictLabel.text + weatherEvaluation
+        goodDays = ', '.join(judgeWeather(activity))
+        weatherEvaluation = "Your PerfectDays are {}.{}".format(goodDays, "\n")
+        allActivities.append({'title':f"{activity['ActivityChoice']} in {activity['CityChoice']}",'subtitle':goodDays,'icon':''})
+        #verdictLabel.text = verdictLabel.text + weatherEvaluation
         print(goodDays)
+
+    verdictLabel = toga.DetailedList(
+        data = allActivities)
+    verdictLabel.style.update(width = 1250, height = 500, padding_left = 10, padding_right = 10, padding_top = 10)
 
     ### Bottom-most verdict message
     main_box.add(verdictLabel)
