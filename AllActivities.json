@@ -1,0 +1,83 @@
+{
+    "user": "User",
+    "activities": [
+        {
+            "title": "1",
+            "subtitle": "Brooklyn",
+            "icon": "",
+            "HighTemp": 80.0,
+            "LowTemp": 10.0,
+            "HighWind": 50.0,
+            "LowWind": 0.0,
+            "HighHumidity": 110.0,
+            "LowHumidity": 20.0,
+            "ActivityChoice": "1",
+            "CityChoice": "Brooklyn"
+        },
+        {
+            "title": "2",
+            "subtitle": "Bronx",
+            "icon": "",
+            "HighTemp": 80.0,
+            "LowTemp": 10.0,
+            "HighWind": 50.0,
+            "LowWind": 0.0,
+            "HighHumidity": 110.0,
+            "LowHumidity": 20.0,
+            "ActivityChoice": "2",
+            "CityChoice": "Bronx"
+        },
+        {
+            "title": "3",
+            "subtitle": "Houston",
+            "icon": "",
+            "HighTemp": 80.0,
+            "LowTemp": 10.0,
+            "HighWind": 50.0,
+            "LowWind": 0.0,
+            "HighHumidity": 110.0,
+            "LowHumidity": 20.0,
+            "ActivityChoice": "3",
+            "CityChoice": "Houston"
+        },
+        {
+            "title": "4",
+            "subtitle": "Fremont",
+            "icon": "",
+            "HighTemp": 80.0,
+            "LowTemp": 10.0,
+            "HighWind": 50.0,
+            "LowWind": 0.0,
+            "HighHumidity": 110.0,
+            "LowHumidity": 20.0,
+            "ActivityChoice": "4",
+            "CityChoice": "Fremont"
+        },
+        {
+            "title": "5",
+            "subtitle": "Honolulu",
+            "icon": "",
+            "HighTemp": 80.0,
+            "LowTemp": 10.0,
+            "HighWind": 50.0,
+            "LowWind": 0.0,
+            "HighHumidity": 110.0,
+            "LowHumidity": 20.0,
+            "ActivityChoice": "5",
+            "CityChoice": "Honolulu"
+        },
+        {
+            "title": "16",
+            "subtitle": "Essex",
+            "icon": "",
+            "HighTemp": 77.99999713897705,
+            "LowTemp": 10.999999940395355,
+            "HighWind": 87.00000047683716,
+            "LowWind": 15.000000596046448,
+            "HighHumidity": 85.00000238418579,
+            "LowHumidity": 37.99999952316284,
+            "ActivityChoice": "16",
+            "CityChoice": "Essex"
+        }
+    ]
+}
