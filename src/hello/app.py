@@ -14,7 +14,7 @@ import requests as req
 import datetime as dt
 import subprocess
 
-daemonLog = subprocess.Popen(["python", "src/hello/daemon.py"])
+daemonLog = subprocess.Popen(["python", "src/hello/daemon.py"], close_fds = True)
 
 ### Convenient globals
 user_name = "nameless"
@@ -315,7 +315,7 @@ def build(app):
     ### Judge Weather
     def judgeWeather(activityData):
         ### Intro
-        print("We are in!")
+        #print("We are in!")
         goodDays = []
 
         ### Counts
@@ -386,18 +386,18 @@ def build(app):
                 weatherEvaluation = "suboptimal, not a PerfectDay. See another day's forecast or a different location."
 
             ### Console and assigning the label
-            print("Our verdict is {} on {} in {}.{}".format(weatherEvaluation, forecast["dt_txt"], activityData['CityChoice'], "\n"))
+            #print("Our verdict is {} on {} in {}.{}".format(weatherEvaluation, forecast["dt_txt"], activityData['CityChoice'], "\n"))
 
         return goodDays
 
     allActivities = []
     for activity in data["activities"]:
-        print(f"Calling judgeWeather on {activity['CityChoice']}")
+        #print(f"Calling judgeWeather on {activity['CityChoice']}")
         goodDays = ', '.join(judgeWeather(activity))
         weatherEvaluation = "Your PerfectDays are {}.{}".format(goodDays, "\n")
         allActivities.append({'title':f"{activity['ActivityChoice']} in {activity['CityChoice']}",'subtitle':goodDays,'icon':''})
         #verdictLabel.text = verdictLabel.text + weatherEvaluation
-        print(goodDays)
+        #print(goodDays)
 
     verdictLabel = toga.DetailedList(
         data = allActivities)
