@@ -3,6 +3,9 @@ import schedule
 import time
 import json
 import requests as req
+import datetime
+import smtplib
+from email.message import EmailMessage
 
 ### API INFORMATION DO NOT DELETE (HIDE IN GIT)
 BaseURL = "http://api.openweathermap.org/data/2.5/forecast?"
@@ -24,7 +27,27 @@ def kelvin_to_fahrenheit(kelvin):
     fahrenheit = (kelvin - 273.15) * (9/5) + 32
     return fahrenheit
 
+def sendMail(content):
+    # Create a text/plain message
+    msg = EmailMessage()
+    msg.set_content(content)
+
+    # me == the sender's email address
+    # you == the recipient's email address
+    msg['Subject'] = 'PerfectDay'
+    msg['From'] = "smukhyala@gmail.com"
+    msg['To'] = "25mukhyalas62@stu.smuhsd.org"
+
+    # Send the message via our own SMTP server.
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login('smukhyala@gmail.com', 'kanljwhyimbizlla')
+    server.send_message(msg)
+
 def job():
+    now = datetime.datetime.now()
+    current_time = now.strftime("%H:%M:%S")
+    print("Starting job at", current_time)
     grabbedData = getData()
     allActivities = []
     for activity in grabbedData["activities"]:
@@ -32,6 +55,7 @@ def job():
         weatherEvaluation = "Your PerfectDays are {}.{}".format(goodDays, "\n")
         judgeWeather(activity)
         allActivities.append({'title':f"{activity['ActivityChoice']} in {activity['CityChoice']}",'subtitle':goodDays,'icon':''})
+    sendMail(json.dumps(allActivities))
     f = open("PerfectDays.json", "w")
     json.dump(allActivities, f, indent = 4)
     f.close()
@@ -39,7 +63,7 @@ def job():
 ### Judge Weather
 def judgeWeather(activityData):
     ### Intro
-    print("We are in!")
+    #print("We are in!")
     goodDays = []
 
     ### Counts
@@ -110,11 +134,11 @@ def judgeWeather(activityData):
             weatherEvaluation = "suboptimal, not a PerfectDay. See another day's forecast or a different location."
 
         ### Console and assigning the label
-        print("Our verdict is {} on {} in {}.{}".format(weatherEvaluation, forecast["dt_txt"], activityData['CityChoice'], "\n"))
+        #print("Our verdict is {} on {} in {}.{}".format(weatherEvaluation, forecast["dt_txt"], activityData['CityChoice'], "\n"))
 
     return goodDays
 
-schedule.every(1).minutes.do(job)
+schedule.every(20).seconds.do(job)
 #schedule.every(2).hour.do(judgeWeather(activity))
 #schedule.every().day.at("10:30").do(judgeWeather(activity))
 #schedule.every().monday.do(judgeWeather(activity))
