@@ -11,6 +11,14 @@ from email.message import EmailMessage
 BaseURL = "http://api.openweathermap.org/data/2.5/forecast?"
 OpenMainKey = "b12c5e04c89021d40208a84f66ebd3bb"
 
+"""
+https://myaccount.google.com/apppasswords?rapt=AEjHL4PeKvCmEp6mdvHUkNL4iW9wItaC4hNAPD-gFza2LDrglX5Ch1CZAnEnW_MIPbK9wQsMH3A1ZctxdOp1abYQC-47IDfrWQ
+"""
+
+f = open("AllActivities.json", "r")
+data = json.load(f)
+f.close()
+
 def getData():
     f = open("AllActivities.json", "r")
     data = json.load(f)
@@ -36,12 +44,13 @@ def sendMail(content):
     # you == the recipient's email address
     msg['Subject'] = 'PerfectDay'
     msg['From'] = "smukhyala@gmail.com"
-    msg['To'] = "25mukhyalas62@stu.smuhsd.org"
+    msg['To'] = data["email"]
+    #assign to variable from app.py, 25mukhyalas62@stu.smuhsd.org
 
     # Send the message via our own SMTP server.
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
-    server.login('smukhyala@gmail.com', 'kanljwhyimbizlla')
+    server.login('smukhyala@gmail.com', 'vxxfqkakjrpaxykd')#random gibberish is google generated
     server.send_message(msg)
 
 def job():
@@ -51,11 +60,12 @@ def job():
     grabbedData = getData()
     allActivities = []
     for activity in grabbedData["activities"]:
-        goodDays = ', '.join(judgeWeather(activity))
-        weatherEvaluation = "Your PerfectDays are {}.{}".format(goodDays, "\n")
+        goodDays = f'\n'.join(judgeWeather(activity))
+        weatherEvaluation = "Hello there!{}Your PerfectDays are {}{}.{}Thank you, {}Sanjay Mukhyala, PerfectDay Team".format("\n\n" ,"\n", goodDays, "\n", "\n\n", "\n")
         judgeWeather(activity)
-        allActivities.append({'title':f"{activity['ActivityChoice']} in {activity['CityChoice']}",'subtitle':goodDays,'icon':''})
-    sendMail(json.dumps(allActivities))
+        allActivities.append({'title':f"{activity['ActivityChoice']} in {activity['CityChoice']}.\nThank you, \n Sanjay Mukhyala, PerfectDay Team",'subtitle':goodDays,'icon':''})
+    sendMail(weatherEvaluation)
+    #f"Welcome back to PerfectDay. This is a reminder about each of your upcoming PerfectDay\n" + json.dumps(allActivities) "\nPlease contact smukhyala@gmail.com for any questions or support. Also, please leave a review and rating on your app store. Have a PerfectDay!\n\n - PerfectDay Team")
     f = open("PerfectDays.json", "w")
     json.dump(allActivities, f, indent = 4)
     f.close()
