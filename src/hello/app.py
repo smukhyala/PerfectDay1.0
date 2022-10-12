@@ -1,6 +1,3 @@
-"""
-PerfectDay, IOS app by Sanjay Mukhyala summer 2022.
-"""
 ### Imports
 from __future__ import print_function, unicode_literals, absolute_import
 import toga
@@ -14,10 +11,26 @@ import requests as req
 import datetime as dt
 import subprocess
 
+'''
+Fix the print messsage in email
+
+Combine the email and user name change functions 
+    Under the dissapearing block
+
+Daemon will only send updated message once
+    Doesn't seem to save formatting I create
+    Prints "ok" every other instance besides the first 
+'''
+
+"""
+PerfectDay, IOS app by Sanjay Mukhyala summer 2022.
+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
+"""
+
 daemonLog = subprocess.Popen(["python", "src/hello/daemon.py"], close_fds = True)
 
 ### Convenient globals
-user_name = "nameless"
+user_name = "Default"
 goodConditionCount = 0
 badConditionCount = 0
 weatherEvaluation = ""
@@ -36,6 +49,7 @@ def fetchCityData(City):
 f = open("AllActivities.json", "r")
 data = json.load(f)
 user_name = data["user"]
+user_email = "smukhyala@gmail.com"
 #print(json.dumps(data, indent=4, sort_keys=True))
 
 ### Temperature conversion
@@ -59,27 +73,92 @@ def build(app):
     "HighHumidity": 0,
     "LowHumidity": 0,
     "ActivityChoice": "nothing",
-    "CityChoice": "San Francisco"}
+    "CityChoice": "San Francisco",
+    "Email": "smukhyala@gmail.com",
+    "user_name": "Default"}
 
     ### Main content
-    main_box = toga.Box(id = 'box', style = Pack(direction = COLUMN))
+    main_box = toga.Box(id = 'box', style = Pack(direction = "column"))
     BlockCreationBox = toga.Box()
-    BlockCreationBox.style.update(direction=COLUMN, padding=10, flex = 1)
+    BlockCreationBox.style.update(direction = "column", padding=10, flex = 1)
 
     ### Welcome label
     welcomeLabel = toga.Label('Welcome to PerfectDay. This is a tool created to optimize your outdoor scheduling needs.\n\n')
     welcomeLabel.style.update(width = 750, padding_left = 20, padding_bottom = 10, padding_top = 10)
     main_box.add(welcomeLabel)
 
+    ### Name components
+    userNameChangeBox = toga.Box()
+    userNameChangeBox.style.update(direction = "column", padding=10, flex = 1)
+
+    nameInput = toga.TextInput(placeholder = "James Alan, John Smith, etc...")
+    nameInput.style.update(width = 450, padding_left = 10)
+    def updateNameText():
+        name = user_name
+        data["user"] = user_name
+        return(f'Hi {user_name}.\nChange your name:')
+    nameLabel = toga.Label(f'Hi {user_name}.\nChange your name:', style=Pack(text_align = "left"))
+    nameLabel.style.update(padding_left = 10, padding_right = 10)
+    def nameLabelSaveFunction(widget):
+        user_name = nameInput.value
+        nameLabel.text = updateNameText()
+        nameInput.clear()
+    nameLabelSaveButton = toga.Button("Save", on_press = nameLabelSaveFunction)
+    nameLabelSaveButton.style.update(width = 200, padding_left = 10)
+
+    emailInput = toga.TextInput(placeholder = "james.alan99@gmail.com, JohnSmith123@hotmail.com, etc...")
+    emailInput.style.update(width = 450, padding_left = 10)
+    def changeEmailFunction(widget):
+        print("ok")
+        email = user_name
+        data["user"] = user_name
+        return(f'Hi {user_name}.\nChange your name:')
+
+    changeEmailButton = toga.Button("Change Email Details", on_press = changeEmailFunction)
+    changeEmailButton.style.update(width = 200, padding = 10)
+
+    ### Email components
+    emailInput = toga.TextInput(placeholder = "ex. john_doe@gmail.com")
+    emailInput.style.update(width = 450, padding_left = 10, padding_bottom = 10)
+    def updateEmailText():
+        email = user_email
+        data["Email"] = user_email
+        return(f'Enter your preferred email (current {user_email}):')
+    emailLabel = toga.Label(f'Enter your preferred email:', style=Pack(text_align = "left"))
+    emailLabel.style.update(padding_left = 10, padding_right = 10, padding_top = 20)
+    def emailLabelSaveFunction(widget):
+        user_email = emailInput.value
+        emailInput.text = updateEmailText()
+        emailInput.clear()
+    emailLabelSaveButton = toga.Button("Save", on_press = emailLabelSaveFunction)
+    emailLabelSaveButton.style.update(width = 200, padding_left = 10)
+
+    ### Email + User
+    def changeUserFunction(widget):
+        if (len(BlockCreationBox.children) == 0):
+            userNameChangeBox.add(nameLabel)
+            userNameChangeBox.add(nameInput)
+            userNameChangeBox.add(nameLabelSaveButton)
+            #userNameChangeBox.add(emailLabel)
+            #userNameChangeBox.add(emailInput)
+            #userNameChangeBox.add(emailLabelSaveButton)
+        changeUserButton.enabled = False
+        main_box.add(userNameChangeBox)
+    changeUserButton = toga.Button("Change User Details", on_press = changeUserFunction)
+    changeUserButton.style.update(width = 200, padding = 10)
+
+    ### Combine saves for name and email to one function
+
     ### City components
     cityInput = toga.TextInput(placeholder = "Brooklyn, Houston, etc...")
     cityInput.style.update(width = 450, padding_left = 10, padding_bottom = 10)
     def updateCityText():
         return(f'Your current city is {user_data["CityChoice"]} (default San Francisco).\nChange your city:')
-    cityLabel = toga.Label(f'Your current city is {user_data["CityChoice"]} (default San Francisco).\nChange your city:', style=Pack(text_align=LEFT))
+    cityLabel = toga.Label(f'Your current city is {user_data["CityChoice"]} (default San Francisco).\nChange your city:', style=Pack(text_align = "left"))
     cityLabel.style.update(padding_left = 10, padding_right = 10, padding_top = 20)
 
     ### Results components
+    '''
     def updateResultsText(weatherData):
         City = user_data["CityChoice"]
         return(f"Weather Results:\n\nThe temperature in {City}: {temp_fahrenheit:.2f} degrees Fahrenheit.\n" +
@@ -89,6 +168,7 @@ def build(app):
             f"The humidity in {City}: {humidity}%.\n" +
             f"The wind speed in {City}: {wind_speed} m/s.\n"+
             f"The general weather in {City} is {description}.")
+    '''
     def cityLabelToResultsTextSaveFunction(widget):
         if cityInput.value != "":
             user_data["CityChoice"] = cityInput.value
@@ -100,7 +180,7 @@ def build(app):
     ### Activity components
     activityInput = toga.TextInput(placeholder = "Soccer, hiking, running, picnic, etc...")
     activityInput.style.update(width = 450, padding_left = 10, padding_bottom = 10)
-    activityLabel = toga.Label('Add an activity:', style=Pack(text_align=LEFT))
+    activityLabel = toga.Label('Add an activity:', style=Pack(text_align = "left"))
     activityLabel.style.update(padding_left = 10, padding_right = 10, padding_top = 20)
     def activityLabelSaveFunction(widget):
         user_data["ActivityChoice"] = activityInput.value
@@ -108,8 +188,10 @@ def build(app):
         activityInput.clear()
 
     ### Acivity detailed list handling
+    deleteNum = 0
     def selection_handler(widget, row):
         #print('Row {} of widget {} was selected.'.format(row, widget))
+        deleteNum = row
         return row
     activityList = toga.DetailedList(
         data = data["activities"],
@@ -117,43 +199,15 @@ def build(app):
     activityList.style.update(width = 450, padding_left = 20, padding_bottom = 10)
 
     ### Delete buttons
-    specifyRowDelete = selection_handler(activityList, 2)
     def deleteActivitiesFunction(widget):
         #print(f"Activity: {activityList.selection.ActivityChoice}. | City: {activityList.selection.CityChoice}.")
-        data["activities"].pop(2)
+        data["activities"].pop(deleteNum)
         activityList.data = data["activities"]
+        with open("AllActivities.json", "w") as fp:
+            json.dump(data, fp, indent = 4)
 
     deleteActivitiesButton = toga.Button("Delete", on_press = deleteActivitiesFunction)
     deleteActivitiesButton.style.update(width = 150, padding_left = 10, padding_bottom = 10)
-
-    ### Name components
-    userNameChangeBox = toga.Box()
-    userNameChangeBox.style.update(direction=COLUMN, padding=10, flex = 1)
-
-    nameInput = toga.TextInput(placeholder = "James Alan, John Smith, etc...")
-    nameInput.style.update(width = 450, padding_left = 10)
-    def updateNameText():
-        name = user_name
-        data["user"] = user_name
-        return(f'Hi {user_name}.\nChange your name:')
-    nameLabel = toga.Label(f'Hi {user_name}.\nChange your name:', style=Pack(text_align=LEFT))
-    nameLabel.style.update(padding_left = 10, padding_right = 10)
-    def nameLabelSaveFunction(widget):
-        user_name = nameInput.value
-        nameLabel.text = updateNameText()
-        nameInput.clear()
-    nameLabelSaveButton = toga.Button("Save", on_press = nameLabelSaveFunction)
-    nameLabelSaveButton.style.update(width = 200, padding_left = 10)
-
-    def changeUserFunction(widget):
-        if (len(BlockCreationBox.children) == 0):
-            userNameChangeBox.add(nameLabel)
-            userNameChangeBox.add(nameInput)
-            userNameChangeBox.add(nameLabelSaveButton)
-        changeUserButton.enabled = False
-        main_box.add(userNameChangeBox)
-    changeUserButton = toga.Button("Change User", on_press = changeUserFunction)
-    changeUserButton.style.update(width = 200, padding = 10)
 
     ### Uniqueness
     def activityUniqueness(activities, key):
@@ -193,13 +247,15 @@ def build(app):
     main_box.add(activityList)
     main_box.add(deleteActivitiesButton)
     main_box.add(BlockCreationBox)
-    #main_box.add(changeUserButton)
+    main_box.add(changeUserButton)
     #main_box.add(resultsLabel)
 
     def createNewActivityView(widget):
         if (len(BlockCreationBox.children) == 0):
             BlockCreationBox.add(activityLabel)
             BlockCreationBox.add(activityInput)
+            BlockCreationBox.add(emailLabel)
+            BlockCreationBox.add(emailInput)
             BlockCreationBox.add(cityLabel)
             BlockCreationBox.add(cityInput)
             ### Defining all the user criteria with sliders
