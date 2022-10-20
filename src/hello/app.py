@@ -12,14 +12,8 @@ import datetime as dt
 import subprocess
 
 '''
-Fix the print messsage in email
-
 Combine the email and user name change functions 
     Under the dissapearing block
-
-Daemon will only send updated message once
-    Doesn't seem to save formatting I create
-    Prints "ok" every other instance besides the first 
 '''
 
 """
@@ -87,37 +81,42 @@ def build(app):
     welcomeLabel.style.update(width = 750, padding_left = 20, padding_bottom = 10, padding_top = 10)
     main_box.add(welcomeLabel)
 
-    ### Name components
+
+
+
+    ### Name and Email components
     userNameChangeBox = toga.Box()
     userNameChangeBox.style.update(direction = "column", padding=10, flex = 1)
 
     nameInput = toga.TextInput(placeholder = "James Alan, John Smith, etc...")
     nameInput.style.update(width = 450, padding_left = 10)
     def updateNameText():
+        user_name = nameInput.value
         name = user_name
         data["user"] = user_name
         return(f'Hi {user_name}.\nChange your name:')
     nameLabel = toga.Label(f'Hi {user_name}.\nChange your name:', style=Pack(text_align = "left"))
     nameLabel.style.update(padding_left = 10, padding_right = 10)
-    def nameLabelSaveFunction(widget):
-        user_name = nameInput.value
-        nameLabel.text = updateNameText()
-        nameInput.clear()
-    nameLabelSaveButton = toga.Button("Save", on_press = nameLabelSaveFunction)
-    nameLabelSaveButton.style.update(width = 200, padding_left = 10)
 
     emailInput = toga.TextInput(placeholder = "james.alan99@gmail.com, JohnSmith123@hotmail.com, etc...")
     emailInput.style.update(width = 450, padding_left = 10)
     def changeEmailFunction(widget):
-        print("ok")
-        email = user_name
-        data["user"] = user_name
-        return(f'Hi {user_name}.\nChange your name:')
+        user_email = emailInput.value
+        email = user_email
+        data["Email"] = user_email
+        return(f'Change your email:')
+    emailLabel = toga.Label(f'Hi {user_name}.\nChange your email:', style=Pack(text_align = "left"))
+    emailLabel.style.update(padding_top = 10, padding_left = 10, padding_right = 10)
+    
+    def nameEmailLabelSaveFunction(widget):
+        nameLabel.text = updateNameText()
+        nameInput.clear()
+        emailLabel.text = changeEmailFunction(widget)
+        emailInput.clear()
 
-    changeEmailButton = toga.Button("Change Email Details", on_press = changeEmailFunction)
-    changeEmailButton.style.update(width = 200, padding = 10)
-
-    ### Email components
+    nameEmailLabelSaveButton = toga.Button("Save", on_press = nameEmailLabelSaveFunction)
+    nameEmailLabelSaveButton.style.update(width = 200, padding_left = 10)
+    '''### Email components
     emailInput = toga.TextInput(placeholder = "ex. john_doe@gmail.com")
     emailInput.style.update(width = 450, padding_left = 10, padding_bottom = 10)
     def updateEmailText():
@@ -126,19 +125,16 @@ def build(app):
         return(f'Enter your preferred email (current {user_email}):')
     emailLabel = toga.Label(f'Enter your preferred email:', style=Pack(text_align = "left"))
     emailLabel.style.update(padding_left = 10, padding_right = 10, padding_top = 20)
-    def emailLabelSaveFunction(widget):
-        user_email = emailInput.value
-        emailInput.text = updateEmailText()
-        emailInput.clear()
-    emailLabelSaveButton = toga.Button("Save", on_press = emailLabelSaveFunction)
-    emailLabelSaveButton.style.update(width = 200, padding_left = 10)
+   '''
 
     ### Email + User
     def changeUserFunction(widget):
         if (len(BlockCreationBox.children) == 0):
             userNameChangeBox.add(nameLabel)
             userNameChangeBox.add(nameInput)
-            userNameChangeBox.add(nameLabelSaveButton)
+            userNameChangeBox.add(emailLabel)
+            userNameChangeBox.add(emailInput)
+            userNameChangeBox.add(nameEmailLabelSaveButton)
             #userNameChangeBox.add(emailLabel)
             #userNameChangeBox.add(emailInput)
             #userNameChangeBox.add(emailLabelSaveButton)
@@ -147,7 +143,8 @@ def build(app):
     changeUserButton = toga.Button("Change User Details", on_press = changeUserFunction)
     changeUserButton.style.update(width = 200, padding = 10)
 
-    ### Combine saves for name and email to one function
+
+
 
     ### City components
     cityInput = toga.TextInput(placeholder = "Brooklyn, Houston, etc...")
@@ -196,7 +193,7 @@ def build(app):
     activityList = toga.DetailedList(
         data = data["activities"],
         on_select = selection_handler)
-    activityList.style.update(width = 450, padding_left = 20, padding_bottom = 10)
+    activityList.style.update(width = 450, height = 100, padding_left = 20, padding_bottom = 10)
 
     ### Delete buttons
     def deleteActivitiesFunction(widget):
@@ -218,7 +215,7 @@ def build(app):
 
     ### Centralized Save Button
     def mainBlockSaveFunction(widget):
-        nameLabelSaveFunction(widget)
+        nameEmailLabelSaveFunction(widget)
         activityLabelSaveFunction(widget)
         cityLabelToResultsTextSaveFunction(widget)
 
