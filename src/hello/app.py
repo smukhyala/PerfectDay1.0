@@ -12,8 +12,7 @@ import datetime as dt
 import subprocess
 
 '''
-Combine the email and user name change functions 
-    Under the dissapearing block
+Refer to post-its
 '''
 
 """
@@ -103,15 +102,17 @@ def build(app):
     def changeEmailFunction(widget):
         user_email = emailInput.value
         email = user_email
-        data["Email"] = user_email
+        data["email"] = user_email
         return(f'Change your email:')
     emailLabel = toga.Label(f'Hi {user_name}.\nChange your email:', style=Pack(text_align = "left"))
     emailLabel.style.update(padding_top = 10, padding_left = 10, padding_right = 10)
     
     def nameEmailLabelSaveFunction(widget):
         nameLabel.text = updateNameText()
+        data["user"] = user_name
         nameInput.clear()
         emailLabel.text = changeEmailFunction(widget)
+        data["email"] = user_email
         emailInput.clear()
 
     nameEmailLabelSaveButton = toga.Button("Save", on_press = nameEmailLabelSaveFunction)
