@@ -19,6 +19,14 @@ f = open("AllActivities.json", "r")
 data = json.load(f)
 f.close()
 
+finalsubtitle = []
+def listToString(s):
+    str1 = ""
+    for ele in s:
+        str1 += "\n"
+        str1 += ele
+    return str1
+
 def getData():
     f = open("AllActivities.json", "r")
     data = json.load(f)
@@ -61,7 +69,9 @@ def job():
     allActivities = []
     for activity in grabbedData["activities"]:
         goodDays = f'\n'.join(judgeWeather(activity))
-        weatherEvaluation = "Hello there!{}Your PerfectDays are {}{}.{}Thank you, {}Sanjay Mukhyala, PerfectDay Team".format("\n\n" ,"\n", goodDays, "\n", "\n\n", "\n")
+        #emailMessage = PerfectDaysFormatting(goodDays)
+        #emailMessage = "2022-10-21 00:00:00\n2022-10-21 03:00:00\n2022-10-21 06:00:00\n2022-10-21 09:00:00\n2022-10-21 12:00:00\n2022-10-21 15:00:00\n2022-10-21 18:00:00\n2022-10-21 21:00:00\n2022-10-22 00:00:00\n2022-10-22 03:00:00\n2022-10-22 06:00:00\n2022-10-22 09:00:00\n2022-10-22 12:00:00\n2022-10-22 15:00:00\n2022-10-22 18:00:00\n2022-10-22 21:00:00\n2022-10-23 00:00:00\n2022-10-23 03:00:00\n2022-10-23 06:00:00\n2022-10-23 09:00:00\n2022-10-23 12:00:00\n2022-10-23 15:00:00\n2022-10-23 18:00:00\n2022-10-23 21:00:00\n2022-10-24 00:00:00\n2022-10-24 03:00:00\n2022-10-24 06:00:00\n2022-10-24 09:00:00\n2022-10-24 12:00:00\n2022-10-24 15:00:00\n2022-10-24 18:00:00\n2022-10-24 21:00:00\n2022-10-25 00:00:00\n2022-10-25 03:00:00\n2022-10-25 06:00:00\n2022-10-25 09:00:00\n2022-10-25 12:00:00\n2022-10-25 15:00:00\n2022-10-25 18:00:00\n2022-10-25 21:00:00"
+        weatherEvaluation = "Hello there!{}Your PerfectDays are {}{}{}Thank you, {}Sanjay Mukhyala, PerfectDay Team".format("\n\n" ,"\n", PerfectDaysFormatting(goodDays), "\n", "\n\n", "\n")
         judgeWeather(activity)
         allActivities.append({'title':f"{activity['ActivityChoice']} in {activity['CityChoice']}.\nThank you, \n Sanjay Mukhyala, PerfectDay Team",'subtitle':goodDays,'icon':''})
     sendMail(weatherEvaluation)
@@ -147,6 +157,82 @@ def judgeWeather(activityData):
         #print("Our verdict is {} on {} in {}.{}".format(weatherEvaluation, forecast["dt_txt"], activityData['CityChoice'], "\n"))
 
     return goodDays
+
+def PerfectDaysFormatting(newGoodDays):
+    newGoodDays = (newGoodDays.split("\n"))
+    for time in newGoodDays:
+        #Day ending
+        if time[9] == "1":
+            time = time[:10] + "st," + time[10:]
+        elif time[9] == "2":
+            time = time[:10] + "nd," + time[10:]
+        elif time[9] == "3":
+            time = time[:10] + "rd," + time[10:]
+        else:
+            time = time[:10] + "th," + time[10:]
+
+            #AM PM
+        if time[-8] == "0":
+            time = time[:16] + ":00 am"
+        elif time[-8] == "1" and (time[-7] == "1"):
+            time = time[:16] + ":00 am"
+        elif time[-8] == "1" or time[-8] == "2":
+            time = time[:16] + ":00 pm"
+        
+            #Miltary Standard Clock            
+        if time[14] == "0" and time[15] == "0":
+            time = time[:13] + " 12" + time[16:]
+        elif time[14] == "1" and time[15] == "3":
+            time = time[:13] + " 01" + time[16:]
+        elif time[14] == "1" and time[15] == "4":
+            time = time[:13] + " 02" + time[16:]
+        elif time[14] == "1" and time[15] == "5":
+            time = time[:13] + " 03" + time[16:]
+        elif time[14] == "1" and time[15] == "6":
+            time = time[:13] + " 04" + time[16:]
+        elif time[14] == "1" and time[15] == "7":
+            time = time[:13] + " 05" + time[16:]
+        elif time[14] == "1" and time[15] == "8":
+            time = time[:13] + " 06" + time[16:]
+        elif time[14] == "1" and time[15] == "9":
+            time = time[:13] + " 07" + time[16:]
+        elif time[14] == "2" and time[15] == "0":
+            time = time[:13] + " 08" + time[16:]
+        elif time[14] == "2" and time[15] == "1":
+            time = time[:13] + " 09" + time[16:]
+        elif time[14] == "2" and time[15] == "2":
+            time = time[:13] + " 10" + time[16:]
+        elif time[14] == "2" and time[15] == "3":
+            time = time[:13] + " 11" + time[16:]
+            
+            #Month
+        if time[5] == "0" and time[6] == "1":
+            time = " January " + time[8:] + ", " + time[:4] + "."
+        elif time[5] == "0" and time[6] == "2":
+            time = " February " + time[8:] + ", " + time[:4] + "."
+        elif time[5] == "0" and time[6] == "3":
+            time = " March " + time[8:] + ", " + time[:4] + "."
+        elif time[5] == "0" and time[6] == "4":
+            time = " April " + time[8:] + ", " + time[:4] + "."
+        elif time[5] == "0" and time[6] == "5":
+            time = " May " + time[8:] + ", " + time[:4] + "."
+        elif time[5] == "0" and time[6] == "6":
+            time = " June " + time[8:] + ", " + time[:4] + "."
+        elif time[5] == "0" and time[6] == "7":
+            time = " July " + time[8:] + ", " + time[:4] + "."
+        elif time[5] == "0" and time[6] == "8":
+            time = " August " + time[8:] + ", " + time[:4] + "."
+        elif time[5] == "0" and time[6] == "9":
+            time = " September " + time[8:] + ", " + time[:4] + "."
+        elif time[5] == "1" and time[6] == "0":
+            time = " October " + time[8:] + ", " + time[:4] + "."
+        elif time[5] == "1" and time[6] == "1":
+            time = " November " + time[8:] + ", " + time[:4] + "."
+        elif time[5] == "1" and time[6] == "2":
+            time = " December " + time[8:] + ", " + time[:4] + "."
+
+        finalsubtitle.append(time)
+    return(listToString(finalsubtitle))
 
 schedule.every(20).seconds.do(job)
 #schedule.every(2).hour.do(judgeWeather(activity))
