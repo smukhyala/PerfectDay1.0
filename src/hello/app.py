@@ -4,6 +4,8 @@ import toga
 import json
 from toga.style import Pack
 from toga.style.pack import *
+from toga.colors import *
+from toga.fonts import *
 import random as ran
 import math as math
 import time as time
@@ -50,8 +52,6 @@ def kelvin_to_fahrenheit(kelvin):
     fahrenheit = (kelvin - 273.15) * (9/5) + 32
     return fahrenheit
 
-
-
 ### TOGA CREATING UI
 def build(app):
     ### Dictionary for reoccuring user defined data points (UPDATE: REMOVE)
@@ -67,7 +67,6 @@ def build(app):
     "LowHumidity": 0,
     "ActivityChoice": "nothing",
     "CityChoice": "San Francisco",
-    "Email": "smukhyala@gmail.com",
     "user_name": "Default"}
 
     ### Main content
@@ -77,7 +76,7 @@ def build(app):
 
     ### Welcome label
     welcomeLabel = toga.Label('Welcome to PerfectDay. This is a tool created to optimize your outdoor scheduling needs.\n\n')
-    welcomeLabel.style.update(width = 750, padding_left = 20, padding_bottom = 10, padding_top = 10)
+    welcomeLabel.style.update(width = 300, padding_left = 20, padding_bottom = 10, padding_top = 10)
     main_box.add(welcomeLabel)
 
 
@@ -88,7 +87,7 @@ def build(app):
     userNameChangeBox.style.update(direction = "column", padding=10, flex = 1)
 
     nameInput = toga.TextInput(placeholder = "James Alan, John Smith, etc...")
-    nameInput.style.update(width = 450, padding_left = 10)
+    nameInput.style.update(width = 300, padding_left = 10)
     def updateNameText():
         user_name = nameInput.value
         name = user_name
@@ -100,7 +99,7 @@ def build(app):
     nameLabel.style.update(padding_left = 10, padding_right = 10)
 
     emailInput = toga.TextInput(placeholder = "james.alan99@gmail.com, JohnSmith123@hotmail.com, etc...")
-    emailInput.style.update(width = 450, padding_left = 10)
+    emailInput.style.update(width = 300, padding_left = 10)
     def changeEmailFunction(widget):
         user_email = emailInput.value
         email = user_email
@@ -120,17 +119,7 @@ def build(app):
         emailInput.clear()
 
     nameEmailLabelSaveButton = toga.Button("Save", on_press = nameEmailLabelSaveFunction)
-    nameEmailLabelSaveButton.style.update(width = 200, padding_left = 10)
-    '''### Email components
-    emailInput = toga.TextInput(placeholder = "ex. john_doe@gmail.com")
-    emailInput.style.update(width = 450, padding_left = 10, padding_bottom = 10)
-    def updateEmailText():
-        email = user_email
-        data["Email"] = user_email
-        return(f'Enter your preferred email (current {user_email}):')
-    emailLabel = toga.Label(f'Enter your preferred email:', style=Pack(text_align = "left"))
-    emailLabel.style.update(padding_left = 10, padding_right = 10, padding_top = 20)
-   '''
+    nameEmailLabelSaveButton.style.update(width = 300, padding_left = 10)
 
     ### Email + User
     def changeUserFunction(widget):
@@ -146,14 +135,14 @@ def build(app):
         changeUserButton.enabled = False
         main_box.add(userNameChangeBox)
     changeUserButton = toga.Button("Change User Details", on_press = changeUserFunction)
-    changeUserButton.style.update(width = 200, padding = 10)
+    changeUserButton.style.update(width = 300, padding = 10)
 
 
 
 
     ### City components
     cityInput = toga.TextInput(placeholder = "Brooklyn, Houston, etc...")
-    cityInput.style.update(width = 450, padding_left = 10, padding_bottom = 10)
+    cityInput.style.update(width = 300, padding_left = 10, padding_bottom = 10)
     def updateCityText():
         return(f'Your current city is {user_data["CityChoice"]} (default San Francisco).\nChange your city:')
     cityLabel = toga.Label(f'Your current city is {user_data["CityChoice"]} (default San Francisco).\nChange your city:', style=Pack(text_align = "left"))
@@ -181,7 +170,7 @@ def build(app):
 
     ### Activity components
     activityInput = toga.TextInput(placeholder = "Soccer, hiking, running, picnic, etc...")
-    activityInput.style.update(width = 450, padding_left = 10, padding_bottom = 10)
+    activityInput.style.update(width = 300, padding_left = 10, padding_bottom = 10)
     activityLabel = toga.Label('Add an activity:', style=Pack(text_align = "left"))
     activityLabel.style.update(padding_left = 10, padding_right = 10, padding_top = 20)
     def activityLabelSaveFunction(widget):
@@ -198,7 +187,7 @@ def build(app):
     activityList = toga.DetailedList(
         data = data["activities"],
         on_select = selection_handler)
-    activityList.style.update(width = 450, height = 100, padding_left = 20, padding_bottom = 10)
+    activityList.style.update(width = 300, height = 300, padding_left = 20, padding_bottom = 10)
 
     ### Delete buttons
     def deleteActivitiesFunction(widget):
@@ -209,7 +198,7 @@ def build(app):
             json.dump(data, fp, indent = 4)
 
     deleteActivitiesButton = toga.Button("Delete", on_press = deleteActivitiesFunction)
-    deleteActivitiesButton.style.update(width = 150, padding_left = 10, padding_bottom = 10)
+    deleteActivitiesButton.style.update(width = 300, padding_left = 10, padding_bottom = 10)
 
     ### Uniqueness
     def activityUniqueness(activities, key):
@@ -367,7 +356,7 @@ def build(app):
         showSliderButton.enabled = True
 
     mainBlockSave = toga.Button("Save Preferences", on_press = resetSliders)
-    mainBlockSave.style.update(width = 250, padding_left = 10, padding_right = 10, padding_top = 15)
+    mainBlockSave.style.update(width = 300, padding_left = 10, padding_right = 10, padding_top = 15)
 
 
     ### Judge Weather
@@ -459,7 +448,7 @@ def build(app):
 
     verdictLabel = toga.DetailedList(
         data = allActivities)
-    verdictLabel.style.update(width = 1250, height = 500, padding_left = 10, padding_right = 10, padding_top = 10)
+    verdictLabel.style.update(width = 300, height = 300, padding_left = 10, padding_right = 10, padding_top = 10)
 
     ### Bottom-most verdict message
     main_box.add(verdictLabel)
