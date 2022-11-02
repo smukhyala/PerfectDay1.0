@@ -71,7 +71,7 @@ def job():
         goodDays = f'\n'.join(judgeWeather(activity))
         #emailMessage = PerfectDaysFormatting(goodDays)
         #emailMessage = "2022-10-21 00:00:00\n2022-10-21 03:00:00\n2022-10-21 06:00:00\n2022-10-21 09:00:00\n2022-10-21 12:00:00\n2022-10-21 15:00:00\n2022-10-21 18:00:00\n2022-10-21 21:00:00\n2022-10-22 00:00:00\n2022-10-22 03:00:00\n2022-10-22 06:00:00\n2022-10-22 09:00:00\n2022-10-22 12:00:00\n2022-10-22 15:00:00\n2022-10-22 18:00:00\n2022-10-22 21:00:00\n2022-10-23 00:00:00\n2022-10-23 03:00:00\n2022-10-23 06:00:00\n2022-10-23 09:00:00\n2022-10-23 12:00:00\n2022-10-23 15:00:00\n2022-10-23 18:00:00\n2022-10-23 21:00:00\n2022-10-24 00:00:00\n2022-10-24 03:00:00\n2022-10-24 06:00:00\n2022-10-24 09:00:00\n2022-10-24 12:00:00\n2022-10-24 15:00:00\n2022-10-24 18:00:00\n2022-10-24 21:00:00\n2022-10-25 00:00:00\n2022-10-25 03:00:00\n2022-10-25 06:00:00\n2022-10-25 09:00:00\n2022-10-25 12:00:00\n2022-10-25 15:00:00\n2022-10-25 18:00:00\n2022-10-25 21:00:00"
-        weatherEvaluation = "Hello there!{}Your PerfectDays are {}{}{}Thank you, {}Sanjay Mukhyala, PerfectDay Team".format("\n\n" ,"\n", PerfectDaysFormatting(goodDays), "\n", "\n\n", "\n")
+        weatherEvaluation = "Hello there {}!{}Your PerfectDays are {}{}{}Thank you, {}Sanjay Mukhyala, PerfectDay Team".format(data["user"], "\n\n" ,"\n", PerfectDaysFormatting(goodDays), "\n", "\n\n", "\n")
         judgeWeather(activity)
         allActivities.append({'title':f"{activity['ActivityChoice']} in {activity['CityChoice']}.\nThank you, \n Sanjay Mukhyala, PerfectDay Team",'subtitle':goodDays,'icon':''})
     sendMail(weatherEvaluation)
