@@ -93,6 +93,8 @@ def build(app):
         user_name = nameInput.value
         name = user_name
         data["user"] = user_name
+        with open("AllActivities.json", "w") as fp:
+            json.dump(data, fp, indent = 4)
         return(f'Hi {user_name}.\nChange your name:')
     nameLabel = toga.Label(f'Hi {user_name}.\nChange your name:', style=Pack(text_align = "left"))
     nameLabel.style.update(padding_left = 10, padding_right = 10)
@@ -103,6 +105,8 @@ def build(app):
         user_email = emailInput.value
         email = user_email
         data["email"] = user_email
+        with open("AllActivities.json", "w") as fp:
+            json.dump(data, fp, indent = 4)
         return(f'Change your email:')
     emailLabel = toga.Label(f'Hi {user_name}.\nChange your email:', style=Pack(text_align = "left"))
     emailLabel.style.update(padding_top = 10, padding_left = 10, padding_right = 10)
