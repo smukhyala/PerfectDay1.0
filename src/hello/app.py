@@ -1,21 +1,17 @@
 ### Imports
-from __future__ import print_function, unicode_literals, absolute_import
-import toga
-import json
-from toga.style import Pack
-from toga.style.pack import *
-from toga.colors import *
-from toga.fonts import *
 import random as ran
 import math as math
 import time as time
 import requests as req
 import datetime as dt
 import subprocess
-
-'''
-Refer to post-its
-'''
+import json
+from __future__ import print_function, unicode_literals, absolute_import
+import toga
+from toga.style import Pack
+from toga.style.pack import *
+from toga.colors import *
+from toga.fonts import *
 
 """
 PerfectDay, IOS app by Sanjay Mukhyala summer 2022.
@@ -45,7 +41,6 @@ f = open("AllActivities.json", "r")
 data = json.load(f)
 user_name = data["user"]
 user_email = "smukhyala@gmail.com"
-#print(json.dumps(data, indent=4, sort_keys=True))
 
 ### Temperature conversion
 def kelvin_to_fahrenheit(kelvin):
@@ -66,8 +61,7 @@ def build(app):
     "HighHumidity": 0,
     "LowHumidity": 0,
     "ActivityChoice": "nothing",
-    "CityChoice": "San Francisco",
-    "user_name": "Default"}
+    "CityChoice": "San Francisco"}
 
     ### Main content
     main_box = toga.Box(id = 'box', style = Pack(direction = "column"))
@@ -79,9 +73,6 @@ def build(app):
     welcomeLabel.style.update(width = 300, padding_left = 20, padding_bottom = 10, padding_top = 10)
     main_box.add(welcomeLabel)
 
-
-
-
     ### Name and Email components
     userNameChangeBox = toga.Box()
     userNameChangeBox.style.update(direction = "column", padding=10, flex = 1)
@@ -90,7 +81,6 @@ def build(app):
     nameInput.style.update(width = 300, padding_left = 10)
     def updateNameText():
         user_name = nameInput.value
-        name = user_name
         data["user"] = user_name
         with open("AllActivities.json", "w") as fp:
             json.dump(data, fp, indent = 4)
@@ -102,7 +92,6 @@ def build(app):
     emailInput.style.update(width = 300, padding_left = 10)
     def changeEmailFunction(widget):
         user_email = emailInput.value
-        email = user_email
         data["email"] = user_email
         with open("AllActivities.json", "w") as fp:
             json.dump(data, fp, indent = 4)
@@ -129,16 +118,10 @@ def build(app):
             userNameChangeBox.add(emailLabel)
             userNameChangeBox.add(emailInput)
             userNameChangeBox.add(nameEmailLabelSaveButton)
-            #userNameChangeBox.add(emailLabel)
-            #userNameChangeBox.add(emailInput)
-            #userNameChangeBox.add(emailLabelSaveButton)
         changeUserButton.enabled = False
         main_box.add(userNameChangeBox)
     changeUserButton = toga.Button("Change User Details", on_press = changeUserFunction)
     changeUserButton.style.update(width = 300, padding = 10)
-
-
-
 
     ### City components
     cityInput = toga.TextInput(placeholder = "Brooklyn, Houston, etc...")
@@ -203,7 +186,6 @@ def build(app):
     ### Uniqueness
     def activityUniqueness(activities, key):
         for blocks in activities:
-            #print(key, blocks["ActivityChoice"] + blocks["CityChoice"])
             if key == blocks["ActivityChoice"] + blocks["CityChoice"]:
                 return True
 
@@ -249,6 +231,7 @@ def build(app):
             BlockCreationBox.add(emailInput)
             BlockCreationBox.add(cityLabel)
             BlockCreationBox.add(cityInput)
+            
             ### Defining all the user criteria with sliders
             highTempLabel = toga.Label("Your highest temperature: " + str(int(0)))
             highTempLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10, padding_top = 20)
@@ -358,11 +341,8 @@ def build(app):
     mainBlockSave = toga.Button("Save Preferences", on_press = resetSliders)
     mainBlockSave.style.update(width = 300, padding_left = 10, padding_right = 10, padding_top = 15)
 
-
     ### Judge Weather
     def judgeWeather(activityData):
-        ### Intro
-        #print("We are in!")
         goodDays = []
 
         ### Counts
@@ -432,18 +412,13 @@ def build(app):
             elif goodConditionCount - badConditionCount < 1:
                 weatherEvaluation = "suboptimal, not a PerfectDay. See another day's forecast or a different location."
 
-            ### Console and assigning the label
-            #print("Our verdict is {} on {} in {}.{}".format(weatherEvaluation, forecast["dt_txt"], activityData['CityChoice'], "\n"))
-
         return goodDays
 
     allActivities = []
     for activity in data["activities"]:
-        #print(f"Calling judgeWeather on {activity['CityChoice']}")
         goodDays = ', '.join(judgeWeather(activity))
         weatherEvaluation = "Your PerfectDays are {}.{}".format(goodDays, "\n")
         allActivities.append({'title':f"{activity['ActivityChoice']} in {activity['CityChoice']}",'subtitle':goodDays,'icon':''})
-        #verdictLabel.text = verdictLabel.text + weatherEvaluation
         #print(goodDays)
 
     verdictLabel = toga.DetailedList(
