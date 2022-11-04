@@ -19,6 +19,10 @@ f = open("AllActivities.json", "r")
 data = json.load(f)
 f.close()
 
+b = open("PerfectDays.json", "r")
+dataP = json.load(b)
+b.close()
+
 finalsubtitle = []
 def listToString(s):
     str1 = ""
@@ -31,6 +35,11 @@ def getData():
     f = open("AllActivities.json", "r")
     data = json.load(f)
     return data
+
+def getDataP():
+    b = open("PerfectDays.json", "r")
+    dataP = json.load(b)
+    return dataP
 
 def fetchCityData(City):
     NewURL = BaseURL + "appid=" + OpenMainKey + "&q=" + City
@@ -66,12 +75,11 @@ def job():
     current_time = now.strftime("%H:%M:%S")
     print("Starting job at", current_time)
     grabbedData = getData()
+    grabbedDataP = getDataP()
     allActivities = []
     for activity in grabbedData["activities"]:
         goodDays = f'\n'.join(judgeWeather(activity))
-        #emailMessage = PerfectDaysFormatting(goodDays)
-        #emailMessage = "2022-10-21 00:00:00\n2022-10-21 03:00:00\n2022-10-21 06:00:00\n2022-10-21 09:00:00\n2022-10-21 12:00:00\n2022-10-21 15:00:00\n2022-10-21 18:00:00\n2022-10-21 21:00:00\n2022-10-22 00:00:00\n2022-10-22 03:00:00\n2022-10-22 06:00:00\n2022-10-22 09:00:00\n2022-10-22 12:00:00\n2022-10-22 15:00:00\n2022-10-22 18:00:00\n2022-10-22 21:00:00\n2022-10-23 00:00:00\n2022-10-23 03:00:00\n2022-10-23 06:00:00\n2022-10-23 09:00:00\n2022-10-23 12:00:00\n2022-10-23 15:00:00\n2022-10-23 18:00:00\n2022-10-23 21:00:00\n2022-10-24 00:00:00\n2022-10-24 03:00:00\n2022-10-24 06:00:00\n2022-10-24 09:00:00\n2022-10-24 12:00:00\n2022-10-24 15:00:00\n2022-10-24 18:00:00\n2022-10-24 21:00:00\n2022-10-25 00:00:00\n2022-10-25 03:00:00\n2022-10-25 06:00:00\n2022-10-25 09:00:00\n2022-10-25 12:00:00\n2022-10-25 15:00:00\n2022-10-25 18:00:00\n2022-10-25 21:00:00"
-        weatherEvaluation = "Hello there {}!{}Your PerfectDays are {}{}{}Thank you, {}Sanjay Mukhyala, PerfectDay Team".format(data["user"], "\n\n" ,"\n", PerfectDaysFormatting(goodDays), "\n", "\n\n", "\n")
+        weatherEvaluation = "Hello there {}!{}Welcome back to PerfectDay. This is a reminder about each of your upcoming PerfectDays. Your PerfectDays are {}{}{}Please contact smukhyala@gmail.com for any questions or support. Also, please leave a review and rating on your app store. Have a PerfectDay!{}Thank you, {}Sanjay Mukhyala, PerfectDay Team".format(data["user"], "\n\n" ,"\n", PerfectDaysFormatting(goodDays), "\n", "\n\n", "\n\n", "\n")
         judgeWeather(activity)
         allActivities.append({'title':f"{activity['ActivityChoice']} in {activity['CityChoice']}.\nThank you, \n Sanjay Mukhyala, PerfectDay Team",'subtitle':goodDays,'icon':''})
     sendMail(weatherEvaluation)
@@ -153,13 +161,11 @@ def judgeWeather(activityData):
         elif goodConditionCount - badConditionCount < 1:
             weatherEvaluation = "suboptimal, not a PerfectDay. See another day's forecast or a different location."
 
-        ### Console and assigning the label
-        #print("Our verdict is {} on {} in {}.{}".format(weatherEvaluation, forecast["dt_txt"], activityData['CityChoice'], "\n"))
-
     return goodDays
 
 def PerfectDaysFormatting(newGoodDays):
     newGoodDays = (newGoodDays.split("\n"))
+    grabbedDataP = getDataP()
     for time in newGoodDays:
         #Day ending
         if time[9] == "1":
@@ -231,7 +237,9 @@ def PerfectDaysFormatting(newGoodDays):
         elif time[5] == "1" and time[6] == "2":
             time = " December " + time[8:] + ", " + time[:4] + "."
 
-        finalsubtitle.append(time)
+        count = 0
+        finalsubtitle.append(time + " for " + grabbedDataP[count]["title"] + ".")
+        count += 1
     return(listToString(finalsubtitle))
 
 schedule.every(20).seconds.do(job)
