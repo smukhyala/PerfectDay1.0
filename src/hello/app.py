@@ -1,4 +1,5 @@
 ### Imports
+from __future__ import print_function, unicode_literals, absolute_import
 import random as ran
 import math as math
 import time as time
@@ -6,7 +7,6 @@ import requests as req
 import datetime as dt
 import subprocess
 import json
-from __future__ import print_function, unicode_literals, absolute_import
 import toga
 from toga.style import Pack
 from toga.style.pack import *
