@@ -227,8 +227,8 @@ def build(app):
         if (len(BlockCreationBox.children) == 0):
             BlockCreationBox.add(activityLabel)
             BlockCreationBox.add(activityInput)
-            BlockCreationBox.add(emailLabel)
-            BlockCreationBox.add(emailInput)
+            #BlockCreationBox.add(emailLabel)
+            #BlockCreationBox.add(emailInput)
             BlockCreationBox.add(cityLabel)
             BlockCreationBox.add(cityInput)
             
