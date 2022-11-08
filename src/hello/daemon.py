@@ -81,7 +81,7 @@ def job():
         goodDays = f'\n'.join(judgeWeather(activity))
         weatherEvaluation = "Hello there {}!{}Welcome back to PerfectDay. This is a reminder about each of your upcoming PerfectDays. Your PerfectDays are {}{}{}Please contact smukhyala@gmail.com for any questions or support. Also, please leave a review and rating on your app store. Have a PerfectDay!{}Thank you, {}Sanjay Mukhyala, PerfectDay Team".format(data["user"], "\n\n" ,"\n", PerfectDaysFormatting(goodDays), "\n", "\n\n", "\n\n", "\n")
         judgeWeather(activity)
-        allActivities.append({'title':f"{activity['ActivityChoice']} in {activity['CityChoice']}.\nThank you, \n Sanjay Mukhyala, PerfectDay Team",'subtitle':goodDays,'icon':''})
+        allActivities.append({'title':f"{activity['ActivityChoice']} in {activity['CityChoice']}",'subtitle':goodDays,'icon':''}) #\nThank you, \n Sanjay Mukhyala, PerfectDay Team
     sendMail(weatherEvaluation)
     #f"Welcome back to PerfectDay. This is a reminder about each of your upcoming PerfectDay\n" + json.dumps(allActivities) "\nPlease contact smukhyala@gmail.com for any questions or support. Also, please leave a review and rating on your app store. Have a PerfectDay!\n\n - PerfectDay Team")
     f = open("PerfectDays.json", "w")
