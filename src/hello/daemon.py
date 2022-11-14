@@ -59,9 +59,16 @@ def sendMail(content):
 
     # me == the sender's email address
     # you == the recipient's email address
+    f = open("AllActivities.json", "r")
+    data = json.load(f)
+    f.close()
     msg['Subject'] = 'PerfectDay'
     msg['From'] = "smukhyala@gmail.com"
-    msg['To'] = data["email"]
+    try:
+        msg['To'] = data["email"]
+    except:
+        msg['From'] = "smukhyala@gmail.com"
+        #FIX ABOVE
     #assign to variable from app.py, 25mukhyalas62@stu.smuhsd.org
 
     # Send the message via our own SMTP server.
