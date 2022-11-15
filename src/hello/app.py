@@ -69,7 +69,7 @@ def build(app):
     BlockCreationBox.style.update(direction = "column", padding=10, flex = 1)
 
     ### Welcome label
-    welcomeLabel = toga.Label('Welcome to PerfectDay. This is a tool created to optimize your outdoor scheduling needs.\n\n')
+    welcomeLabel = toga.Label('PerfectDay\nOptimize your outdoor scheduling needs.\n\n')
     welcomeLabel.style.update(width = 300, padding_left = 20, padding_bottom = 10, padding_top = 10)
     main_box.add(welcomeLabel)
 
@@ -170,7 +170,7 @@ def build(app):
     activityList = toga.DetailedList(
         data = data["activities"],
         on_select = selection_handler)
-    activityList.style.update(width = 300, height = 300, padding_left = 20, padding_bottom = 10)
+    activityList.style.update(width = 300, height = 100, padding_left = 20, padding_bottom = 10)
 
     ### Delete buttons
     def deleteActivitiesFunction(widget):
@@ -222,6 +222,30 @@ def build(app):
     main_box.add(BlockCreationBox)
     main_box.add(changeUserButton)
     #main_box.add(resultsLabel)
+   
+    ErrorLogBox = toga.Box()
+    ErrorLogBox.style.update(direction = "column", padding=10, flex = 1)
+
+    f = open("DaemonErrors.log", "r")
+    ErrorLogs = f.read()
+    f.close()
+
+    #if len(ErrorLogs) > 0:
+    ErrorLogText = toga.Label(ErrorLogs)
+    ErrorLogText.style.update(width = 300, padding = 10)
+
+    ErrorLogBox.add(ErrorLogText)
+
+    def showErrorLogFunction(widget):
+        if (len(BlockCreationBox.children) == 0):
+            ErrorLogBox.add(ErrorLogText)
+        showErrorLogButton.enabled = False
+        main_box.add(ErrorLogBox)
+    showErrorLogButton = toga.Button("Show Error Log", on_press = showErrorLogFunction)
+    showErrorLogButton.style.update(width = 300, padding = 10)
+
+    #main_box.add(showErrorLogButton)
+    
 
     def createNewActivityView(widget):
         if (len(BlockCreationBox.children) == 0):
@@ -428,6 +452,7 @@ def build(app):
     ### Bottom-most verdict message
     main_box.add(verdictLabel)
 
+    main_box.add(ErrorLogText)
     ### SCROLL CONTAINER DO NOT DELETE
     mainContainer = toga.ScrollContainer(content = main_box, horizontal = False, vertical = True)
     return mainContainer
