@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+#FIX EMAIL FORMAT ASAP
 import schedule
 import time
 import json
