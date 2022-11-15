@@ -64,19 +64,24 @@ def sendMail(content):
     f.close()
     msg['Subject'] = 'PerfectDay'
     msg['From'] = "smukhyala@gmail.com"
-    try:
-        msg['To'] = data["email"]
-    except:
-        msg['From'] = "smukhyala@gmail.com"
-        #FIX ABOVE
+    msg['To'] = data["email"]
+    #msg['From'] = "smukhyala@gmail.com"
+    #FIX ABOVE
     #assign to variable from app.py, 25mukhyalas62@stu.smuhsd.org
-
     # Send the message via our own SMTP server.
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.starttls()
-    server.login('smukhyala@gmail.com', 'vxxfqkakjrpaxykd')#random gibberish is google generated
-    server.send_message(msg)
+    
+    now = datetime.datetime.now()
+    current_time = now.strftime("%H:%M:%S")
 
+    try:   
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login('smukhyala@gmail.com', 'vxxfqkakjrpaxykd')#random gibberish is google generated
+        server.send_message(msg)
+    except:
+        with open("DaemonErrors.log", "w") as fp:
+            fp.write("Email error at " + current_time + ".")
+            fp.close()
 def job():
     now = datetime.datetime.now()
     current_time = now.strftime("%H:%M:%S")
@@ -249,7 +254,7 @@ def PerfectDaysFormatting(newGoodDays):
         count += 1
     return(listToString(finalsubtitle))
 
-schedule.every(20).seconds.do(job)
+schedule.every(10).seconds.do(job)
 #schedule.every(2).hour.do(judgeWeather(activity))
 #schedule.every().day.at("10:30").do(judgeWeather(activity))
 #schedule.every().monday.do(judgeWeather(activity))
