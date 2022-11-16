@@ -91,6 +91,7 @@ def job():
     grabbedDataP = getDataP()
     allActivities = []
     for activity in grabbedData["activities"]:
+        print("ok")
         goodDays = f'\n'.join(judgeWeather(activity))
         weatherEvaluation = "Hello there {}!{}Welcome back to PerfectDay. This is a reminder about each of your upcoming PerfectDays. Your PerfectDays are {}{}{}Please contact smukhyala@gmail.com for any questions or support. Also, please leave a review and rating on your app store. Have a PerfectDay!{}Thank you, {}Sanjay Mukhyala, PerfectDay Team".format(data["user"], "\n\n" ,"\n", PerfectDaysFormatting(goodDays), "\n", "\n\n", "\n\n", "\n")
         judgeWeather(activity)
@@ -226,32 +227,32 @@ def PerfectDaysFormatting(newGoodDays):
             
             #Month
         if time[5] == "0" and time[6] == "1":
-            time = " January " + time[8:] + ", " + time[:4] + "."
+            time = " January " + time[8:] + ", " + time[:4]
         elif time[5] == "0" and time[6] == "2":
-            time = " February " + time[8:] + ", " + time[:4] + "."
+            time = " February " + time[8:] + ", " + time[:4]
         elif time[5] == "0" and time[6] == "3":
-            time = " March " + time[8:] + ", " + time[:4] + "."
+            time = " March " + time[8:] + ", " + time[:4]
         elif time[5] == "0" and time[6] == "4":
-            time = " April " + time[8:] + ", " + time[:4] + "."
+            time = " April " + time[8:] + ", " + time[:4]
         elif time[5] == "0" and time[6] == "5":
-            time = " May " + time[8:] + ", " + time[:4] + "."
+            time = " May " + time[8:] + ", " + time[:4]
         elif time[5] == "0" and time[6] == "6":
-            time = " June " + time[8:] + ", " + time[:4] + "."
+            time = " June " + time[8:] + ", " + time[:4]
         elif time[5] == "0" and time[6] == "7":
-            time = " July " + time[8:] + ", " + time[:4] + "."
+            time = " July " + time[8:] + ", " + time[:4]
         elif time[5] == "0" and time[6] == "8":
-            time = " August " + time[8:] + ", " + time[:4] + "."
+            time = " August " + time[8:] + ", " + time[:4]
         elif time[5] == "0" and time[6] == "9":
-            time = " September " + time[8:] + ", " + time[:4] + "."
+            time = " September " + time[8:] + ", " + time[:4]
         elif time[5] == "1" and time[6] == "0":
-            time = " October " + time[8:] + ", " + time[:4] + "."
+            time = " October " + time[8:] + ", " + time[:4]
         elif time[5] == "1" and time[6] == "1":
-            time = " November " + time[8:] + ", " + time[:4] + "."
+            time = " November " + time[8:] + ", " + time[:4]
         elif time[5] == "1" and time[6] == "2":
-            time = " December " + time[8:] + ", " + time[:4] + "."
+            time = " December " + time[8:] + ", " + time[:4]
 
         count = 0
-        finalsubtitle.append(time + " for " + grabbedDataP[count]["title"] + ".")
+        finalsubtitle.append(time + " for " + getDataP[count]["title"] + ".")
         count += 1
     return(listToString(finalsubtitle))
 
