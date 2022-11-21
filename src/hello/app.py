@@ -1,4 +1,5 @@
 ### Imports
+# Try and except for email as well as city location, locate .com 
 from __future__ import print_function, unicode_literals, absolute_import
 import random as ran
 import math as math
