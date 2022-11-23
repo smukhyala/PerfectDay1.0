@@ -91,6 +91,7 @@ def job():
     grabbedDataP = getDataP()
     allActivities = []
     for activity in grabbedData["activities"]:
+    #Here: this forloop doesnt do what it needs to do
         print("ok")
         goodDays = f'\n'.join(judgeWeather(activity))
         weatherEvaluation = "Hello there {}!{}Welcome back to PerfectDay. This is a reminder about each of your upcoming PerfectDays. Your PerfectDays are {}{}{}Please contact smukhyala@gmail.com for any questions or support. Also, please leave a review and rating on your app store. Have a PerfectDay!{}Thank you, {}Sanjay Mukhyala, PerfectDay Team".format(data["user"], "\n\n" ,"\n", PerfectDaysFormatting(goodDays), "\n", "\n\n", "\n\n", "\n")
