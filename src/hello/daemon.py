@@ -114,10 +114,22 @@ def judgeWeather(activityData):
     badConditionCount = 0
 
     ### Using fetch and weather data
+    #weatherData = fetchCityData(activityData["CityChoice"])
+    now = datetime.datetime.now()
+    current_time = now.strftime("%H:%M:%S")
+    '''
+    try:
+        weatherData = fetchCityData(activityData["CityChoice"])
+    except:
+        weatherData = fetchCityData("San Francisco")
+        with open("DaemonErrors.log", "w") as fp:
+            fp.write("City error at " + current_time + ".")
+            fp.close()
+    '''
     weatherData = fetchCityData(activityData["CityChoice"])
 
     ### Defining and sorting through the dictionary values
-    for forecast in weatherData['list']:
+    for forecast in weatherData['list']:#list
         temp_kelvin = forecast['main']['temp']
         low_temp_kelvin = forecast['main']['temp_min']
         high_temp_kelvin = forecast['main']['temp_max']
@@ -253,7 +265,7 @@ def PerfectDaysFormatting(newGoodDays):
             time = " December " + time[8:] + ", " + time[:4]
 
         count = 0
-        finalsubtitle.append(time + " for " + getDataP[count]["title"] + ".")
+        finalsubtitle.append(time + " for " + grabbedDataP[count]["title"] + ".")
         count += 1
     return(listToString(finalsubtitle))
 
