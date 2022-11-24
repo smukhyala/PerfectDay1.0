@@ -144,6 +144,10 @@ def build(app):
             f"The wind speed in {City}: {wind_speed} m/s.\n"+
             f"The general weather in {City} is {description}.")
     '''
+
+    now = dt.datetime.now()
+    current_time = now.strftime("%H:%M:%S")
+
     def cityLabelToResultsTextSaveFunction(widget):
         if cityInput.value != "":
             user_data["CityChoice"] = cityInput.value
@@ -152,6 +156,9 @@ def build(app):
             weatherData = fetchCityData(user_data["CityChoice"])
         except:
             weatherData = fetchCityData("San Francisco")
+            with open("DaemonErrors.log", "w") as fp:
+                fp.write("City error at " + current_time + ". Using San Francisco.")
+                fp.close()
         cityLabel.text = updateCityText()
         cityInput.clear()
 
@@ -380,13 +387,7 @@ def build(app):
 
 
         ### Using fetch and weather data
-        try:
-            weatherData = fetchCityData(activityData["CityChoice"])
-        except:
-            weatherData = fetchCityData("San Francisco")
-            with open("DaemonErrors.log", "w") as fp:
-                fp.write("City error at " + current_time + ".")
-                fp.close()
+        weatherData = fetchCityData(activityData["CityChoice"])
 
         ### Defining and sorting through the dictionary values
         for forecast in weatherData['list']:
