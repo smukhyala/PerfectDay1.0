@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 #FIX EMAIL FORMAT ASAP
 import schedule
+import pprint
 import time
 import json
 import requests as req
@@ -24,7 +25,6 @@ b = open("PerfectDays.json", "r")
 dataP = json.load(b)
 b.close()
 
-finalsubtitle = []
 def listToString(s):
     str1 = ""
     for ele in s:
@@ -80,8 +80,8 @@ def sendMail(content):
         server.login('smukhyala@gmail.com', 'vxxfqkakjrpaxykd')#random gibberish is google generated
         server.send_message(msg)
     except:
-        with open("DaemonErrors.log", "w") as fp:
-            fp.write("Email error at " + current_time + ".")
+        with open("DaemonErrors.log", "a") as fp:
+            fp.write("\nEmail error at " + current_time + ".")
             fp.close()
 def job():
     now = datetime.datetime.now()
@@ -90,14 +90,25 @@ def job():
     grabbedData = getData()
     grabbedDataP = getDataP()
     allActivities = []
+    weatherEvaluation = []
+    messageHeader = "Hello there " + data["user"] + "!\nWelcome back to PerfectDay. This is a reminder about each of your upcoming PerfectDays. Your PerfectDays are \n"
+    messageFooter = "\n\nPlease contact smukhyala@gmail.com for any questions or support. Also, please leave a review and rating on your app store. Have a PerfectDay!\n\nThank you, \nSanjay Mukhyala, PerfectDay Team"
     for activity in grabbedData["activities"]:
     #Here: this forloop doesnt do what it needs to do
-        print("ok")
-        goodDays = f'\n'.join(judgeWeather(activity))
-        weatherEvaluation = "Hello there {}!{}Welcome back to PerfectDay. This is a reminder about each of your upcoming PerfectDays. Your PerfectDays are {}{}{}Please contact smukhyala@gmail.com for any questions or support. Also, please leave a review and rating on your app store. Have a PerfectDay!{}Thank you, {}Sanjay Mukhyala, PerfectDay Team".format(data["user"], "\n\n" ,"\n", PerfectDaysFormatting(goodDays), "\n", "\n\n", "\n\n", "\n")
-        judgeWeather(activity)
-        allActivities.append({'title':f"{activity['ActivityChoice']} in {activity['CityChoice']}",'subtitle':goodDays,'icon':''}) #\nThank you, \n Sanjay Mukhyala, PerfectDay Team
-    sendMail(weatherEvaluation)
+        try:
+            goodDays = f'\n'.join(judgeWeather(activity))
+            print(goodDays)
+            weatherEvaluation.append(PerfectDaysFormatting(goodDays, activity["subtitle"]))
+            allActivities.append({'title':f"{activity['ActivityChoice']} in {activity['CityChoice']}",'subtitle':goodDays,'icon':''}) #\nThank you, \n Sanjay Mukhyala, PerfectDay Team
+            #weatherEvaluation = weatherEvaluation + PerfectDaysFormatting(goodDays)
+        except Exception as e:
+            weatherEvaluation = "Went bad"
+            with open("DaemonErrors.log", "a") as fp:
+                fp.write("\nCity error at " + current_time + ".")
+                fp.close()
+
+    finalmessage = messageHeader + '\n'.join(weatherEvaluation) + messageFooter
+    sendMail(finalmessage)
     #f"Welcome back to PerfectDay. This is a reminder about each of your upcoming PerfectDay\n" + json.dumps(allActivities) "\nPlease contact smukhyala@gmail.com for any questions or support. Also, please leave a review and rating on your app store. Have a PerfectDay!\n\n - PerfectDay Team")
     f = open("PerfectDays.json", "w")
     json.dump(allActivities, f, indent = 4)
@@ -127,9 +138,10 @@ def judgeWeather(activityData):
             fp.close()
     '''
     weatherData = fetchCityData(activityData["CityChoice"])
-
+    pp = pprint.PrettyPrinter(indent=4)
+   
     ### Defining and sorting through the dictionary values
-    for forecast in weatherData['list']:#list
+    for forecast in weatherData['list']:
         temp_kelvin = forecast['main']['temp']
         low_temp_kelvin = forecast['main']['temp_min']
         high_temp_kelvin = forecast['main']['temp_max']
@@ -180,17 +192,17 @@ def judgeWeather(activityData):
         ### Determining the final verdict
         if goodConditionCount - badConditionCount >= 3:
             weatherEvaluation = "optimal! What a PerfectDay!"
-            goodDays.append(f"{forecast['dt_txt']}")
+            goodDays.append(forecast['dt_txt'])
         elif goodConditionCount - badConditionCount == 2:
             weatherEvaluation = "decent, almost a PerfectDay."
         elif goodConditionCount - badConditionCount == 1:
             weatherEvaluation = "viable, somewhat a PerfectDay."
         elif goodConditionCount - badConditionCount < 1:
             weatherEvaluation = "suboptimal, not a PerfectDay. See another day's forecast or a different location."
-
     return goodDays
 
-def PerfectDaysFormatting(newGoodDays):
+def PerfectDaysFormatting(newGoodDays, City):
+    finalsubtitle = []
     newGoodDays = (newGoodDays.split("\n"))
     grabbedDataP = getDataP()
     for time in newGoodDays:
@@ -264,10 +276,9 @@ def PerfectDaysFormatting(newGoodDays):
         elif time[5] == "1" and time[6] == "2":
             time = " December " + time[8:] + ", " + time[:4]
 
-        count = 0
-        finalsubtitle.append(time + " for " + grabbedDataP[count]["title"] + ".")
-        count += 1
-    return(listToString(finalsubtitle))
+        finalsubtitle.append(time + " for " + City + ".")
+    
+    return("\n".join(finalsubtitle))
 
 schedule.every(10).seconds.do(job)
 #schedule.every(2).hour.do(judgeWeather(activity))
