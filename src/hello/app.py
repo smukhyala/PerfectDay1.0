@@ -148,7 +148,10 @@ def build(app):
         if cityInput.value != "":
             user_data["CityChoice"] = cityInput.value
         user_data["subtitle"] = user_data["CityChoice"]
-        weatherData = fetchCityData(user_data["CityChoice"])
+        try:
+            weatherData = fetchCityData(user_data["CityChoice"])
+        except:
+            weatherData = fetchCityData("San Francisco")
         cityLabel.text = updateCityText()
         cityInput.clear()
 
@@ -370,12 +373,20 @@ def build(app):
     def judgeWeather(activityData):
         goodDays = []
 
-        ### Counts
+        now = dt.datetime.now()
+        current_time = now.strftime("%H:%M:%S")
         goodConditionCount = 0
         badConditionCount = 0
 
+
         ### Using fetch and weather data
-        weatherData = fetchCityData(activityData["CityChoice"])
+        try:
+            weatherData = fetchCityData(activityData["CityChoice"])
+        except:
+            weatherData = fetchCityData("San Francisco")
+            with open("DaemonErrors.log", "w") as fp:
+                fp.write("City error at " + current_time + ".")
+                fp.close()
 
         ### Defining and sorting through the dictionary values
         for forecast in weatherData['list']:
