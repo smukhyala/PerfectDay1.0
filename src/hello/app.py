@@ -388,7 +388,6 @@ def build(app):
 
         ### Using fetch and weather data
         weatherData = fetchCityData(activityData["CityChoice"])
-
         ### Defining and sorting through the dictionary values
         for forecast in weatherData['list']:
             temp_kelvin = forecast['main']['temp']
@@ -453,10 +452,15 @@ def build(app):
 
     allActivities = []
     for activity in data["activities"]:
-        goodDays = ', '.join(judgeWeather(activity))
-        weatherEvaluation = "Your PerfectDays are {}.{}".format(goodDays, "\n")
-        allActivities.append({'title':f"{activity['ActivityChoice']} in {activity['CityChoice']}",'subtitle':goodDays,'icon':''})
-        #print(goodDays)
+        try:
+            goodDays = ', '.join(judgeWeather(activity))
+            weatherEvaluation = "Your PerfectDays are {}.{}".format(goodDays, "\n")
+            allActivities.append({'title':f"{activity['ActivityChoice']} in {activity['CityChoice']}",'subtitle':goodDays,'icon':''})
+        except Exception as e:
+            with open("DaemonErrors.log", "a") as fp:
+                fp.write("City error at " + current_time + ". Using San Francisco.")
+                fp.close()
+            #print(goodDays)
 
     verdictLabel = toga.DetailedList(
         data = allActivities)
