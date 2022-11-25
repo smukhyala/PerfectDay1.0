@@ -98,7 +98,7 @@ def job():
         try:
             goodDays = f'\n'.join(judgeWeather(activity))
             print(goodDays)
-            weatherEvaluation.append(PerfectDaysFormatting(goodDays, activity["subtitle"]))
+            weatherEvaluation.append(PerfectDaysFormatting(goodDays, activity["title"], activity["subtitle"]))
             allActivities.append({'title':f"{activity['ActivityChoice']} in {activity['CityChoice']}",'subtitle':goodDays,'icon':''}) #\nThank you, \n Sanjay Mukhyala, PerfectDay Team
             #weatherEvaluation = weatherEvaluation + PerfectDaysFormatting(goodDays)
         except Exception as e:
@@ -201,7 +201,7 @@ def judgeWeather(activityData):
             weatherEvaluation = "suboptimal, not a PerfectDay. See another day's forecast or a different location."
     return goodDays
 
-def PerfectDaysFormatting(newGoodDays, City):
+def PerfectDaysFormatting(newGoodDays, City, Activity):
     finalsubtitle = []
     newGoodDays = (newGoodDays.split("\n"))
     grabbedDataP = getDataP()
@@ -276,7 +276,7 @@ def PerfectDaysFormatting(newGoodDays, City):
         elif time[5] == "1" and time[6] == "2":
             time = " December " + time[8:] + ", " + time[:4]
 
-        finalsubtitle.append(time + " for " + City + ".")
+        finalsubtitle.append(time + " for " + Activity + " in " + City + ".")
     
     return("\n".join(finalsubtitle))
 
