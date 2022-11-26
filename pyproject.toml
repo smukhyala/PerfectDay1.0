@@ -6,6 +6,7 @@ url = "https://example.com/hello"
 license = "BSD license"
 author = 'Jane Developer'
 author_email = "jane@example.com"
+include-package-data = true
 
 [tool.briefcase.app.hello]
 formal_name = "hello"
@@ -51,3 +52,6 @@ requires = [
 requires = [
     'toga-android>=0.3.0.dev34'
 ]
+
+[tool.briefcase.package-data]
+hello = ["AllActivities.json"]
