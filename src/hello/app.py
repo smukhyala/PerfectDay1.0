@@ -4,6 +4,7 @@ import math as math
 import time as time
 import requests as req
 import datetime as dt
+from threading import *
 import subprocess
 import json
 import toga
@@ -11,13 +12,24 @@ from toga.style import Pack
 from toga.style.pack import *
 from toga.colors import *
 from toga.fonts import *
+import tempfile
+from os.path import exists
+
+dirpath = tempfile.mkdtemp()
+file_exists = exists(dirpath + "AllActivities.json")
 
 """
 PerfectDay, IOS app by Sanjay Mukhyala 2022.
 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
 """
 
-daemonLog = subprocess.Popen(["python", "src/hello/daemon.py"], close_fds = True)
+def hello():
+    print("hello, world")
+
+t = Timer(30.0, hello)
+t.start()
+
+#daemonLog = subprocess.Popen(["python", "src/hello/daemon.py"], close_fds = True)
 
 user_name = "Default"
 goodConditionCount = 0
@@ -34,8 +46,18 @@ def fetchCityData(City):
     return(APIRequest)
 
 ### Open and read the file after the appending
-f = open("AllActivities.json", "r")
-data = json.load(f)
+dirname = tempfile.TemporaryDirectory()
+print(dirpath)
+#
+if file_exists:
+    f = open(dirpath + "AllActivities.json", "r")
+    data = json.load(f)
+else:
+    data = {
+        "user": "Person",
+        "email": "smukhyala@gmail.com",
+        "activities": []
+    }
 user_name = data["user"]
 user_email = "smukhyala@gmail.com"
 
@@ -78,7 +100,7 @@ def build(app):
     def updateNameText():
         user_name = nameInput.value
         data["user"] = user_name
-        with open("AllActivities.json", "w") as fp:
+        with open(dirpath + "AllActivities.json", "w") as fp:
             json.dump(data, fp, indent = 4)
         return(f'Hi {user_name}.\nChange your name:')
     nameLabel = toga.Label(f'Hi {user_name}.\nChange your name:', style=Pack(text_align = "left"))
@@ -89,7 +111,7 @@ def build(app):
     def changeEmailFunction(widget):
         user_email = emailInput.value
         data["email"] = user_email
-        with open("AllActivities.json", "w") as fp:
+        with open(dirpath + "AllActivities.json", "w") as fp:
             json.dump(data, fp, indent = 4)
         return(f'Change your email:')
     emailLabel = toga.Label(f'Hi {user_name}.\nChange your email:', style=Pack(text_align = "left"))
@@ -161,7 +183,7 @@ def build(app):
     def deleteActivitiesFunction(widget):
         data["activities"].pop(deleteNum)
         activityList.data = data["activities"]
-        with open("AllActivities.json", "w") as fp:
+        with open(dirpath + "AllActivities.json", "w") as fp:
             json.dump(data, fp, indent = 4)
 
     deleteActivitiesButton = toga.Button("Delete", on_press = deleteActivitiesFunction)
@@ -180,14 +202,14 @@ def build(app):
         cityLabelToResultsTextSaveFunction(widget)
 
         ### Open and append the file
-        f = open("AllActivities.json", "r")
+        f = open(dirpath + "AllActivities.json", "r")
         data = json.load(f)
         f.close()
         neededKey = user_data["ActivityChoice"] + user_data["CityChoice"]
 
         ### Checking uniqueness
         if(not(activityUniqueness(data["activities"], neededKey))):
-            with open("AllActivities.json", "w") as fp:
+            with open(dirpath + "AllActivities.json", "w") as fp:
                 data["activities"].append(user_data)
                 json.dump(data, fp, indent = 4)
                 activityList.data = data["activities"]
@@ -208,9 +230,13 @@ def build(app):
     ErrorLogBox = toga.Box()
     ErrorLogBox.style.update(direction = "column", padding=10, flex = 1)
 
-    f = open("DaemonErrors.log", "r")
-    ErrorLogs = f.read()
-    f.close()
+    file_exists_log = exists(dirpath + "DaemonErrors.log")
+    if file_exists_log:
+        f = open(dirpath + "DaemonErrors.log", "r")
+        ErrorLogs = f.read()
+        f.close()
+    else:
+        ErrorLogs = ""
 
     ErrorLogText = toga.Label(ErrorLogs)
     ErrorLogText.style.update(width = 300, padding = 10)
