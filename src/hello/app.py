@@ -1,5 +1,3 @@
-### Imports
-# Try and except for email as well as city location, locate .com 
 from __future__ import print_function, unicode_literals, absolute_import
 import random as ran
 import math as math
@@ -15,13 +13,12 @@ from toga.colors import *
 from toga.fonts import *
 
 """
-PerfectDay, IOS app by Sanjay Mukhyala summer 2022.
+PerfectDay, IOS app by Sanjay Mukhyala 2022.
 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
 """
 
 daemonLog = subprocess.Popen(["python", "src/hello/daemon.py"], close_fds = True)
 
-### Convenient globals
 user_name = "Default"
 goodConditionCount = 0
 badConditionCount = 0
@@ -34,7 +31,6 @@ OpenMainKey = "b12c5e04c89021d40208a84f66ebd3bb"
 def fetchCityData(City):
     NewURL = BaseURL + "appid=" + OpenMainKey + "&q=" + City
     APIRequest = req.get(NewURL).json()
-    #print(APIRequest)
     return(APIRequest)
 
 ### Open and read the file after the appending
@@ -43,7 +39,6 @@ data = json.load(f)
 user_name = data["user"]
 user_email = "smukhyala@gmail.com"
 
-### Temperature conversion
 def kelvin_to_fahrenheit(kelvin):
     fahrenheit = (kelvin - 273.15) * (9/5) + 32
     return fahrenheit
@@ -132,19 +127,6 @@ def build(app):
     cityLabel = toga.Label(f'Your current city is {user_data["CityChoice"]} (default San Francisco).\nChange your city:', style=Pack(text_align = "left"))
     cityLabel.style.update(padding_left = 10, padding_right = 10, padding_top = 20)
 
-    ### Results components
-    '''
-    def updateResultsText(weatherData):
-        City = user_data["CityChoice"]
-        return(f"Weather Results:\n\nThe temperature in {City}: {temp_fahrenheit:.2f} degrees Fahrenheit.\n" +
-            f"The temperature in {City} feels like: {feels_fahrenheit:.2f} degrees Fahrenheit.\n" +
-            f"The lowest temperature in {City}: {low_temp_fahrenheit:.2f} degrees Fahrenheit.\n" +
-            f"The highest temperature in {City}: {high_temp_fahrenheit:.2f} degrees Fahrenheit.\n" +
-            f"The humidity in {City}: {humidity}%.\n" +
-            f"The wind speed in {City}: {wind_speed} m/s.\n"+
-            f"The general weather in {City} is {description}.")
-    '''
-
     now = dt.datetime.now()
     current_time = now.strftime("%H:%M:%S")
 
@@ -152,13 +134,6 @@ def build(app):
         if cityInput.value != "":
             user_data["CityChoice"] = cityInput.value
         user_data["subtitle"] = user_data["CityChoice"]
-        try:
-            weatherData = fetchCityData(user_data["CityChoice"])
-        except:
-            weatherData = fetchCityData("San Francisco")
-            with open("DaemonErrors.log", "w") as fp:
-                fp.write("City error at " + current_time + ". Using San Francisco.")
-                fp.close()
         cityLabel.text = updateCityText()
         cityInput.clear()
 
@@ -175,7 +150,6 @@ def build(app):
     ### Acivity detailed list handling
     deleteNum = 0
     def selection_handler(widget, row):
-        #print('Row {} of widget {} was selected.'.format(row, widget))
         deleteNum = row
         return row
     activityList = toga.DetailedList(
@@ -185,7 +159,6 @@ def build(app):
 
     ### Delete buttons
     def deleteActivitiesFunction(widget):
-        #print(f"Activity: {activityList.selection.ActivityChoice}. | City: {activityList.selection.CityChoice}.")
         data["activities"].pop(deleteNum)
         activityList.data = data["activities"]
         with open("AllActivities.json", "w") as fp:
@@ -223,7 +196,6 @@ def build(app):
             uniqueErrorLabel.style.update(padding = 100)
             uniqueErrorWindow = toga.Window()
             uniqueErrorWindow.app = toga.App('Hello', 'org.SanjayMukhyala.PerfectDay', startup = build)
-            #uniqueErrorWindow.confirm_dialog(title = "Activity Error", message = "Try again, you have entered the same combination of city and activity.", on_result = None)
             uniqueErrorWindow.content = uniqueErrorLabel
             uniqueErrorWindow.show()
 
@@ -232,7 +204,6 @@ def build(app):
     main_box.add(deleteActivitiesButton)
     main_box.add(BlockCreationBox)
     main_box.add(changeUserButton)
-    #main_box.add(resultsLabel)
    
     ErrorLogBox = toga.Box()
     ErrorLogBox.style.update(direction = "column", padding=10, flex = 1)
@@ -241,10 +212,8 @@ def build(app):
     ErrorLogs = f.read()
     f.close()
 
-    #if len(ErrorLogs) > 0:
     ErrorLogText = toga.Label(ErrorLogs)
     ErrorLogText.style.update(width = 300, padding = 10)
-
     ErrorLogBox.add(ErrorLogText)
 
     def showErrorLogFunction(widget):
@@ -255,15 +224,10 @@ def build(app):
     showErrorLogButton = toga.Button("Show Error Log", on_press = showErrorLogFunction)
     showErrorLogButton.style.update(width = 300, padding = 10)
 
-    #main_box.add(showErrorLogButton)
-    
-
     def createNewActivityView(widget):
         if (len(BlockCreationBox.children) == 0):
             BlockCreationBox.add(activityLabel)
             BlockCreationBox.add(activityInput)
-            #BlockCreationBox.add(emailLabel)
-            #BlockCreationBox.add(emailInput)
             BlockCreationBox.add(cityLabel)
             BlockCreationBox.add(cityInput)
             
@@ -379,12 +343,9 @@ def build(app):
     ### Judge Weather
     def judgeWeather(activityData):
         goodDays = []
-
-        now = dt.datetime.now()
-        current_time = now.strftime("%H:%M:%S")
+        
         goodConditionCount = 0
         badConditionCount = 0
-
 
         ### Using fetch and weather data
         weatherData = fetchCityData(activityData["CityChoice"])
@@ -460,7 +421,6 @@ def build(app):
             with open("DaemonErrors.log", "a") as fp:
                 fp.write("City error at " + current_time + ". Using San Francisco.")
                 fp.close()
-            #print(goodDays)
 
     verdictLabel = toga.DetailedList(
         data = allActivities)
