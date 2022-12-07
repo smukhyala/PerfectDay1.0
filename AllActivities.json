@@ -1,6 +1,6 @@
 {
     "user": "None",
-    "email": "25mukhyalas62@stu.smuhsd.org",
+    "email": "smukhyala@gmail.com",
     "activities": [
         {
             "title": "EmailTestingOct11",
@@ -18,7 +18,7 @@
         },
         {
             "title": "10/19/22",
-            "subtitle": "Houston",
+            "subtitle": "Brooklyn",
             "icon": "",
             "HighTemp": 91.00000262260437,
             "LowTemp": 0.0,
@@ -27,7 +27,7 @@
             "HighHumidity": 87.00000047683716,
             "LowHumidity": 11.999999731779099,
             "ActivityChoice": "10/19/22",
-            "CityChoice": "Houston",
+            "CityChoice": "Brooklyn",
             "user_name": "Default"
         },
         {
