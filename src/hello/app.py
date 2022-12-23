@@ -66,7 +66,7 @@ def kelvin_to_fahrenheit(kelvin):
     return fahrenheit
 
 ### TOGA CREATING UI
-def build(app):
+def build():
     ### Dictionary for reoccuring user defined data points (UPDATE: REMOVE)
     user_data = {
     "title": "",
@@ -458,10 +458,57 @@ def build(app):
     main_box.add(ErrorLogText)
     ### SCROLL CONTAINER DO NOT DELETE
     mainContainer = toga.ScrollContainer(content = main_box, horizontal = False, vertical = True)
+
+    #mainWindow = toga.MainWindow(title = "Perfect Day")
     return mainContainer
+
+class DemoApp(toga.App):
+    main_box = None
+
+    def startup(self):
+        self.main_window = toga.MainWindow(title="PerfectDay")
+        self.box = toga.Box()
+        #box = self.build_main_content()
+        self.container = toga.ScrollContainer()
+        container = build()
+        self.container.add(container)
+        self.main_window.content = build()
+        #self.box.add(box)
+        #self.main_window.content = self.box
+        self.main_window.show()
+        
+        #self.main_window.show()
+
+    def build_main_content (self):
+        box = toga.Box(style=Pack(direction=COLUMN))
+        label = toga.Label("This is the main screen")
+        box.add(label)
+        button = toga.Button("Go to screen 1", on_press=self.handle_btn_goto1)
+        box.add(button)
+        return box
+
+    def build_screen1_content(self):
+        box = toga.Box(style=Pack(direction=COLUMN))
+        label = toga.Label("This is screen 1")
+        box.add(label)
+        button = toga.Button("Go back to main", on_press=self.handle_btn_goto_main)
+        box.add(button)
+        return box
+
+    def handle_btn_goto1(self, widget):
+        box = self.build_screen1_content()
+#        self.main_window.content = box
+        self.box.remove(self.box.children[0])
+        self.box.add(box)
+
+    def handle_btn_goto_main(self, widget):
+        box = self.build_main_content()
+#        self.main_window.content = box
+        self.box.remove(self.box.children[0])
+        self.box.add(box)
+
 
 ### Toga running main function + setup
 def main():
-    return toga.App('Hello', 'org.SanjayMukhyala.PerfectDay', startup = build)
-if __name__ == '__main__':
-    main().main_loop()
+    #return toga.App('Hello', 'org.SanjayMukhyala.PerfectDay', startup = build)
+    return DemoApp()
