@@ -86,11 +86,6 @@ def build():
     BlockCreationBox = toga.Box()
     BlockCreationBox.style.update(direction = "column", padding=10, flex = 1)
 
-    ### Welcome label
-    welcomeLabel = toga.Label('PerfectDay\nOptimize your outdoor scheduling needs.\n\n')
-    welcomeLabel.style.update(width = 300, padding_left = 20, padding_bottom = 10, padding_top = 10)
-    main_box.add(welcomeLabel)
-
     ### Name and Email components
     userNameChangeBox = toga.Box()
     userNameChangeBox.style.update(direction = "column", padding=10, flex = 1)
@@ -483,15 +478,120 @@ class DemoApp(toga.App):
         box = toga.Box(style=Pack(direction=COLUMN))
         ### Welcome label
         label = toga.Label('PerfectDay\nOptimize your outdoor scheduling needs.\n\n')
-        label.style.update(width = 300, padding_left = 20, padding_bottom = 10, padding_top = 10)
+        label.style.update(width = 300, padding = 10)
         box.add(label)
         button = toga.Button("Go to activity maker", on_press=self.handle_btn_goto_Activity)
         box.add(button)
         return box
 
     def ActivityMakerPage (self):
+        user_data = {
+        "title": "",
+        "subtitle": "",
+        "icon": "",
+        "HighTemp": 0,
+        "LowTemp": 0,
+        "HighWind": 0,
+        "LowWind": 0,
+        "HighHumidity": 0,
+        "LowHumidity": 0,
+        "ActivityChoice": "nothing",
+        "CityChoice": "San Francisco"}
+
         box = toga.Box()
         box.style.update(direction = "column", padding=10, flex = 1)
+
+     ### Defining all the user criteria with sliders
+        highTempLabel = toga.Label("Your highest temperature: " + str(int(0)))
+        highTempLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10, padding_top = 20)
+
+        def highTempSliderFunction(widget):
+            user_data["HighTemp"] = widget.value*100
+            highTempLabel.text = "Your highest temperature: " + str(int(widget.value*100))
+
+        highTempSlider = toga.Slider(on_change = highTempSliderFunction)
+        highTempSlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10)
+        highTempSlider.tick_count = 101
+        highTempSlider.value = 0.0
+
+        box.add(highTempLabel)
+        box.add(highTempSlider)
+
+        lowTempLabel = toga.Label("Your lowest temperature: " + str(int(0)))
+        lowTempLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
+
+        def lowTempSliderFunction(widget):
+            user_data["LowTemp"] = widget.value*100
+            lowTempLabel.text = "Your lowest temperature: " + str(int(widget.value*100))
+
+        lowTempSlider = toga.Slider(on_change = lowTempSliderFunction)
+        lowTempSlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10)
+        lowTempSlider.tick_count = 101
+        lowTempSlider.value = 0.0
+
+       # box.add(lowTempLabel)
+       # box.add(lowTempSlider)
+
+        highWindLabel = toga.Label("Your highest wind speed (m/s): " + str(int(0)))
+        highWindLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
+
+        def highWindSliderFunction(widget):
+            user_data["HighWind"] = widget.value*100
+            highWindLabel.text = "Your highest wind speed (m/s): " + str(int(widget.value*100))
+
+        highWindSlider = toga.Slider(on_change = highWindSliderFunction)
+        highWindSlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10)
+        highWindSlider.tick_count = 101
+        highWindSlider.value = 0.0
+
+        box.add(highWindLabel)
+        box.add(highWindSlider)
+
+        lowWindLabel = toga.Label("Your lowest wind speed (m/s): " + str(int(0)))
+        lowWindLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
+
+        def lowWindSliderFunction(widget):
+            user_data["LowWind"] = widget.value*100
+            lowWindLabel.text = "Your lowest wind speed (m/s): " + str(int(widget.value*100))
+
+        lowWindSlider = toga.Slider(on_change = lowWindSliderFunction)
+        lowWindSlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10)
+        lowWindSlider.tick_count = 101
+        lowWindSlider.value = 0.0
+
+        box.add(lowWindLabel)
+        box.add(lowWindSlider)
+
+        highHumidityLabel = toga.Label("Your highest temperature: " + str(int(0)))
+        highHumidityLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
+
+        def highHumiditySliderFunction(widget):
+            user_data["HighHumidity"] = widget.value*100
+            highHumidityLabel.text = "Your highest humidity (%): " + str(int(widget.value*100))
+
+        highHumiditySlider = toga.Slider(on_change = highHumiditySliderFunction)
+        highHumiditySlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10)
+        highHumiditySlider.tick_count = 101
+        highHumiditySlider.value = 0.0
+
+        box.add(highHumidityLabel)
+        box.add(highHumiditySlider)
+
+        lowHumidityLabel = toga.Label("Your lowest temperature: " + str(int(0)))
+        lowHumidityLabel.style.update(flex = 1, padding_bottom = 5, padding_left = 10)
+
+        def lowHumiditySliderFunction(widget):
+            user_data["LowHumidity"] = widget.value*100
+            lowHumidityLabel.text = "Your lowest humidity (%): " + str(int(widget.value*100))
+
+        lowHumiditySlider = toga.Slider(on_change = lowHumiditySliderFunction)
+        lowHumiditySlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10)
+        lowHumiditySlider.tick_count = 101
+        lowHumiditySlider.value = 0.0
+
+        box.add(lowHumidityLabel)
+        box.add(lowHumiditySlider)
+
         button = toga.Button("Go back home", on_press=self.handle_btn_goto_Main)
         box.add(button)
         return(box)
@@ -506,67 +606,7 @@ class DemoApp(toga.App):
         self.box.remove(self.box.children[0])
         self.box.add(box)
 
-    
-
-
 ### Toga running main function + setup
 def main():
     #return toga.App('Hello', 'org.SanjayMukhyala.PerfectDay', startup = build)
     return DemoApp()
-
-'''
-    def mainPage (self):
-        box = toga.Box(style=Pack(direction=COLUMN))
-        ### Welcome label
-        label = toga.Label('PerfectDay\nOptimize your outdoor scheduling needs.\n\n')
-        label.style.update(width = 300, padding_left = 20, padding_bottom = 10, padding_top = 10)
-        box.add(label)
-        button = toga.Button("Go to activity maker", on_press=self.handle_btn_goto_Activity)
-        box.add(button)
-        return box
-
-    def ActivityMakerPage (self):
-        box = toga.Box()
-        box.style.update(direction = "column", padding=10, flex = 1)
-        goToMainPage = toga.Button("Go back home", on_press=self.handle_btn_goto_Main)
-    
-    def handle_btn_goto_Activity(self, widget):
-        box = self.ActivityMakerPage
-        self.box.remove(self.box.children[0])
-        self.box.add(box)
-
-    def handle_btn_goto_Main(self, widget):
-        box = self.mainPage
-        self.box.remove(self.box.children[0])
-        self.box.add(box)
-'''
-
-'''
-def build_main_content (self):
-        box = toga.Box(style=Pack(direction=COLUMN))
-        label = toga.Label("This is the main screen")
-        box.add(label)
-        button = toga.Button("Go to screen 1", on_press=self.handle_btn_goto1)
-        box.add(button)
-        return box
-
-    def build_screen1_content(self):
-        box = toga.Box(style=Pack(direction=COLUMN))
-        label = toga.Label("This is screen 1")
-        box.add(label)
-        button = toga.Button("Go back to main", on_press=self.handle_btn_goto_main)
-        box.add(button)
-        return box
-
-    def handle_btn_goto1(self, widget):
-        box = self.build_screen1_content()
-#        self.main_window.content = box
-        self.box.remove(self.box.children[0])
-        self.box.add(box)
-
-    def handle_btn_goto_main(self, widget):
-        box = self.build_main_content()
-#        self.main_window.content = box
-        self.box.remove(self.box.children[0])
-        self.box.add(box)
-'''
