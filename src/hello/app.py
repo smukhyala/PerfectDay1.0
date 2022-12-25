@@ -250,7 +250,7 @@ def build():
     showErrorLogButton = toga.Button("Show Error Log", on_press = showErrorLogFunction)
     showErrorLogButton.style.update(width = 300, padding = 10)
 
-    def createNewActivityView(widget):
+    def createNewActivityView(self, widget):
         if (len(BlockCreationBox.children) == 0):
             BlockCreationBox.add(activityLabel)
             BlockCreationBox.add(activityInput)
@@ -468,18 +468,81 @@ class DemoApp(toga.App):
     def startup(self):
         self.main_window = toga.MainWindow(title="PerfectDay")
         self.box = toga.Box()
-        #box = self.build_main_content()
+        box = self.mainPage()
         self.container = toga.ScrollContainer()
         container = build()
-        self.container.add(container)
+        #self.container.add(container)
         self.main_window.content = build()
-        #self.box.add(box)
-        #self.main_window.content = self.box
+        self.box.add(box)
+        self.main_window.content = self.box
         self.main_window.show()
         
         #self.main_window.show()
 
-    def build_main_content (self):
+    def mainPage (self):
+        box = toga.Box(style=Pack(direction=COLUMN))
+        ### Welcome label
+        label = toga.Label('PerfectDay\nOptimize your outdoor scheduling needs.\n\n')
+        label.style.update(width = 300, padding_left = 20, padding_bottom = 10, padding_top = 10)
+        box.add(label)
+        button = toga.Button("Go to activity maker", on_press=self.handle_btn_goto_Activity)
+        box.add(button)
+        return box
+
+    def ActivityMakerPage (self):
+        box = toga.Box()
+        box.style.update(direction = "column", padding=10, flex = 1)
+        button = toga.Button("Go back home", on_press=self.handle_btn_goto_Main)
+        box.add(button)
+        return(box)
+    
+    def handle_btn_goto_Activity(self, widget):
+        box = self.ActivityMakerPage()
+        self.box.remove(self.box.children[0])
+        self.box.add(box)
+
+    def handle_btn_goto_Main(self, widget):
+        box = self.mainPage()
+        self.box.remove(self.box.children[0])
+        self.box.add(box)
+
+    
+
+
+### Toga running main function + setup
+def main():
+    #return toga.App('Hello', 'org.SanjayMukhyala.PerfectDay', startup = build)
+    return DemoApp()
+
+'''
+    def mainPage (self):
+        box = toga.Box(style=Pack(direction=COLUMN))
+        ### Welcome label
+        label = toga.Label('PerfectDay\nOptimize your outdoor scheduling needs.\n\n')
+        label.style.update(width = 300, padding_left = 20, padding_bottom = 10, padding_top = 10)
+        box.add(label)
+        button = toga.Button("Go to activity maker", on_press=self.handle_btn_goto_Activity)
+        box.add(button)
+        return box
+
+    def ActivityMakerPage (self):
+        box = toga.Box()
+        box.style.update(direction = "column", padding=10, flex = 1)
+        goToMainPage = toga.Button("Go back home", on_press=self.handle_btn_goto_Main)
+    
+    def handle_btn_goto_Activity(self, widget):
+        box = self.ActivityMakerPage
+        self.box.remove(self.box.children[0])
+        self.box.add(box)
+
+    def handle_btn_goto_Main(self, widget):
+        box = self.mainPage
+        self.box.remove(self.box.children[0])
+        self.box.add(box)
+'''
+
+'''
+def build_main_content (self):
         box = toga.Box(style=Pack(direction=COLUMN))
         label = toga.Label("This is the main screen")
         box.add(label)
@@ -506,9 +569,4 @@ class DemoApp(toga.App):
 #        self.main_window.content = box
         self.box.remove(self.box.children[0])
         self.box.add(box)
-
-
-### Toga running main function + setup
-def main():
-    #return toga.App('Hello', 'org.SanjayMukhyala.PerfectDay', startup = build)
-    return DemoApp()
+'''
