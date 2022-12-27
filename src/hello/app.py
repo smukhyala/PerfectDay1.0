@@ -478,8 +478,8 @@ class DemoApp(toga.App):
     def mainPage (self):
         box = toga.Box(style=Pack(direction=COLUMN))
         ### Welcome label
-        label = toga.Label('PerfectDay\nOptimize your outdoor scheduling needs.\n\n')
-        label.style.update(width = 300, padding = 10)
+        label = toga.Label('PerfectDay - Optimize your outdoor scheduling needs today.')
+        label.style.update(width = 300, padding = 10, alignment = 'center')
         box.add(label)
         button = toga.Button("Go to activity maker", on_press=self.handle_btn_goto_Activity)
         box.add(button)
@@ -675,10 +675,11 @@ class DemoApp(toga.App):
         mainBlockSave = toga.Button("Save Preferences", on_press = resetSliders)
         mainBlockSave.style.update(width = 300, padding_left = 10, padding_right = 10, padding_top = 15)
 
-        button = toga.Button("\n\nGo back home", on_press=self.handle_btn_goto_Main)
+        buttonBack = toga.Button("Go back home", on_press=self.handle_btn_goto_Main)
+        buttonBack.style.update(width = 300, padding_left = 10, padding_right = 10, padding_top = 15)
 
         box.add(mainBlockSave)
-        box.add(button)
+        box.add(buttonBack)
         return(box)
     
     def handle_btn_goto_Activity(self, widget):
