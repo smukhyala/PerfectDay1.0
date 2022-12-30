@@ -483,7 +483,22 @@ class DemoApp(toga.App):
         box.add(label)
         button = toga.Button("Go to activity maker", on_press=self.handle_btn_goto_Activity)
         box.add(button)
+        button1 = toga.Button("Go to activity list", on_press=self.handle_btn_goto_ActivitList)
+        box.add(button1)
         return box
+
+    def totalActivitiesList (self):
+        box = toga.Box(style=Pack(direction=COLUMN))
+        def selection_handler(widget, row):
+            deleteNum = row
+            return row
+        activityList = toga.DetailedList(data = data["activities"],on_select = selection_handler)
+        activityList.style.update(width = 300, height = 100, padding_left = 20, padding_bottom = 10)
+        buttonBack = toga.Button("Go back home", on_press=self.handle_btn_goto_Main)
+        buttonBack.style.update(width = 300, padding_left = 10, padding_right = 10, padding_top = 15)
+        box.add(activityList)
+        box.add(buttonBack)
+        return(box)
 
     def ActivityMakerPage (self):
         user_data = {
@@ -684,6 +699,11 @@ class DemoApp(toga.App):
     
     def handle_btn_goto_Activity(self, widget):
         box = self.ActivityMakerPage()
+        self.box.remove(self.box.children[0])
+        self.box.add(box)
+    
+    def handle_btn_goto_ActivitList(self, widget):
+        box = self.totalActivitiesList()
         self.box.remove(self.box.children[0])
         self.box.add(box)
 
