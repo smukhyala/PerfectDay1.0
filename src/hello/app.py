@@ -658,9 +658,20 @@ class DemoApp(toga.App):
             cityLabelToResultsTextSaveFunction(widget)
 
             ### Open and append the file
-            f = open(dirpath + "AllActivities.json", "r")
-            data = json.load(f)
-            f.close()
+            dirpath = tempfile.mkdtemp()
+            file_exists = exists(dirpath + "AllActivities.json")
+
+            if file_exists:
+                f = open(dirpath + "AllActivities.json", "r")
+                data = json.load(f)
+                f.close()
+            else:
+                data = {
+                    "user": "Person",
+                    "email": "smukhyala@gmail.com",
+                    "activities": []
+                }
+
             neededKey = user_data["ActivityChoice"] + user_data["CityChoice"]
 
             ### Checking uniqueness
