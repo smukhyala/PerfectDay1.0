@@ -460,6 +460,7 @@ def build():
 class DemoApp(toga.App):
     main_box = None
     mainData = None
+    activitySelection = None
 
     def existingActivities(self):
         ### Open and append the file
@@ -542,7 +543,7 @@ class DemoApp(toga.App):
         box = toga.Box(style=Pack(direction=COLUMN))
         ### Welcome label
         label = toga.Label('PerfectDay')
-        label.style.update(width = 300, padding = 10, alignment = 'center', font_family = "Cambria", font_size = 36)
+        label.style.update(width = 300, padding = 10, alignment = 'center', font_size = 36)
         box.add(label)
         button = toga.Button("Go to activity maker", on_press=self.handle_btn_goto_Activity)
         box.add(button)
@@ -551,6 +552,32 @@ class DemoApp(toga.App):
         button2 = toga.Button("Go to name and email preferences", on_press=self.handle_btn_goto_NameEmail)
         box.add(button2)
         return box
+
+    def yesNoDelete (self):
+        box = toga.Box(style=Pack(direction=COLUMN))
+        ### Delete buttons
+        def deleteActivitiesFunction(widget):
+            sel = self.activityList.tab_index
+            for d, myobj in enumerate(self.mainData["activities"]):
+                if myobj["title"] == sel:
+                    self.mainData["activities"].pop(d)
+
+            self.activityList.data = data["activities"]
+            with open(dirpath + "AllActivities.json", "w") as fp:
+                json.dump(data, fp, indent = 4)
+    
+        print(str(self.activitySelection))
+        label = toga.Label('Delete ' + self.activitySelection.value + '?')
+        label.style.update(width = 300, padding = 10, alignment = 'center')
+        yesButton = toga.Button("Yes", on_press=deleteActivitiesFunction)
+        yesButton.style.update(width = 300, padding_left = 10, padding_right = 10, padding_top = 15)
+        noButton = toga.Button("Yes", on_press=self.handle_btn_goto_Main)
+        noButton.style.update(width = 300, padding_left = 10, padding_right = 10, padding_top = 15)
+
+        box.add(label)
+        box.add(yesButton)
+        box.add(noButton)
+        return(box)
 
     def totalActivitiesList (self):
         #data = self.data
@@ -568,11 +595,12 @@ class DemoApp(toga.App):
         ]
             
         box = toga.Box(style=Pack(direction=COLUMN))
-        def selection_handler(widget, row):
-            deleteNum = row
-            return row
-        activityList = toga.Selection(items = self.mainData["activities"], on_select = selection_handler)
+
+        activityList = toga.Selection(items = [d["title"] for d in self.mainData["activities"]], on_select = self.handle_btn_goto_Delete)
         activityList.style.update(width = 300, height = 100, padding_left = 20, padding_bottom = 10)
+
+        self.activitySelection = activityList
+
         buttonBack = toga.Button("Go back home", on_press=self.handle_btn_goto_Main)
         buttonBack.style.update(width = 300, padding_left = 10, padding_right = 10, padding_top = 15)
         box.add(activityList)
@@ -834,10 +862,14 @@ class DemoApp(toga.App):
     
     def handle_btn_goto_ActivityList(self, widget):
         box = self.totalActivitiesList()
-        #self.main_window.content = box
         self.box.remove(self.box.children[0])
         self.box.add(box)
 
+    def handle_btn_goto_Delete(self, widget):
+        print("widget = " + widget.value)
+        box = self.yesNoDelete()
+        self.box.remove(self.box.children[0])
+        self.box.add(box)
 
     def handle_btn_goto_NameEmail(self, widget):
         box = self.editNameAndEmail()
