@@ -459,8 +459,71 @@ def build():
 
 class DemoApp(toga.App):
     main_box = None
+    mainData = None
+
+    def existingActivities(self):
+        ### Open and append the file
+        dirpath = tempfile.mkdtemp()
+        file_exists = exists(dirpath + "AllActivities.json")
+
+        if file_exists:
+            f = open(dirpath + "AllActivities.json", "r")
+            dataP = json.load(f)
+            f.close()
+        else:
+            dataP = {
+                "user": "Person",
+                "email": "smukhyala@gmail.com",
+                "activities": [
+                    {
+                        "title": "EmailTestingOct11",
+                        "subtitle": "Houston",
+                        "icon": "",
+                        "HighTemp": 100,
+                        "LowTemp": 0.0,
+                        "HighWind": 100,
+                        "LowWind": 0.0,
+                        "HighHumidity": 100,
+                        "LowHumidity": 0.0,
+                        "ActivityChoice": "EmailTestoct11",
+                        "CityChoice": "Houston",
+                        "user_name": "Default"
+                    },
+                    {
+                        "title": "10/19/22",
+                        "subtitle": "Brooklyn",
+                        "icon": "",
+                        "HighTemp": 91.00000262260437,
+                        "LowTemp": 0.0,
+                        "HighWind": 97.00000286102295,
+                        "LowWind": 0.0,
+                        "HighHumidity": 87.00000047683716,
+                        "LowHumidity": 11.999999731779099,
+                        "ActivityChoice": "10/19/22",
+                        "CityChoice": "Brooklyn",
+                        "user_name": "Default"
+                    },
+                    {
+                        "title": "Nov7",
+                        "subtitle": "Caracas",
+                        "icon": "",
+                        "HighTemp": 92.00000166893005,
+                        "LowTemp": 15.000000596046448,
+                        "HighWind": 89.99999761581421,
+                        "LowWind": 10.000000149011612,
+                        "HighHumidity": 85.00000238418579,
+                        "LowHumidity": 18.000000715255737,
+                        "ActivityChoice": "Nov7",
+                        "CityChoice": "Caracas"
+                    }
+                ]
+            }
+        self.mainData = dataP
 
     def startup(self):
+
+        self.existingActivities()
+
         self.main_window = toga.MainWindow(title="PerfectDay")
         self.box = toga.Box()
         self.box.style.update(width = 500, height = 1000)
@@ -478,29 +541,92 @@ class DemoApp(toga.App):
     def mainPage (self):
         box = toga.Box(style=Pack(direction=COLUMN))
         ### Welcome label
-        label = toga.Label('PerfectDay - Optimize your outdoor scheduling needs today.')
-        label.style.update(width = 300, padding = 10, alignment = 'center')
+        label = toga.Label('PerfectDay')
+        label.style.update(width = 300, padding = 10, alignment = 'center', font_family = "Cambria", font_size = 36)
         box.add(label)
         button = toga.Button("Go to activity maker", on_press=self.handle_btn_goto_Activity)
         box.add(button)
-        button1 = toga.Button("Go to activity list", on_press=self.handle_btn_goto_ActivitList)
+        button1 = toga.Button("Go to activity list", on_press=self.handle_btn_goto_ActivityList)
         box.add(button1)
+        button2 = toga.Button("Go to name and email preferences", on_press=self.handle_btn_goto_NameEmail)
+        box.add(button2)
         return box
 
     def totalActivitiesList (self):
+        #data = self.data
+        dataP = [
+            {
+                "icon": None,
+                "title": "Sanjay Mukhyala",
+                "subtitle": "Employee of the Month"
+            },
+            {
+                "icon": "",
+                "title": "Kiran Mukhyala",
+                "subtitle": "None employee of the Month"
+            }
+        ]
+            
         box = toga.Box(style=Pack(direction=COLUMN))
         def selection_handler(widget, row):
             deleteNum = row
             return row
-        activityList = toga.DetailedList(data = data["activities"],on_select = selection_handler)
+        activityList = toga.Selection(items = self.mainData["activities"], on_select = selection_handler)
         activityList.style.update(width = 300, height = 100, padding_left = 20, padding_bottom = 10)
         buttonBack = toga.Button("Go back home", on_press=self.handle_btn_goto_Main)
         buttonBack.style.update(width = 300, padding_left = 10, padding_right = 10, padding_top = 15)
         box.add(activityList)
         box.add(buttonBack)
         return(box)
+    
+    def editNameAndEmail (self):
+        data = self.mainData
+        box = toga.Box(style=Pack(direction=COLUMN))
+        ### Name and Email components
+        nameInput = toga.TextInput(placeholder = "James Alan, John Smith, etc...")
+        nameInput.style.update(width = 300, padding_left = 10)
+        def updateNameText():
+            user_name = nameInput.value
+            data["user"] = user_name
+            with open(dirpath + "AllActivities.json", "w") as fp:
+                json.dump(data, fp, indent = 4)
+            return(f'Hi {user_name}.\nChange your name:')
+        nameLabel = toga.Label(f'Hi {user_name}. Change your name:', style=Pack(text_align = "left"))
+        nameLabel.style.update(padding_left = 10, padding_right = 10)
+
+        emailInput = toga.TextInput(placeholder = "james.alan99@gmail.com, JohnSmith123@hotmail.com, etc...")
+        emailInput.style.update(width = 300, padding_left = 10)
+        def changeEmailFunction(widget):
+            user_email = emailInput.value
+            data["email"] = user_email
+            with open(dirpath + "AllActivities.json", "w") as fp:
+                json.dump(data, fp, indent = 4)
+            return(f'Change your email:')
+        emailLabel = toga.Label(f'Hi {user_name}. Change your email:', style=Pack(text_align = "left"))
+        emailLabel.style.update(padding_top = 10, padding_left = 10, padding_right = 10)
+        
+        def nameEmailLabelSaveFunction(widget):
+            nameLabel.text = updateNameText()
+            data["user"] = user_name
+            nameInput.clear()
+            emailLabel.text = changeEmailFunction(widget)
+            data["email"] = user_email
+            emailInput.clear()
+
+        nameEmailLabelSaveButton = toga.Button("Save", on_press = nameEmailLabelSaveFunction)
+        nameEmailLabelSaveButton.style.update(width = 300, padding_left = 10)
+
+        box.add(nameLabel)
+        box.add(nameInput)
+        box.add(emailLabel)
+        box.add(emailInput)
+        buttonBack = toga.Button("Go back home", on_press=self.handle_btn_goto_Main)
+        buttonBack.style.update(width = 300, padding_left = 10, padding_right = 10, padding_top = 15)
+        box.add(buttonBack)
+        return(box)
 
     def ActivityMakerPage (self):
+        data = self.mainData
         user_data = {
         "title": "",
         "subtitle": "",
@@ -526,7 +652,7 @@ class DemoApp(toga.App):
             highTempLabel.text = "Your highest temperature: " + str(int(widget.value*100))
 
         highTempSlider = toga.Slider(on_change = highTempSliderFunction)
-        highTempSlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10, width = 200)
+        highTempSlider.style.update(flex = 1, padding_top = 10, padding_bottom = 10, padding_left = 10, width = 200)
         highTempSlider.tick_count = 101
         highTempSlider.value = 0.0
 
@@ -541,7 +667,7 @@ class DemoApp(toga.App):
             lowTempLabel.text = "Your lowest temperature: " + str(int(widget.value*100))
 
         lowTempSlider = toga.Slider(on_change = lowTempSliderFunction)
-        lowTempSlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10, width = 200)
+        lowTempSlider.style.update(flex = 1, padding_top = 10, padding_bottom = 10, padding_left = 10, width = 200)
         lowTempSlider.tick_count = 101
         lowTempSlider.value = 0.0
 
@@ -556,7 +682,7 @@ class DemoApp(toga.App):
             highWindLabel.text = "Your highest wind speed (m/s): " + str(int(widget.value*100))
 
         highWindSlider = toga.Slider(on_change = highWindSliderFunction)
-        highWindSlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10, width = 200)
+        highWindSlider.style.update(flex = 1, padding_top = 10, padding_bottom = 10, padding_left = 10, width = 200)
         highWindSlider.tick_count = 101
         highWindSlider.value = 0.0
 
@@ -571,7 +697,7 @@ class DemoApp(toga.App):
             lowWindLabel.text = "Your lowest wind speed (m/s): " + str(int(widget.value*100))
 
         lowWindSlider = toga.Slider(on_change = lowWindSliderFunction)
-        lowWindSlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10, width = 200)
+        lowWindSlider.style.update(flex = 1, padding_top = 10, padding_bottom = 10, padding_left = 10, width = 200)
         lowWindSlider.tick_count = 101
         lowWindSlider.value = 0.0
 
@@ -586,7 +712,7 @@ class DemoApp(toga.App):
             highHumidityLabel.text = "Your highest humidity (%): " + str(int(widget.value*100))
 
         highHumiditySlider = toga.Slider(on_change = highHumiditySliderFunction)
-        highHumiditySlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10, width = 200)
+        highHumiditySlider.style.update(flex = 1, padding_top = 10, padding_bottom = 10, padding_left = 10, width = 200)
         highHumiditySlider.tick_count = 101
         highHumiditySlider.value = 0.0
 
@@ -601,7 +727,7 @@ class DemoApp(toga.App):
             lowHumidityLabel.text = "Your lowest humidity (%): " + str(int(widget.value*100))
 
         lowHumiditySlider = toga.Slider(on_change = lowHumiditySliderFunction)
-        lowHumiditySlider.style.update(flex = 1, padding_top = 10, padding_bottom = 20, padding_left = 10, width = 200)
+        lowHumiditySlider.style.update(flex = 1, padding_top = 10, padding_bottom = 10, padding_left = 10, width = 200)
         lowHumiditySlider.tick_count = 101
         lowHumiditySlider.value = 0.0
 
@@ -620,15 +746,15 @@ class DemoApp(toga.App):
         activityList = toga.DetailedList(
         data = data["activities"],
         on_select = selection_handler)
-        activityList.style.update(width = 300, height = 100, padding_left = 20, padding_bottom = 10)
+        activityList.style.update(width = 300, height = 100, padding_left = 20, padding_bottom = 5)
 
-         ### City components
+        ### City components
         cityInput = toga.TextInput(placeholder = "Brooklyn, Houston, etc...")
-        cityInput.style.update(width = 300, padding_left = 10, padding_bottom = 10)
+        cityInput.style.update(width = 300, padding_left = 10, padding_bottom = 5)
         def updateCityText():
-            return(f'Your current city is {user_data["CityChoice"]} (default San Francisco).\nChange your city:')
-        cityLabel = toga.Label(f'Your current city is {user_data["CityChoice"]} (default San Francisco).\nChange your city:', style=Pack(text_align = "left"))
-        cityLabel.style.update(padding_left = 10, padding_right = 10, padding_top = 20)
+            return(f'Your current city is {user_data["CityChoice"]}. Change your city:')
+        cityLabel = toga.Label(f'Your current city is {user_data["CityChoice"]}. Change your city:', style=Pack(text_align = "left"))
+        cityLabel.style.update(padding_left = 10, padding_right = 10, padding_top = 5)
 
         now = dt.datetime.now()
         current_time = now.strftime("%H:%M:%S")
@@ -639,17 +765,23 @@ class DemoApp(toga.App):
             user_data["subtitle"] = user_data["CityChoice"]
             cityLabel.text = updateCityText()
             cityInput.clear()
+        
+        box.add(cityLabel)
+        box.add(cityInput)
 
         ### Activity components
         activityInput = toga.TextInput(placeholder = "Soccer, hiking, running, picnic, etc...")
         activityInput.style.update(width = 300, padding_left = 10, padding_bottom = 10)
         activityLabel = toga.Label('Add an activity:', style=Pack(text_align = "left"))
-        activityLabel.style.update(padding_left = 10, padding_right = 10, padding_top = 20)
+        activityLabel.style.update(padding_left = 10, padding_right = 10, padding_top = 5)
     
         def activityLabelSaveFunction(widget):
             user_data["ActivityChoice"] = activityInput.value
             user_data["title"] = user_data["ActivityChoice"]
             activityInput.clear()        
+
+        box.add(activityLabel)
+        box.add(activityInput)
 
         ### Centralized Save Button
         def mainBlockSaveFunction(widget):
@@ -657,20 +789,7 @@ class DemoApp(toga.App):
             activityLabelSaveFunction(widget)
             cityLabelToResultsTextSaveFunction(widget)
 
-            ### Open and append the file
-            dirpath = tempfile.mkdtemp()
-            file_exists = exists(dirpath + "AllActivities.json")
 
-            if file_exists:
-                f = open(dirpath + "AllActivities.json", "r")
-                data = json.load(f)
-                f.close()
-            else:
-                data = {
-                    "user": "Person",
-                    "email": "smukhyala@gmail.com",
-                    "activities": []
-                }
 
             neededKey = user_data["ActivityChoice"] + user_data["CityChoice"]
 
@@ -699,10 +818,10 @@ class DemoApp(toga.App):
             #showSliderButton.enabled = True
 
         mainBlockSave = toga.Button("Save Preferences", on_press = resetSliders)
-        mainBlockSave.style.update(width = 300, padding_left = 10, padding_right = 10, padding_top = 15)
+        mainBlockSave.style.update(width = 300, padding_left = 10, padding_right = 10, padding_top = 5)
 
         buttonBack = toga.Button("Go back home", on_press=self.handle_btn_goto_Main)
-        buttonBack.style.update(width = 300, padding_left = 10, padding_right = 10, padding_top = 15)
+        buttonBack.style.update(width = 300, padding = 10, padding_right = 10, padding_top = 5)
 
         box.add(mainBlockSave)
         box.add(buttonBack)
@@ -713,8 +832,15 @@ class DemoApp(toga.App):
         self.box.remove(self.box.children[0])
         self.box.add(box)
     
-    def handle_btn_goto_ActivitList(self, widget):
+    def handle_btn_goto_ActivityList(self, widget):
         box = self.totalActivitiesList()
+        #self.main_window.content = box
+        self.box.remove(self.box.children[0])
+        self.box.add(box)
+
+
+    def handle_btn_goto_NameEmail(self, widget):
+        box = self.editNameAndEmail()
         self.box.remove(self.box.children[0])
         self.box.add(box)
 
