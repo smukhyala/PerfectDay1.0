@@ -557,7 +557,7 @@ class DemoApp(toga.App):
         box = toga.Box(style=Pack(direction=COLUMN))
         ### Delete buttons
         def deleteActivitiesFunction(widget):
-            sel = self.activityList.tab_index
+            sel = self.activityList.value
             for d, myobj in enumerate(self.mainData["activities"]):
                 if myobj["title"] == sel:
                     self.mainData["activities"].pop(d)
@@ -565,13 +565,14 @@ class DemoApp(toga.App):
             self.activityList.data = data["activities"]
             with open(dirpath + "AllActivities.json", "w") as fp:
                 json.dump(data, fp, indent = 4)
+            self.handle_btn_goto_Main()
     
         print(str(self.activitySelection))
         label = toga.Label('Delete ' + self.activitySelection.value + '?')
         label.style.update(width = 300, padding = 10, alignment = 'center')
         yesButton = toga.Button("Yes", on_press=deleteActivitiesFunction)
         yesButton.style.update(width = 300, padding_left = 10, padding_right = 10, padding_top = 15)
-        noButton = toga.Button("Yes", on_press=self.handle_btn_goto_Main)
+        noButton = toga.Button("No", on_press=self.handle_btn_goto_Main)
         noButton.style.update(width = 300, padding_left = 10, padding_right = 10, padding_top = 15)
 
         box.add(label)
@@ -581,19 +582,6 @@ class DemoApp(toga.App):
 
     def totalActivitiesList (self):
         #data = self.data
-        dataP = [
-            {
-                "icon": None,
-                "title": "Sanjay Mukhyala",
-                "subtitle": "Employee of the Month"
-            },
-            {
-                "icon": "",
-                "title": "Kiran Mukhyala",
-                "subtitle": "None employee of the Month"
-            }
-        ]
-            
         box = toga.Box(style=Pack(direction=COLUMN))
 
         activityList = toga.Selection(items = [d["title"] for d in self.mainData["activities"]], on_select = self.handle_btn_goto_Delete)
