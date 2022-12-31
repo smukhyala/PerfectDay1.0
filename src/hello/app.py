@@ -557,7 +557,7 @@ class DemoApp(toga.App):
         box = toga.Box(style=Pack(direction=COLUMN))
         ### Delete buttons
         def deleteActivitiesFunction(widget):
-            sel = self.activityList.value
+            sel = self.activitySelection.value
             for d, myobj in enumerate(self.mainData["activities"]):
                 if myobj["title"] == sel:
                     self.mainData["activities"].pop(d)
