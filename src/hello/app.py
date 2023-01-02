@@ -567,7 +567,7 @@ class DemoApp(toga.App):
                 json.dump(data, fp, indent = 4)
             self.handle_btn_goto_Main()
     
-        print(str(self.activitySelection))
+        #print(str(self.activitySelection))
         label = toga.Label('Delete ' + self.activitySelection.value + '?')
         label.style.update(width = 300, padding = 10, alignment = 'center')
         yesButton = toga.Button("Yes", on_press=deleteActivitiesFunction)
@@ -623,10 +623,10 @@ class DemoApp(toga.App):
         
         def nameEmailLabelSaveFunction(widget):
             nameLabel.text = updateNameText()
-            data["user"] = user_name
+            self.mainData["user"] = user_name
             nameInput.clear()
             emailLabel.text = changeEmailFunction(widget)
-            data["email"] = user_email
+            self.mainData["email"] = user_email
             emailInput.clear()
 
         nameEmailLabelSaveButton = toga.Button("Save", on_press = nameEmailLabelSaveFunction)
@@ -636,6 +636,7 @@ class DemoApp(toga.App):
         box.add(nameInput)
         box.add(emailLabel)
         box.add(emailInput)
+        box.add(nameEmailLabelSaveButton)
         buttonBack = toga.Button("Go back home", on_press=self.handle_btn_goto_Main)
         buttonBack.style.update(width = 300, padding_left = 10, padding_right = 10, padding_top = 15)
         box.add(buttonBack)
@@ -805,8 +806,6 @@ class DemoApp(toga.App):
             activityLabelSaveFunction(widget)
             cityLabelToResultsTextSaveFunction(widget)
 
-
-
             neededKey = user_data["ActivityChoice"] + user_data["CityChoice"]
 
             ### Checking uniqueness
@@ -854,7 +853,7 @@ class DemoApp(toga.App):
         self.box.add(box)
 
     def handle_btn_goto_Delete(self, widget):
-        print("widget = " + widget.value)
+        #print("widget = " + widget.value)
         box = self.yesNoDelete()
         self.box.remove(self.box.children[0])
         self.box.add(box)
