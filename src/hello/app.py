@@ -39,24 +39,6 @@ def buildUI():
     mainContainer = toga.ScrollContainer(content = main_box, horizontal = False, vertical = True)
     return mainContainer
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class DemoApp(toga.App):
     main_box = None
     mainData = None
