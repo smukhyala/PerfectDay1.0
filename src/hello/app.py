@@ -26,8 +26,8 @@ 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
 def hello():
     print("hello, world")
 
-t = Timer(30.0, hello)
-t.start()
+#t = Timer(30.0, hello)
+#t.start()
 
 #daemonLog = subprocess.Popen(["python", "src/hello/daemon.py"], close_fds = True)
 
@@ -64,6 +64,7 @@ user_email = "smukhyala@gmail.com"
 def kelvin_to_fahrenheit(kelvin):
     fahrenheit = (kelvin - 273.15) * (9/5) + 32
     return fahrenheit
+
 
 ### TOGA CREATING UI
 def build():
@@ -457,6 +458,43 @@ def build():
     #mainWindow = toga.MainWindow(title = "Perfect Day")
     return mainContainer
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class WeatherDaemon():
+    
+    def startUp():
+        daemonLog = subprocess.Popen(["python", "src/hello/daemon.py"], close_fds = True)
+
+    user_name = "Default"
+    goodConditionCount = 0
+    badConditionCount = 0
+    weatherEvaluation = ""
+
+    ### API INFORMATION DO NOT DELETE (HIDE IN GIT)
+    BaseURL = "http://api.openweathermap.org/data/2.5/forecast?"
+    OpenMainKey = "b12c5e04c89021d40208a84f66ebd3bb"
+
+    def fetchCityData(self, City):
+        NewURL = BaseURL + "appid=" + OpenMainKey + "&q=" + City
+        APIRequest = req.get(NewURL).json()
+        return(APIRequest)
+
 class DemoApp(toga.App):
     main_box = None
     mainData = None
@@ -558,14 +596,17 @@ class DemoApp(toga.App):
         ### Delete buttons
         def deleteActivitiesFunction(widget):
             sel = self.activitySelection.value
-            for d, myobj in enumerate(self.mainData["activities"]):
+            #print(self.mainData["activities"])
+            d = 0
+            for myobj in self.mainData["activities"]:
                 if myobj["title"] == sel:
                     self.mainData["activities"].pop(d)
+                d += 1
 
-            self.activityList.data = data["activities"]
+            self.activitySelection.data = self.mainData["activities"]
             with open(dirpath + "AllActivities.json", "w") as fp:
                 json.dump(data, fp, indent = 4)
-            self.handle_btn_goto_Main()
+            self.handle_btn_goto_Main(self.mainPage)
     
         #print(str(self.activitySelection))
         label = toga.Label('Delete ' + self.activitySelection.value + '?')
