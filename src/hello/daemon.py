@@ -27,14 +27,14 @@ b.close()
 '''
 
 class Daemon():
-    def listToString(s):
+    def listToString(self, s):
         str1 = ""
         for ele in s:
             str1 += "\n"
             str1 += ele
         return str1
 
-    def getData():
+    def getData(self):
         f = open(dirpath + "AllActivities.json", "r")
         data = json.load(f)
         return data
@@ -45,16 +45,16 @@ class Daemon():
         return dataP
     '''
 
-    def fetchCityData(City):
+    def fetchCityData(self, City):
         NewURL = BaseURL + "appid=" + OpenMainKey + "&q=" + City
         APIRequest = req.get(NewURL).json()
         return(APIRequest)
 
-    def kelvin_to_fahrenheit(kelvin):
+    def kelvin_to_fahrenheit(self, kelvin):
         fahrenheit = (kelvin - 273.15) * (9/5) + 32
         return fahrenheit
 
-    def sendMail(content):
+    def sendMail(self, content):
         msg = EmailMessage()
         msg.set_content(content)
 
@@ -80,19 +80,19 @@ class Daemon():
                 fp.write("\nEmail error at " + current_time + ".")
                 fp.close()
 
-    def job():
+    def job(self):
         now = datetime.datetime.now()
         current_time = now.strftime("%H:%M:%S")
         print("Starting job at", current_time)
-        grabbedData = getData()
+        grabbedData = self.getData()
         allActivities = []
         weatherEvaluation = []
         messageHeader = "Hello there " + data["user"] + "!\nWelcome back to PerfectDay. This is a reminder about each of your upcoming PerfectDays. Your PerfectDays are \n\n"
         messageFooter = "\n\nPlease contact smukhyala@gmail.com for any questions or support. Also, please leave a review and rating on your app store. Have a PerfectDay!\n\nThank you, \nSanjay Mukhyala, PerfectDay Team"
         for activity in grabbedData["activities"]:
             try:
-                goodDays = f'\n'.join(judgeWeather(activity))
-                weatherEvaluation.append(PerfectDaysFormatting(goodDays, activity["title"], activity["subtitle"]))
+                goodDays = f'\n'.join(self.judgeWeather(activity))
+                weatherEvaluation.append(self.PerfectDaysFormatting(goodDays, activity["title"], activity["subtitle"]))
                 allActivities.append({'title':f"{activity['ActivityChoice']} in {activity['CityChoice']}",'subtitle':goodDays,'icon':''})
             except Exception as e:
                 weatherEvaluation = "Unfortunately, we have ran into some issues processing your city request. Please check to make sure the information you entered is correct."
@@ -101,19 +101,19 @@ class Daemon():
                     fp.close()
 
         finalmessage = messageHeader + '\n'.join(weatherEvaluation) + messageFooter
-        sendMail(finalmessage)
+        self.sendMail(finalmessage)
         f = open("PerfectDays.json", "w")
         json.dump(allActivities, f, indent = 4)
         f.close()
 
-    def judgeWeather(activityData):
+    def judgeWeather(self, activityData):
         goodDays = []
 
         goodConditionCount = 0
         badConditionCount = 0
 
         ### Using fetch and weather data
-        weatherData = fetchCityData(activityData["CityChoice"])
+        weatherData = self.fetchCityData(activityData["CityChoice"])
     
         ### Defining and sorting through the dictionary values
         for forecast in weatherData['list']:
@@ -126,10 +126,10 @@ class Daemon():
             wind_speed = forecast['wind']['speed']
 
             ### Using the temperature conversion
-            temp_fahrenheit = kelvin_to_fahrenheit(temp_kelvin)
-            feels_fahrenheit = kelvin_to_fahrenheit(feels_temp_kelvin)
-            low_temp_fahrenheit = kelvin_to_fahrenheit(low_temp_kelvin)
-            high_temp_fahrenheit = kelvin_to_fahrenheit(high_temp_kelvin)
+            temp_fahrenheit = self.kelvin_to_fahrenheit(temp_kelvin)
+            feels_fahrenheit = self.kelvin_to_fahrenheit(feels_temp_kelvin)
+            low_temp_fahrenheit = self.kelvin_to_fahrenheit(low_temp_kelvin)
+            high_temp_fahrenheit = self.kelvin_to_fahrenheit(high_temp_kelvin)
 
             ### Assigning slider values to variables
             activity = activityData["ActivityChoice"]
@@ -170,7 +170,7 @@ class Daemon():
 
         return goodDays
 
-    def PerfectDaysFormatting(newGoodDays, City, Activity):
+    def PerfectDaysFormatting(self, newGoodDays, City, Activity):
         finalsubtitle = []
         newGoodDays = (newGoodDays.split("\n"))
         for time in newGoodDays:
