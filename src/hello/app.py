@@ -34,19 +34,6 @@ user_email = "default@example.com"
 
 ### TOGA CREATING UI
 def buildUI():
-    ### Dictionary for reoccuring user defined data points (UPDATE: REMOVE)
-    user_data = {
-    "title": "",
-    "subtitle": "",
-    "icon": "",
-    "HighTemp": 0,
-    "LowTemp": 0,
-    "HighWind": 0,
-    "LowWind": 0,
-    "HighHumidity": 0,
-    "LowHumidity": 0,
-    "ActivityChoice": "nothing",
-    "CityChoice": "San Francisco"}
     ### Main content
     main_box = toga.Box(id = 'box', style = Pack(direction = "column"))
     mainContainer = toga.ScrollContainer(content = main_box, horizontal = False, vertical = True)
@@ -173,7 +160,7 @@ class DemoApp(toga.App):
         else:
             ErrorLogs = "All good!"
         box = toga.Box(style=Pack(direction=COLUMN))
-        ErrorLabel = toga.Label('Error Log.')
+        ErrorLabel = toga.Label('Current Error Log:')
         ErrorLabel.style.update(width = 300, padding = 10, alignment = 'center')
         ErrorLogText = toga.Label(ErrorLogs)
         ErrorLogText.style.update(width = 300, padding = 10, alignment = 'center')
@@ -211,7 +198,7 @@ class DemoApp(toga.App):
     def totalActivitiesList (self):
         #data = self.data
         box = toga.Box(style=Pack(direction=COLUMN))
-        deleteLabel = toga.Label('Select to delete')
+        deleteLabel = toga.Label('Select to delete:')
         deleteLabel.style.update(width = 300, padding = 10, alignment = 'center')
         activityList = toga.Selection(items = [d["title"] for d in self.mainData["activities"]], on_select = self.handle_btn_goto_DeletePerfect)
         activityList.style.update(width = 300, height = 100, padding_left = 20, padding_bottom = 10)
@@ -245,7 +232,7 @@ class DemoApp(toga.App):
             with open(dirpath + "AllActivities.json", "w") as fp:
                 json.dump(data, fp, indent = 4)
             return(f'Change your email:')
-        emailLabel = toga.Label(f'Hi {user_name}. Change your email:', style=Pack(text_align = "left"))
+        emailLabel = toga.Label(f'Change your email:', style=Pack(text_align = "left"))
         emailLabel.style.update(padding_top = 10, padding_left = 10, padding_right = 10)
         def nameEmailLabelSaveFunction(widget):
             nameLabel.text = updateNameText()
