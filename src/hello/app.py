@@ -29,7 +29,7 @@ user_email = "default@example.com"
 
 
 def hello(msg):
-    print(msg + ", world")
+    print(msg + "Daemon started.")
     #replace with class from deamon.py
 
 t = Timer(5, hello)
@@ -41,7 +41,7 @@ class RepeatTimer(Timer):
             self.function(*self.args,**self.kwargs)  
             print(' ')  
 
-timer = RepeatTimer(1,hello,['Repeating'])  
+timer = RepeatTimer(1,hello,[''])  
 timer.start()  
 print('Threading started')  
 time.sleep(20) #instances
