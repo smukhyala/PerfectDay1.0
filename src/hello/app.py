@@ -22,19 +22,38 @@ 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
 """
 
 dirpath = tempfile.gettempdir()
+user_name = "Default"
+user_email = "default@example.com"
 
-def hello():
-    print("hello, world")
+
+
+
+def hello(msg):
+    print(msg + ", world")
+    #replace with class from deamon.py
 
 t = Timer(5, hello)
 t.start()
 
-user_name = "Default"
-user_email = "default@example.com"
+class RepeatTimer(Timer):  
+    def run(self):  
+        while not self.finished.wait(self.interval):  
+            self.function(*self.args,**self.kwargs)  
+            print(' ')  
+
+timer = RepeatTimer(1,hello,['Repeating'])  
+timer.start()  
+print('Threading started')  
+time.sleep(20) #instances
+print('Threading finishing')  
+timer.cancel()
+#tier runs then program runs - fix this
+
+
+
 
 ### TOGA CREATING UI
 def buildUI():
-    ### Main content
     main_box = toga.Box(id = 'box', style = Pack(direction = "column"))
     mainContainer = toga.ScrollContainer(content = main_box, horizontal = False, vertical = True)
     return mainContainer
