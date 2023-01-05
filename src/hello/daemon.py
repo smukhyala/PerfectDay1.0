@@ -6,6 +6,7 @@ import datetime
 import smtplib
 import tempfile
 from email.message import EmailMessage
+from os.path import exists
 
 ### API INFORMATION DO NOT DELETE (HIDE IN GIT)
 BaseURL = "http://api.openweathermap.org/data/2.5/forecast?"
@@ -16,9 +17,13 @@ https://myaccount.google.com/apppasswords?rapt=AEjHL4PeKvCmEp6mdvHUkNL4iW9wItaC4
 """
 
 dirpath = tempfile.gettempdir()
-f = open(dirpath + "AllActivities.json", "r")
-data = json.load(f)
-f.close()
+file_exists = exists(dirpath + "AllActivities.json")
+if file_exists:
+    f = open(dirpath + "AllActivities.json", "r")
+    data = json.load(f)
+    f.close()
+else:
+    data = {}
 
 '''
 b = open("PerfectDays.json", "r")
@@ -35,9 +40,13 @@ class Daemon():
         return str1
 
     def getData(self):
-        f = open(dirpath + "AllActivities.json", "r")
-        data = json.load(f)
+        if file_exists:
+            f = open(dirpath + "AllActivities.json", "r")
+            data = json.load(f)
+        else:
+            data = {}
         return data
+
     '''
     def getDataP():
         b = open("PerfectDays.json", "r")
@@ -87,24 +96,25 @@ class Daemon():
         grabbedData = self.getData()
         allActivities = []
         weatherEvaluation = []
-        messageHeader = "Hello there " + data["user"] + "!\nWelcome back to PerfectDay. This is a reminder about each of your upcoming PerfectDays. Your PerfectDays are \n\n"
-        messageFooter = "\n\nPlease contact smukhyala@gmail.com for any questions or support. Also, please leave a review and rating on your app store. Have a PerfectDay!\n\nThank you, \nSanjay Mukhyala, PerfectDay Team"
-        for activity in grabbedData["activities"]:
-            try:
-                goodDays = f'\n'.join(self.judgeWeather(activity))
-                weatherEvaluation.append(self.PerfectDaysFormatting(goodDays, activity["title"], activity["subtitle"]))
-                allActivities.append({'title':f"{activity['ActivityChoice']} in {activity['CityChoice']}",'subtitle':goodDays,'icon':''})
-            except Exception as e:
-                weatherEvaluation = "Unfortunately, we have ran into some issues processing your city request. Please check to make sure the information you entered is correct."
-                with open("DaemonErrors.log", "a") as fp:
-                    fp.write("\nCity error at " + current_time + ".")
-                    fp.close()
+        if len(data) > 0:
+            messageHeader = "Hello there " + data["user"] + "!\nWelcome back to PerfectDay. This is a reminder about each of your upcoming PerfectDays. Your PerfectDays are \n\n"
+            messageFooter = "\n\nPlease contact smukhyala@gmail.com for any questions or support. Also, please leave a review and rating on your app store. Have a PerfectDay!\n\nThank you, \nSanjay Mukhyala, PerfectDay Team"
+            for activity in grabbedData["activities"]:
+                try:
+                    goodDays = f'\n'.join(self.judgeWeather(activity))
+                    weatherEvaluation.append(self.PerfectDaysFormatting(goodDays, activity["title"], activity["subtitle"]))
+                    allActivities.append({'title':f"{activity['ActivityChoice']} in {activity['CityChoice']}",'subtitle':goodDays,'icon':''})
+                except Exception as e:
+                    weatherEvaluation = "Unfortunately, we have ran into some issues processing your city request. Please check to make sure the information you entered is correct."
+                    with open("DaemonErrors.log", "a") as fp:
+                        fp.write("\nCity error at " + current_time + ".")
+                        fp.close()
 
-        finalmessage = messageHeader + '\n'.join(weatherEvaluation) + messageFooter
-        self.sendMail(finalmessage)
-        f = open("PerfectDays.json", "w")
-        json.dump(allActivities, f, indent = 4)
-        f.close()
+            finalmessage = messageHeader + '\n'.join(weatherEvaluation) + messageFooter
+            self.sendMail(finalmessage)
+            f = open("PerfectDays.json", "w")
+            json.dump(allActivities, f, indent = 4)
+            f.close()
 
     def judgeWeather(self, activityData):
         goodDays = []
@@ -248,13 +258,15 @@ class Daemon():
         
         return("\n".join(finalsubtitle))
 
-    schedule.every(10).seconds.do(job)
+   
     #schedule.every(2).hour.do(judgeWeather(activity))
     #schedule.every().day.at("10:30").do(judgeWeather(activity))
     #schedule.every().monday.do(judgeWeather(activity))
     #schedule.every().wednesday.at("13:15").do(judgeWeather(activity))
     #schedule.every().minute.at(":17").do(judgeWeather(activity))
-
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
+'''
+while True:
+    schedule.run_pending()
+    time.sleep(1)
+'''
+   
