@@ -14,7 +14,8 @@ description = "My first application"
 icon = "src/hello/resources/hello"
 sources = ['src/hello']
 requires = [
-    "requests>=2.28.1"
+    "requests>=2.28.1",
+    "schedule>=1.1.0"
 ]
 
 
@@ -45,7 +46,9 @@ requires = [
 [tool.briefcase.app.hello.iOS]
 requires = [
     'toga-iOS>=0.3.0.dev34',
-    'std-nslog~=1.0.0'
+    'std-nslog~=1.0.0',
+    'schedule>=1.1.0',
+    'requests>=2.28.1'
 ]
 
 [tool.briefcase.app.hello.android]
