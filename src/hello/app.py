@@ -13,7 +13,7 @@ from toga.style.pack import *
 from toga.colors import *
 from toga.fonts import *
 import tempfile
-#from deamon import Deamon
+from .daemon import *
 from os.path import exists
 
 """
@@ -24,33 +24,6 @@ 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
 dirpath = tempfile.gettempdir()
 user_name = "Default"
 user_email = "default@example.com"
-
-
-
-
-def hello(msg):
-    print(msg + "Daemon started.")
-    #replace with class from deamon.py
-
-t = Timer(5, hello)
-t.start()
-
-class RepeatTimer(Timer):  
-    def run(self):  
-        while not self.finished.wait(self.interval):  
-            self.function(*self.args,**self.kwargs)  
-            print(' ')  
-
-timer = RepeatTimer(1,hello,[''])  
-timer.start()  
-print('Threading started')  
-time.sleep(20) #instances
-print('Threading finishing')  
-timer.cancel()
-#tier runs then program runs - fix this
-
-
-
 
 ### TOGA CREATING UI
 def buildUI():
@@ -428,7 +401,19 @@ class DemoApp(toga.App):
         self.box.remove(self.box.children[0])
         self.box.add(box)
 
+class RepeatTimer(Timer):  
+    def run(self):  
+        while not self.finished.wait(self.interval):  
+            self.function(*self.args,**self.kwargs)  
+
 ### Toga running main function + setup
 def main():
     #return toga.App('Hello', 'org.SanjayMukhyala.PerfectDay', startup = build)
+    d = Daemon()
+    timer = RepeatTimer(10,d.job)  
+    timer.start()
     return DemoApp()
+
+#time.sleep() #instances
+#timer.cancel()
+#tier runs then program runs - fix this
