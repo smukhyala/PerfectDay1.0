@@ -18,7 +18,7 @@ from os.path import exists
 
 """
 PerfectDay, IOS app by Sanjay Mukhyala 2023.
-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
+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
 """
 
 dirpath = tempfile.gettempdir()
