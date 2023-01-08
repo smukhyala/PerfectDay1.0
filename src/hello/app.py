@@ -409,10 +409,12 @@ class RepeatTimer(Timer):
 ### Toga running main function + setup
 def main():
     #return toga.App('Hello', 'org.SanjayMukhyala.PerfectDay', startup = build)
-    d = Daemon()
-    timer = RepeatTimer(10,d.job)  
-    timer.start()
+    
     return DemoApp()
+
+d = Daemon()
+timer = RepeatTimer(10,d.job)  
+timer.start()
 
 #time.sleep() #instances
 #timer.cancel()
