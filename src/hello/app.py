@@ -401,21 +401,24 @@ class DemoApp(toga.App):
         self.box.remove(self.box.children[0])
         self.box.add(box)
 
+
 class RepeatTimer(Timer):  
     def run(self):  
         while not self.finished.wait(self.interval):  
             self.function(*self.args,**self.kwargs)  
 
+d = Daemon()
+timer = RepeatTimer(10,d.job)  
+try:
+    timer.start()
+    print("Running")
+except:
+    print("didnt start")
+
 ### Toga running main function + setup
 def main():
     #return toga.App('Hello', 'org.SanjayMukhyala.PerfectDay', startup = build)
-    d = Daemon()
-    timer = RepeatTimer(10,d.job)  
-    try:
-        timer.start()
-        print("Running")
-    except:
-        print("didnt start")
+    
     return DemoApp()
 
 #time.sleep() #instances
