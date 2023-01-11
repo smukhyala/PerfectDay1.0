@@ -4,6 +4,7 @@ import math as math
 import time as time
 import requests as req
 import datetime as dt
+import threading
 from threading import *
 import subprocess
 import json
@@ -405,20 +406,26 @@ class DemoApp(toga.App):
 class RepeatTimer(Timer):  
     def run(self):  
         while not self.finished.wait(self.interval):  
+        #while True:
             self.function(*self.args,**self.kwargs)  
 
-d = Daemon()
-timer = RepeatTimer(10,d.job)  
-try:
-    timer.start()
-    print("Running")
-except:
-    print("didnt start")
+ok = True
+def hello():
+    #threading.Timer(5.0,hello).start()
+    global ok
+    print("Hello World!")
+    if ok:
+        Timer(5,hello).start()
 
 ### Toga running main function + setup
 def main():
     #return toga.App('Hello', 'org.SanjayMukhyala.PerfectDay', startup = build)
-    
+    d = Daemon()
+    hello()
+    #timer = RepeatTimer(10,d.job)  
+    #timer.start()
+    #time.sleep(5)
+    #timer.cancel()
     return DemoApp()
 
 #time.sleep() #instances
