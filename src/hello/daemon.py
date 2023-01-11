@@ -73,7 +73,7 @@ class Daemon():
 
         msg['Subject'] = 'PerfectDay'
         msg['From'] = "smukhyala@gmail.com"
-        msg['To'] = data["email"]
+        msg['To'] = "25mukhyalas62@stu.smuhsd.org"#data["email"]
         
         now = datetime.datetime.now()
         current_time = now.strftime("%H:%M:%S")
@@ -110,7 +110,8 @@ class Daemon():
                         fp.write("\nCity error at " + current_time + ".")
                         fp.close()
 
-            finalmessage = messageHeader + '\n'.join(weatherEvaluation) + messageFooter
+            #finalmessage = messageHeader + '\n'.join(weatherEvaluation) + messageFooter
+            finalmessage = "test"
             self.sendMail(finalmessage)
             f = open("PerfectDays.json", "w")
             json.dump(allActivities, f, indent = 4)
