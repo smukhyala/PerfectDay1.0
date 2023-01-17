@@ -362,7 +362,7 @@ class DemoApp(toga.App):
             neededKey = user_data["ActivityChoice"] + user_data["CityChoice"]
             if(not(activityUniqueness(data["activities"], neededKey))):
                 with open(dirpath + "AllActivities.json", "w") as fp:
-                    print("app" + dirpath + "AllActivities.json")
+                    #print("app" + dirpath + "AllActivities.json")
                     data["activities"].append(user_data)
                     json.dump(data, fp, indent = 4)
                     activityList.data = data["activities"]
