@@ -14,6 +14,7 @@ from toga.style.pack import *
 from toga.colors import *
 from toga.fonts import *
 import tempfile
+import schedule
 from .daemon import *
 from os.path import exists
 
@@ -402,6 +403,10 @@ class DemoApp(toga.App):
         self.box.remove(self.box.children[0])
         self.box.add(box)
 
+    
+    #while True:
+      #  schedule.run_pending()
+
 
 class RepeatTimer(Timer):  
     def run(self):  
@@ -409,25 +414,23 @@ class RepeatTimer(Timer):
         #while True:
             self.function(*self.args,**self.kwargs)  
 
-ok = True
-def hello():
-    #threading.Timer(5.0,hello).start()
-    global ok
-    print("Hello World!")
-    if ok:
-        Timer(5,hello).start()
+
 
 ### Toga running main function + setup
 def main():
     #return toga.App('Hello', 'org.SanjayMukhyala.PerfectDay', startup = build)
     d = Daemon()
-    hello()
-    #timer = RepeatTimer(10,d.job)  
-    #timer.start()
+    def hello():
+        i = 10
+        print(i)
+    #schedule.every(10).seconds.do(hello)
+    timer = RepeatTimer(10,hello)  
+    timer.start()   
     #time.sleep(5)
     #timer.cancel()
     return DemoApp()
 
-#time.sleep() #instances
+
+#time.sleep() #instances 
 #timer.cancel()
 #tier runs then program runs - fix this
