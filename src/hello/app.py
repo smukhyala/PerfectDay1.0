@@ -15,6 +15,7 @@ from toga.colors import *
 from toga.fonts import *
 import tempfile
 import schedule
+import asyncio
 from .daemon import *
 from os.path import exists
 
@@ -37,6 +38,13 @@ class DemoApp(toga.App):
     main_box = None
     mainData = None
     activitySelection = None
+
+    async def do_background_task(self, widget, **kwargs):
+        d = Daemon()
+        while True:
+            self.counter += 1
+            d.job() 
+            await asyncio.sleep(10)
 
     def existingActivities(self):
         ### Open and append the file
@@ -104,6 +112,8 @@ class DemoApp(toga.App):
         self.box.style.update(width = 500, height = 1000)
         box = self.mainPage()
         self.main_window.content = buildUI()
+        self.counter = 0
+        self.add_background_task(self.do_background_task)
         self.box.add(box)
         self.main_window.content = self.box
         self.main_window.show()
@@ -352,6 +362,7 @@ class DemoApp(toga.App):
             neededKey = user_data["ActivityChoice"] + user_data["CityChoice"]
             if(not(activityUniqueness(data["activities"], neededKey))):
                 with open(dirpath + "AllActivities.json", "w") as fp:
+                    print("app" + dirpath + "AllActivities.json")
                     data["activities"].append(user_data)
                     json.dump(data, fp, indent = 4)
                     activityList.data = data["activities"]
@@ -403,10 +414,6 @@ class DemoApp(toga.App):
         self.box.remove(self.box.children[0])
         self.box.add(box)
 
-    
-    #while True:
-      #  schedule.run_pending()
-
 
 class RepeatTimer(Timer):  
     def run(self):  
@@ -418,16 +425,6 @@ class RepeatTimer(Timer):
 
 ### Toga running main function + setup
 def main():
-    #return toga.App('Hello', 'org.SanjayMukhyala.PerfectDay', startup = build)
-    d = Daemon()
-    def hello():
-        i = 10
-        print(i)
-    #schedule.every(10).seconds.do(hello)
-    timer = RepeatTimer(10,hello)  
-    timer.start()   
-    #time.sleep(5)
-    #timer.cancel()
     return DemoApp()
 
 
