@@ -95,11 +95,12 @@ class Daemon():
         now = datetime.datetime.now()
         current_time = now.strftime("%H:%M:%S")
         print("Starting job at", current_time)
+        print(data["user"])
         grabbedData = self.getData()
         allActivities = []
         weatherEvaluation = []
         if len(grabbedData) > 0:
-            messageHeader = "Hello there " + "data[user]" + "!\nWelcome back to PerfectDay. This is a reminder about each of your upcoming PerfectDays. Your PerfectDays are \n\n"
+            messageHeader = "Hello there " + data["user"] + "!\nWelcome back to PerfectDay. This is a reminder about each of your upcoming PerfectDays. Your PerfectDays are \n\n"
             messageFooter = "\n\nPlease contact smukhyala@gmail.com for any questions or support. Also, please leave a review and rating on your app store. Have a PerfectDay!\n\nThank you, \nSanjay Mukhyala, PerfectDay Team"
             for activity in grabbedData["activities"]:
                 try:
@@ -119,7 +120,10 @@ class Daemon():
             f.close()
 
         else:
-            print("Please enter your activities in the PerfectDay app.")
+            firstMessageHeader = "Hellp there " + "data[user]" + "! Welcome to PerfectDay. It looks like you haven't made any activities yet. Please make your first activity in the PerfectDay app.\n\n"
+            firstMessagefooter = "\n\nPlease contact smukhyala@gmail.com for any questions or support. Also, please leave a review and rating on your app store. Have a PerfectDay!\n\nThank you, \nSanjay Mukhyala, PerfectDay Team"
+            finalmessage = firstMessageHeader + firstMessagefooter
+            self.sendMail(finalmessage)
 
     def judgeWeather(self, activityData):
         goodDays = []
@@ -259,19 +263,6 @@ class Daemon():
             elif time[5] == "1" and time[6] == "2":
                 time = " December " + time[8:] + ", " + time[:4]
 
-            finalsubtitle.append(time + " for " + Activity + " in " + City + ".")
+            finalsubtitle.append(time + " for " + City + " in " + Activity + ".")
         
         return("\n".join(finalsubtitle))
-
-   
-    #schedule.every(2).hour.do(judgeWeather(activity))
-    #schedule.every().day.at("10:30").do(judgeWeather(activity))
-    #schedule.every().monday.do(judgeWeather(activity))
-    #schedule.every().wednesday.at("13:15").do(judgeWeather(activity))
-    #schedule.every().minute.at(":17").do(judgeWeather(activity))
-'''
-while True:
-    schedule.run_pending()
-    time.sleep(1)
-'''
-   
