@@ -40,9 +40,11 @@ class Daemon():
         return str1
 
     def getData(self):
+        file_exists = exists(dirpath + "AllActivities.json")
         if file_exists:
             f = open(dirpath + "AllActivities.json", "r")
             data = json.load(f)
+            print("daemon" + dirpath + "AllActivities.json")
         else:
             data = {}
         return data
@@ -73,7 +75,7 @@ class Daemon():
 
         msg['Subject'] = 'PerfectDay'
         msg['From'] = "smukhyala@gmail.com"
-        msg['To'] = "25mukhyalas62@stu.smuhsd.org"#data["email"]
+        msg['To'] = "smukhyala@gmail.com"#data["email"]
         
         now = datetime.datetime.now()
         current_time = now.strftime("%H:%M:%S")
@@ -85,7 +87,7 @@ class Daemon():
             server.login('smukhyala@gmail.com', 'vxxfqkakjrpaxykd')#random gibberish is google generated
             server.send_message(msg)
         except:
-            with open("DaemonErrors.log", "a") as fp:
+            with open(dirpath + "DaemonErrors.log", "a") as fp:
                 fp.write("\nEmail error at " + current_time + ".")
                 fp.close()
 
@@ -96,8 +98,8 @@ class Daemon():
         grabbedData = self.getData()
         allActivities = []
         weatherEvaluation = []
-        if len(data) > 0:
-            messageHeader = "Hello there " + data["user"] + "!\nWelcome back to PerfectDay. This is a reminder about each of your upcoming PerfectDays. Your PerfectDays are \n\n"
+        if len(grabbedData) > 0:
+            messageHeader = "Hello there " + "data[user]" + "!\nWelcome back to PerfectDay. This is a reminder about each of your upcoming PerfectDays. Your PerfectDays are \n\n"
             messageFooter = "\n\nPlease contact smukhyala@gmail.com for any questions or support. Also, please leave a review and rating on your app store. Have a PerfectDay!\n\nThank you, \nSanjay Mukhyala, PerfectDay Team"
             for activity in grabbedData["activities"]:
                 try:
@@ -106,16 +108,18 @@ class Daemon():
                     allActivities.append({'title':f"{activity['ActivityChoice']} in {activity['CityChoice']}",'subtitle':goodDays,'icon':''})
                 except Exception as e:
                     weatherEvaluation = "Unfortunately, we have ran into some issues processing your city request. Please check to make sure the information you entered is correct."
-                    with open("DaemonErrors.log", "a") as fp:
+                    with open(dirpath + "DaemonErrors.log", "a") as fp:
                         fp.write("\nCity error at " + current_time + ".")
                         fp.close()
 
-            #finalmessage = messageHeader + '\n'.join(weatherEvaluation) + messageFooter
-            finalmessage = "test"
+            finalmessage = messageHeader + '\n'.join(weatherEvaluation) + messageFooter
             self.sendMail(finalmessage)
-            f = open("PerfectDays.json", "w")
+            f = open(dirpath + "PerfectDays.json", "w")
             json.dump(allActivities, f, indent = 4)
             f.close()
+
+        else:
+            print("Please enter your activities in the PerfectDay app.")
 
     def judgeWeather(self, activityData):
         goodDays = []
