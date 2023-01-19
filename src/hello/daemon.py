@@ -23,13 +23,9 @@ if file_exists:
     data = json.load(f)
     f.close()
 else:
-    data = {}
-
-'''
-b = open("PerfectDays.json", "r")
-dataP = json.load(b)
-b.close()
-'''
+    data = {
+         'user': "User",
+    }
 
 class Daemon():
     def listToString(self, s):
@@ -44,17 +40,28 @@ class Daemon():
         if file_exists:
             f = open(dirpath + "AllActivities.json", "r")
             data = json.load(f)
-            print("daemon" + dirpath + "AllActivities.json")
+            #print("daemon" + dirpath + "AllActivities.json")
         else:
-            data = {}
+            data = {
+    "user": "User",
+    "email": "smukhyala@gmail.com",
+    "activities": [
+        {
+            "title": "Temporary Activity",
+            "subtitle": "Caracas",
+            "icon": "",
+            "HighTemp": 92.00000166893005,
+            "LowTemp": 15.000000596046448,
+            "HighWind": 89.99999761581421,
+            "LowWind": 10.000000149011612,
+            "HighHumidity": 85.00000238418579,
+            "LowHumidity": 18.000000715255737,
+            "ActivityChoice": "Temporary Activity",
+            "CityChoice": "Caracas"
+        }
+    ]
+}
         return data
-
-    '''
-    def getDataP():
-        b = open("PerfectDays.json", "r")
-        dataP = json.load(b)
-        return dataP
-    '''
 
     def fetchCityData(self, City):
         NewURL = BaseURL + "appid=" + OpenMainKey + "&q=" + City
@@ -75,7 +82,7 @@ class Daemon():
 
         msg['Subject'] = 'PerfectDay'
         msg['From'] = "smukhyala@gmail.com"
-        msg['To'] = "smukhyala@gmail.com"#data["email"]
+        msg['To'] = data["email"]
         
         now = datetime.datetime.now()
         current_time = now.strftime("%H:%M:%S")
@@ -95,7 +102,6 @@ class Daemon():
         now = datetime.datetime.now()
         current_time = now.strftime("%H:%M:%S")
         print("Starting job at", current_time)
-        print(data["user"])
         grabbedData = self.getData()
         allActivities = []
         weatherEvaluation = []
@@ -120,7 +126,7 @@ class Daemon():
             f.close()
 
         else:
-            firstMessageHeader = "Hellp there " + "data[user]" + "! Welcome to PerfectDay. It looks like you haven't made any activities yet. Please make your first activity in the PerfectDay app.\n\n"
+            firstMessageHeader = "Hello there " + data["user"] + "! Welcome to PerfectDay. It looks like you haven't made any activities yet. Please make your first activity in the PerfectDay app.\n\n"
             firstMessagefooter = "\n\nPlease contact smukhyala@gmail.com for any questions or support. Also, please leave a review and rating on your app store. Have a PerfectDay!\n\nThank you, \nSanjay Mukhyala, PerfectDay Team"
             finalmessage = firstMessageHeader + firstMessagefooter
             self.sendMail(finalmessage)
