@@ -421,13 +421,6 @@ class RepeatTimer(Timer):
         #while True:
             self.function(*self.args,**self.kwargs)  
 
-
-
 ### Toga running main function + setup
 def main():
     return DemoApp()
-
-
-#time.sleep() #instances 
-#timer.cancel()
-#tier runs then program runs - fix this
