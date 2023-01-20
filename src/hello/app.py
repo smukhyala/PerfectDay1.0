@@ -138,6 +138,12 @@ class DemoApp(toga.App):
         button3 = toga.Button("Go to error log", on_press=self.handle_btn_goto_ErrorLog)
         button3.style.update(width = 300, padding = 20, alignment = 'center', font_size = 18)
         box.add(button3)
+        activityListLabel = toga.Label('Your activities:')
+        activityListLabel.style.update(width = 300, padding = 10, font_size = 60)
+        box.add(activityListLabel)
+        activityList = toga.Label(data = data['activities']['title'])
+        activityListLabel.style.update(width = 300, padding = 10, font_size = 60)
+        box.add(activityList)
         return box
 
     def errorLog(self):
