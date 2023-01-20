@@ -62,10 +62,6 @@ class Daemon():
         msg = EmailMessage()
         msg.set_content(content)
 
-        '''f = open(dirpath + "AllActivities.json", "r")
-        data = json.load(f)
-        f.close()'''
-
         msg['Subject'] = 'PerfectDay'
         msg['From'] = "smukhyala@gmail.com"
         msg['To'] = data["email"]
