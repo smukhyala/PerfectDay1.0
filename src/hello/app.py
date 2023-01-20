@@ -24,6 +24,9 @@ PerfectDay, IOS app by Sanjay Mukhyala 2023.
 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
 """
 
+#Add custom icons, add more weather conditions, add activity list, then major clean up
+#PerfectDay 1.1 Save weather now
+
 dirpath = tempfile.gettempdir()
 user_name = "Default"
 user_email = "default@example.com"
