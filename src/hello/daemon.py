@@ -24,8 +24,9 @@ if file_exists:
     f.close()
 else:
     data = {
-         'user': "User",
-    }
+    "user": "User",
+    "email": "smukhyala@gmail.com",
+}
 
 class Daemon():
     def listToString(self, s):
@@ -43,23 +44,8 @@ class Daemon():
             #print("daemon" + dirpath + "AllActivities.json")
         else:
             data = {
-    "user": "User",
-    "email": "smukhyala@gmail.com",
-    "activities": [
-        {
-            "title": "Temporary Activity",
-            "subtitle": "Caracas",
-            "icon": "",
-            "HighTemp": 92.00000166893005,
-            "LowTemp": 15.000000596046448,
-            "HighWind": 89.99999761581421,
-            "LowWind": 10.000000149011612,
-            "HighHumidity": 85.00000238418579,
-            "LowHumidity": 18.000000715255737,
-            "ActivityChoice": "Temporary Activity",
-            "CityChoice": "Caracas"
-        }
-    ]
+                "user": "User",
+                "email": "smukhyala@gmail.com",
 }
         return data
 
@@ -76,9 +62,9 @@ class Daemon():
         msg = EmailMessage()
         msg.set_content(content)
 
-        f = open(dirpath + "AllActivities.json", "r")
+        '''f = open(dirpath + "AllActivities.json", "r")
         data = json.load(f)
-        f.close()
+        f.close()'''
 
         msg['Subject'] = 'PerfectDay'
         msg['From'] = "smukhyala@gmail.com"
@@ -91,11 +77,11 @@ class Daemon():
         try:   
             server = smtplib.SMTP('smtp.gmail.com', 587)
             server.starttls()
-            server.login('smukhyala@gmail.com', 'vxxfqkakjrpaxykd')#random gibberish is google generated
+            server.login('smukhyala@gmail.com', 'ubyhrajhjgjobelv')#random gibberish is google generated
             server.send_message(msg)
-        except:
+        except Exception as e:
             with open(dirpath + "DaemonErrors.log", "a") as fp:
-                fp.write("\nEmail error at " + current_time + ".")
+                fp.write("Email error at " + current_time + " " + type(e) + ".")
                 fp.close()
 
     def job(self):
@@ -105,7 +91,7 @@ class Daemon():
         grabbedData = self.getData()
         allActivities = []
         weatherEvaluation = []
-        if len(grabbedData) > 0:
+        if "activities" in grabbedData.keys():
             messageHeader = "Hello there " + data["user"] + "!\nWelcome back to PerfectDay. This is a reminder about each of your upcoming PerfectDays. Your PerfectDays are \n\n"
             messageFooter = "\n\nPlease contact smukhyala@gmail.com for any questions or support. Also, please leave a review and rating on your app store. Have a PerfectDay!\n\nThank you, \nSanjay Mukhyala, PerfectDay Team"
             for activity in grabbedData["activities"]:
@@ -116,7 +102,7 @@ class Daemon():
                 except Exception as e:
                     weatherEvaluation = "Unfortunately, we have ran into some issues processing your city request. Please check to make sure the information you entered is correct."
                     with open(dirpath + "DaemonErrors.log", "a") as fp:
-                        fp.write("\nCity error at " + current_time + ".")
+                        fp.write("City error at " + current_time + ".")
                         fp.close()
 
             finalmessage = messageHeader + '\n'.join(weatherEvaluation) + messageFooter
