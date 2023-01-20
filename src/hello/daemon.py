@@ -73,7 +73,7 @@ class Daemon():
         try:   
             server = smtplib.SMTP('smtp.gmail.com', 587)
             server.starttls()
-            server.login('smukhyala@gmail.com', 'ubyhrajhjgjobelv')#random gibberish is google generated
+            server.login('smukhyala@gmail.com', 'ubyhrajhjgjobelv')#random gibberish is google generated, go to google passwords for gmail
             server.send_message(msg)
         except Exception as e:
             with open(dirpath + "DaemonErrors.log", "a") as fp:
