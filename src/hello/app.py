@@ -141,8 +141,8 @@ class DemoApp(toga.App):
         activityListLabel = toga.Label('Your activities:')
         activityListLabel.style.update(width = 300, padding = 10, font_size = 60)
         box.add(activityListLabel)
-        activityList = toga.Label(data = data['activities']['title'])
-        activityListLabel.style.update(width = 300, padding = 10, font_size = 60)
+        activityList = toga.Label(self.mainData["activities"]])
+        activityListLabel.style.update(width = 300, padding = 10, font_size = 40)
         box.add(activityList)
         return box
 
