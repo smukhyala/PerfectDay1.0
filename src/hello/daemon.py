@@ -124,6 +124,7 @@ class Daemon():
     
         ### Defining and sorting through the dictionary values
         for forecast in weatherData['list']:
+            print(forecast["main"])
             temp_kelvin = forecast['main']['temp']
             low_temp_kelvin = forecast['main']['temp_min']
             high_temp_kelvin = forecast['main']['temp_max']
