@@ -141,13 +141,14 @@ class DemoApp(toga.App):
         button3.style.update(width = 300, padding = 20, alignment = 'center', font_size = 18)
         box.add(button3)
 
+        subtitles = [activity['title'] for activity in self.mainData['activities']]
+        subtitle_str = ', '.join(subtitles)
         activityListLabel = toga.Label('Your activities:')
         activityListLabel.style.update(width = 300, padding = 10, font_size = 60)
         box.add(activityListLabel)
 
-        #Detailed activity list won't work
-        activityList = toga.Label(self.mainData["activities"])
-        activityListLabel.style.update(width = 300, padding = 10, font_size = 40)
+        activityList = toga.Label(subtitle_str)
+        activityListLabel.style.update(width = 300, padding = 20, font_size = 40)
         box.add(activityList)
 
         return box
