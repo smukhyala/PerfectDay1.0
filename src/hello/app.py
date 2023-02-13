@@ -30,6 +30,7 @@ def buildUI():
     mainContainer = toga.ScrollContainer(content = main_box, horizontal = False, vertical = True)
     return mainContainer
 
+### TOGA SETUP
 class DemoApp(toga.App):
     ### Defining the main window for app + hosting selected data
     main_box = None
@@ -54,6 +55,7 @@ class DemoApp(toga.App):
             dataP = json.load(f)
             f.close()
 
+        ### Temporary hardcoded
         else:
             dataP = {
                 "user": "Person",
@@ -104,6 +106,7 @@ class DemoApp(toga.App):
             }
         self.mainData = dataP
 
+    #Startup
     def startup(self):
         ### check if file exists AllActivities.json
         self.existingActivities()
@@ -118,6 +121,7 @@ class DemoApp(toga.App):
         self.main_window.content = self.box
         self.main_window.show()
 
+    ### Home Page
     def mainPage (self):
         box = toga.Box(style=Pack(direction=COLUMN))
 
@@ -153,6 +157,7 @@ class DemoApp(toga.App):
 
         return box
 
+    ### Error Messages
     def errorLog(self):
         file_exists_log = exists(dirpath + "DaemonErrors.log")
 
@@ -179,6 +184,7 @@ class DemoApp(toga.App):
 
         return(box)
 
+    ### Delete page
     def yesNoDeletePerfect (self):
         box = toga.Box(style=Pack(direction=COLUMN))
 
@@ -212,6 +218,7 @@ class DemoApp(toga.App):
 
         return(box)
 
+    ### Total activities
     def totalActivitiesList (self):
         box = toga.Box(style=Pack(direction=COLUMN))
 
@@ -231,6 +238,7 @@ class DemoApp(toga.App):
 
         return(box)
     
+    ### Name Email
     def editNameAndEmail (self):
         user_name = "Default"
         user_email = "default@example.com"
@@ -286,6 +294,7 @@ class DemoApp(toga.App):
         
         return(box)
 
+    ### Activity Setup
     def ActivityMakerPage (self):
         data = self.mainData
 
@@ -473,6 +482,7 @@ class DemoApp(toga.App):
         
         return(box)
     
+    ### Page Change Handlers
     def handle_btn_goto_Activity(self, widget):
         box = self.ActivityMakerPage()
         self.box.remove(self.box.children[0])
