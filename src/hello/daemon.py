@@ -41,7 +41,6 @@ class Daemon():
         if file_exists:
             f = open(dirpath + "AllActivities.json", "r")
             data = json.load(f)
-            #print("daemon" + dirpath + "AllActivities.json")
         else:
             data = {
                 "user": "User",
@@ -93,12 +92,13 @@ class Daemon():
             for activity in grabbedData["activities"]:
                 try:
                     goodDays = f'\n'.join(self.judgeWeather(activity))
-                    weatherEvaluation.append(self.PerfectDaysFormatting(goodDays, activity["title"], activity["subtitle"]))
+                    city_forecast = self.fetchCityData(activity["CityChoice"])
+                    weatherEvaluation.append(self.PerfectDaysFormatting(goodDays, activity["title"], activity["subtitle"], city_forecast['list'][0]['weather'][0]['description'], city_forecast[list][0]['weather'][0]['main']))
                     allActivities.append({'title':f"{activity['ActivityChoice']} in {activity['CityChoice']}",'subtitle':goodDays,'icon':''})
                 except Exception as e:
                     weatherEvaluation = "Unfortunately, we have ran into some issues processing your city request. Please check to make sure the information you entered is correct."
                     with open(dirpath + "DaemonErrors.log", "a") as fp:
-                        fp.write("City error at " + current_time + ".")
+                        fp.write("City error at " + current_time + ". ")
                         fp.close()
 
             finalmessage = messageHeader + '\n'.join(weatherEvaluation) + messageFooter
@@ -124,13 +124,13 @@ class Daemon():
     
         ### Defining and sorting through the dictionary values
         for forecast in weatherData['list']:
-            print(forecast["main"])
             temp_kelvin = forecast['main']['temp']
             low_temp_kelvin = forecast['main']['temp_min']
             high_temp_kelvin = forecast['main']['temp_max']
             feels_temp_kelvin = forecast['main']['feels_like']
             humidity = forecast['main']['humidity']
             description = forecast['weather'][0]['description']
+            main = forecast['weather'][0]['main']
             wind_speed = forecast['wind']['speed']
 
             ### Using the temperature conversion
@@ -178,8 +178,10 @@ class Daemon():
 
         return goodDays
 
-    def PerfectDaysFormatting(self, newGoodDays, City, Activity):
+    def PerfectDaysFormatting(self, newGoodDays, City, Activity, main, description):
         finalsubtitle = []
+        textmain = main
+        textdescription = description
         newGoodDays = (newGoodDays.split("\n"))
         for time in newGoodDays:
                 #Day ending
@@ -252,6 +254,6 @@ class Daemon():
             elif time[5] == "1" and time[6] == "2":
                 time = " December " + time[8:] + ", " + time[:4]
 
-            finalsubtitle.append(time + " for " + City + " in " + Activity + ".")
+            finalsubtitle.append(textmain + ", " + textdescription + " at " + time + " for " + City + " in " + Activity + ".")
         
         return("\n".join(finalsubtitle))
