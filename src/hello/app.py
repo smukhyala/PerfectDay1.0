@@ -18,7 +18,7 @@ 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 <- git key
 """
 
 #Todo:
-#Add custom icons, add more weather conditions, add activity list, then major clean up
+#Add custom icons, add more weather conditions, remove hardcoded data, then major clean up
 #PerfectDay 1.1 Save weather now
 
 ### temporary directory for first time use / setting up file system on the default device
@@ -125,7 +125,7 @@ class DemoApp(toga.App):
     def mainPage (self):
         box = toga.Box(style=Pack(direction=COLUMN))
 
-        label = toga.Label('PerfectDay')
+        label = toga.Label('Welcome')
         label.style.update(width = 300, padding = 10, alignment = 'center', font_size = 60)
         box.add(label)
 
@@ -148,7 +148,7 @@ class DemoApp(toga.App):
         subtitles = [activity['title'] for activity in self.mainData['activities']]
         subtitle_str = ', '.join(subtitles)
         activityListLabel = toga.Label('Your activities:')
-        activityListLabel.style.update(width = 300, padding = 10, font_size = 60)
+        activityListLabel.style.update(width = 300, padding = 10, alignment = "center", font_size = 60)
         box.add(activityListLabel)
 
         activityList = toga.Label(subtitle_str)
