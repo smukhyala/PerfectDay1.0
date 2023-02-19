@@ -157,6 +157,7 @@ class DemoApp(toga.App):
                 current_line += subtitle + ("\n" if i < len(subtitles)-1 else "")
         subtitleLines.append(current_line.strip())
         subtitleStr = "\n".join(subtitleLines)
+        #fix enumeration
         
         activityListLabel = toga.Label('Your activities:')
         activityListLabel.style.update(width = 300, padding = 10, alignment = "center", font_size = 60)
