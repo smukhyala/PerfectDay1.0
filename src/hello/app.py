@@ -146,12 +146,23 @@ class DemoApp(toga.App):
         box.add(button3)
 
         subtitles = [activity['title'] for activity in self.mainData['activities']]
-        subtitle_str = ', '.join(subtitles)
+        maxLength = 50
+        subtitleLines = []
+        current_line = ""
+        for i, subtitle in enumerate(subtitles):
+            if len(current_line + subtitle) > maxLength:
+                subtitleLines.append(current_line.strip())
+                current_line = subtitle + ("\n" if i < len(subtitles)-1 else "")
+            else:
+                current_line += subtitle + ("\n" if i < len(subtitles)-1 else "")
+        subtitleLines.append(current_line.strip())
+        subtitleStr = "\n".join(subtitleLines)
+        
         activityListLabel = toga.Label('Your activities:')
         activityListLabel.style.update(width = 300, padding = 10, alignment = "center", font_size = 60)
         box.add(activityListLabel)
 
-        activityList = toga.Label(subtitle_str)
+        activityList = toga.Label(subtitleStr)
         activityListLabel.style.update(width = 300, padding = 20, font_size = 40)
         box.add(activityList)
 
