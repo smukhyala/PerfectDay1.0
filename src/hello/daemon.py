@@ -93,7 +93,9 @@ class Daemon():
                 try:
                     goodDays = f'\n'.join(self.judgeWeather(activity))
                     city_forecast = self.fetchCityData(activity["CityChoice"])
+                    #problem here
                     weatherEvaluation.append(self.PerfectDaysFormatting(goodDays, activity["title"], activity["subtitle"], city_forecast['list'][0]['weather'][0]['description'], city_forecast[list][0]['weather'][0]['main']))
+                    print("4")
                     allActivities.append({'title':f"{activity['ActivityChoice']} in {activity['CityChoice']}",'subtitle':goodDays,'icon':''})
                 except Exception as e:
                     weatherEvaluation = "Unfortunately, we have ran into some issues processing your city request. Please check to make sure the information you entered is correct."
