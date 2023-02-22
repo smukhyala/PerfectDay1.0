@@ -18,7 +18,7 @@ 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 <- git key
 """
 
 #Todo:
-#Add custom icons, add more weather conditions, remove hardcoded data, then major clean up
+#Add custom icons, fix new lines per activity, add more weather conditions (finalize), remove hardcoded data, then major clean up
 #PerfectDay 1.1 Save weather now
 
 ### temporary directory for first time use / setting up file system on the default device
@@ -125,8 +125,8 @@ class DemoApp(toga.App):
     def mainPage (self):
         box = toga.Box(style=Pack(direction=COLUMN))
 
-        label = toga.Label('Welcome')
-        label.style.update(width = 300, padding = 10, alignment = 'center', font_size = 60)
+        label = toga.Label('Welcome to PerfectDay!')
+        label.style.update(width = 300, padding_left = 10, padding_right = 10, padding_top = 25, padding_bottom = 25, font_size = 30, alignment = 'center')
         box.add(label)
 
         button = toga.Button("Go to activity maker", on_press=self.handle_btn_goto_Activity)
@@ -167,7 +167,7 @@ class DemoApp(toga.App):
         subtitleStr = "\n".join(subtitleLines)
         
         activityListLabel = toga.Label('Your activities:')
-        activityListLabel.style.update(width = 300, padding = 10, alignment = "center", font_size = 60)
+        activityListLabel.style.update(width = 300, padding = 10, padding_left = 20, alignment = "center", font_size = 60)
         box.add(activityListLabel)
 
         activityList = toga.Label(subtitleStr)
