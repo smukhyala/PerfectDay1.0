@@ -94,9 +94,13 @@ class Daemon():
                     goodDays = f'\n'.join(self.judgeWeather(activity))
                     city_forecast = self.fetchCityData(activity["CityChoice"])
                     #problem here
-                    weatherEvaluation.append(self.PerfectDaysFormatting(goodDays, activity["title"], activity["subtitle"], city_forecast['list'][0]['weather'][0]['description'], city_forecast[list][0]['weather'][0]['main']))
-                    print("4")
+                    main = city_forecast['list'][0]['weather'][0]['description']
+                    desc = city_forecast[list][0]['weather'][0]['main']
+                    print("1")
+                    weatherEvaluation.append(self.PerfectDaysFormatting(goodDays, activity["title"], activity["subtitle"], "a", "b"))
+                    print("2")
                     allActivities.append({'title':f"{activity['ActivityChoice']} in {activity['CityChoice']}",'subtitle':goodDays,'icon':''})
+                    print("3")
                 except Exception as e:
                     weatherEvaluation = "Unfortunately, we have ran into some issues processing your city request. Please check to make sure the information you entered is correct."
                     with open(dirpath + "DaemonErrors.log", "a") as fp:
