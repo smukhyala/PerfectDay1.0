@@ -171,7 +171,7 @@ class DemoApp(toga.App):
         box.add(activityListLabel)
 
         activityList = toga.Label(subtitleStr)
-        activityListLabel.style.update(width = 300, padding = 20, font_size = 40)
+        activityListLabel.style.update(width = 300, padding = 20, padding_left = 30, font_size = 40)
         box.add(activityList)
 
         return box
@@ -456,7 +456,7 @@ class DemoApp(toga.App):
        
         activityInput = toga.TextInput(placeholder = "Soccer, hiking, running, picnic, etc...")
         activityInput.style.update(width = 300, padding_left = 10, padding_bottom = 10)
-        activityLabel = toga.Label('Add an activity:', style=Pack(text_align = "left"))
+        activityLabel = toga.Label('Activity Name:', style=Pack(text_align = "left"))
         activityLabel.style.update(padding_left = 10, padding_right = 10, padding_top = 5)
        
         def activityLabelSaveFunction(widget):
