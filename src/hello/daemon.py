@@ -87,7 +87,7 @@ class Daemon():
         allActivities = []
         weatherEvaluation = ""
         if "activities" in grabbedData.keys():
-            messageHeader = "Hello there " + data["user"] + "!\nWelcome back to PerfectDay. This is a reminder about each of your upcoming PerfectDays. Your PerfectDays are \n\n"
+            messageHeader = "Hello there " + data["user"] + "!\nWelcome back to PerfectDay. This is a reminder about each of your upcoming PerfectDays. Your PerfectDays are... \n\n"
             messageFooter = "\n\nPlease contact smukhyala@gmail.com for any questions or support. Also, please leave a review and rating on your app store. Have a PerfectDay!\n\nThank you, \nSanjay Mukhyala, PerfectDay Team"
             for activity in grabbedData["activities"]:
                 try:
@@ -258,6 +258,6 @@ class Daemon():
             elif time[5] == "1" and time[6] == "2":
                 time = " December " + time[8:] + ", " + time[:4]
 
-            finalsubtitle.append(textmain + ", " + textdescription + " at " + time + " for " + City + " in " + Activity + ".")
-        
+            finalsubtitle.append(textdescription + " (" + textmain + ")\n" + time + " for " + City + " in " + Activity + ".\n\n")
+         
         return("\n".join(finalsubtitle))
