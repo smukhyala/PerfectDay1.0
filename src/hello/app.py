@@ -18,7 +18,7 @@ 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 <- git key
 """
 
 #Todo:
-#Add custom icons, fix new lines per activity, handle button spam, figure out why always throws exception, add more weather conditions (finalize), remove hardcoded data, then major clean up
+#Add custom icons, handle button spam, remove hardcoded data, then major clean up
 #PerfectDay 1.1 Save weather now
 
 ### temporary directory for first time use / setting up file system on the default device
