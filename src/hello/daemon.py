@@ -85,7 +85,7 @@ class Daemon():
         print("Starting job at", current_time)
         grabbedData = self.getData()
         allActivities = []
-        weatherEvaluation = []
+        weatherEvaluation = ""
         if "activities" in grabbedData.keys():
             messageHeader = "Hello there " + data["user"] + "!\nWelcome back to PerfectDay. This is a reminder about each of your upcoming PerfectDays. Your PerfectDays are \n\n"
             messageFooter = "\n\nPlease contact smukhyala@gmail.com for any questions or support. Also, please leave a review and rating on your app store. Have a PerfectDay!\n\nThank you, \nSanjay Mukhyala, PerfectDay Team"
@@ -95,19 +95,17 @@ class Daemon():
                     city_forecast = self.fetchCityData(activity["CityChoice"])
                     #problem here
                     main = city_forecast['list'][0]['weather'][0]['description']
-                    desc = city_forecast[list][0]['weather'][0]['main']
-                    print("1")
-                    weatherEvaluation.append(self.PerfectDaysFormatting(goodDays, activity["title"], activity["subtitle"], "a", "b"))
-                    print("2")
+                    desc = city_forecast['list'][0]['weather'][0]['main']
+                    weatherEvaluation = weatherEvaluation + self.PerfectDaysFormatting(goodDays, activity["title"], activity["subtitle"], main, desc)
                     allActivities.append({'title':f"{activity['ActivityChoice']} in {activity['CityChoice']}",'subtitle':goodDays,'icon':''})
-                    print("3")
                 except Exception as e:
                     weatherEvaluation = "Unfortunately, we have ran into some issues processing your city request. Please check to make sure the information you entered is correct."
                     with open(dirpath + "DaemonErrors.log", "a") as fp:
                         fp.write("City error at " + current_time + ". ")
+                        print(e)
                         fp.close()
 
-            finalmessage = messageHeader + '\n'.join(weatherEvaluation) + messageFooter
+            finalmessage = messageHeader + weatherEvaluation + messageFooter
             self.sendMail(finalmessage)
             f = open(dirpath + "PerfectDays.json", "w")
             json.dump(allActivities, f, indent = 4)
