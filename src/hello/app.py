@@ -464,7 +464,7 @@ class DemoApp(toga.App):
             
             else:
                 uniqueErrorLabel = toga.Label("Try again, you have entered the same combination of city and activity.")
-                uniqueErrorLabel.style.update(padding = 100)
+                uniqueErrorLabel.style.update(padding = 100, padding_top = 800)
                 uniqueErrorWindow = toga.Window()
                 uniqueErrorWindow.app = toga.App('Hello', 'org.SanjayMukhyala.PerfectDay', startup = buildUI)
                 uniqueErrorWindow.content = uniqueErrorLabel
