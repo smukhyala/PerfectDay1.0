@@ -146,7 +146,6 @@ class DemoApp(toga.App):
         box.add(button3)
 
         subtitles = [activity['title'] for activity in self.mainData['activities']]
-        subtitleStr = ", ".join(subtitles)
         
         activityListLabel = toga.Label('Your activities:')
         activityListLabel.style.update(width = 300, padding = 10, padding_left = 20, alignment = "center", font_size = 40)
@@ -154,7 +153,7 @@ class DemoApp(toga.App):
 
         for title in subtitles:
            label = toga.Label(title)
-           label.style.update(width = 300, height = 100, padding = 20, padding_left = 30, font_size = 16)
+           label.style.update(width = 300, height = 20, padding = 20, padding_left = 30, font_size = 16)
            box.add(label)
 
         return box
@@ -414,11 +413,22 @@ class DemoApp(toga.App):
         
         def selection_handler(widget, row):
             return row
+
+        def isFilled():
+            return user_data.get("ActivityChoice") and user_data.get("CityChoice")
+
+        def activityChange(widget):
+            user_data["ActivityChoice"] = widget.value
+            mainBlockSave.enabled = isFilled()
+
+        def cityChange(widget):
+            user_data["CityChoice"] = widget.value
+            mainBlockSave.enabled = isFilled()
         
         activityList = toga.DetailedList(data = data["activities"], on_select = selection_handler)
         activityList.style.update(width = 300, height = 100, padding_left = 20, padding_bottom = 5)
         
-        cityInput = toga.TextInput(placeholder = "Brooklyn, Houston, etc...")
+        cityInput = toga.TextInput(placeholder = "Brooklyn, Houston, etc...", on_change = activityChange)
         cityInput.style.update(width = 300, padding_left = 10, padding_bottom = 5)
        
         def updateCityText():
@@ -437,7 +447,7 @@ class DemoApp(toga.App):
         box.add(cityLabel)
         box.add(cityInput)
        
-        activityInput = toga.TextInput(placeholder = "Soccer, hiking, running, picnic, etc...")
+        activityInput = toga.TextInput(placeholder = "Soccer, hiking, running, picnic, etc...", on_change = cityChange)
         activityInput.style.update(width = 300, padding_left = 10, padding_bottom = 10)
         activityLabel = toga.Label('Activity Name:', style=Pack(text_align = "left"))
         activityLabel.style.update(padding_left = 10, padding_right = 10, padding_top = 5)
@@ -463,18 +473,19 @@ class DemoApp(toga.App):
                     activityList.data = data["activities"]
             
             else:
-                uniqueErrorLabel = toga.Label("Try again, you have entered the same combination of city and activity.")
-                uniqueErrorLabel.style.update(padding = 100, padding_top = 800)
-                uniqueErrorWindow = toga.Window()
-                uniqueErrorWindow.app = toga.App('Hello', 'org.SanjayMukhyala.PerfectDay', startup = buildUI)
-                uniqueErrorWindow.content = uniqueErrorLabel
-                uniqueErrorWindow.show()
-        
+                widget.window.info_dialog(
+                    title="Error",
+                    message="Try again, you have entered the same combination of city and activity."
+                )
+                
         def resetSliders(widget):
             mainBlockSaveFunction(widget)
         
-        mainBlockSave = toga.Button("Save Preferences", on_press = resetSliders)
+        mainBlockSave = toga.Button("Save Preferences", on_press = resetSliders, enabled=False)
         mainBlockSave.style.update(width = 300, padding_left = 10, padding_right = 10, padding_top = 5)
+
+        if isFilled():
+            mainBlockSave.enabled = True
         
         buttonBack = toga.Button("Go back home", on_press=self.handle_btn_goto_Main)
         buttonBack.style.update(width = 300, padding = 10, padding_right = 10, padding_top = 5)
