@@ -62,21 +62,7 @@ class DemoApp(toga.App):
                 "email": "smukhyala@gmail.com",
                 "activities": [
                     {
-                        "title": "EmailTestingOct11",
-                        "subtitle": "Houston",
-                        "icon": "",
-                        "HighTemp": 100,
-                        "LowTemp": 0.0,
-                        "HighWind": 100,
-                        "LowWind": 0.0,
-                        "HighHumidity": 100,
-                        "LowHumidity": 0.0,
-                        "ActivityChoice": "EmailTestoct11",
-                        "CityChoice": "Houston",
-                        "user_name": "Default"
-                    },
-                    {
-                        "title": "10/19/22",
+                        "title": "Auto",
                         "subtitle": "Brooklyn",
                         "icon": "",
                         "HighTemp": 91.00000262260437,
@@ -88,19 +74,6 @@ class DemoApp(toga.App):
                         "ActivityChoice": "10/19/22",
                         "CityChoice": "Brooklyn",
                         "user_name": "Default"
-                    },
-                    {
-                        "title": "Nov7",
-                        "subtitle": "Caracas",
-                        "icon": "",
-                        "HighTemp": 92.00000166893005,
-                        "LowTemp": 15.000000596046448,
-                        "HighWind": 89.99999761581421,
-                        "LowWind": 10.000000149011612,
-                        "HighHumidity": 85.00000238418579,
-                        "LowHumidity": 18.000000715255737,
-                        "ActivityChoice": "Nov7",
-                        "CityChoice": "Caracas"
                     }
                 ]
             }
