@@ -102,7 +102,7 @@ class DemoApp(toga.App):
         box.add(view)
 
         label = toga.Label('Welcome to PerfectDay!')
-        label.style.update(width = 300, padding_left = 10, padding_right = 10, padding_top = 25, padding_bottom = 25, font_size = 30, alignment = 'center')
+        label.style.update(width = 300, padding_left = 10, padding_right = 10, padding_top = 25, padding_bottom = 25, font_size = 25, alignment = 'center')
         box.add(label)
 
         button = toga.Button("Go to activity maker", on_press=self.handle_btn_goto_Activity)
