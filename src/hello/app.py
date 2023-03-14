@@ -98,6 +98,9 @@ class DemoApp(toga.App):
     def mainPage (self):
         box = toga.Box(style=Pack(direction=COLUMN))
 
+        view = toga.ImageView(id='view1', image="icons/skycloud.png")
+        box.add(view)
+
         label = toga.Label('Welcome to PerfectDay!')
         label.style.update(width = 300, padding_left = 10, padding_right = 10, padding_top = 25, padding_bottom = 25, font_size = 30, alignment = 'center')
         box.add(label)
