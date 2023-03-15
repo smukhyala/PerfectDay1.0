@@ -100,6 +100,7 @@ class DemoApp(toga.App):
         box = toga.Box(style=Pack(direction=COLUMN))
 
         view = toga.ImageView(id='view1', image="skycloud.png")
+        view.style.update(padding = 50, z_index = 10)
         box.add(view)
 
         label = toga.Label('Welcome to PerfectDay!')
