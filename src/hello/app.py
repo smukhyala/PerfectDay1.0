@@ -9,6 +9,7 @@ from toga.colors import *
 from toga.fonts import *
 import tempfile
 import asyncio
+import os
 from .daemon import *
 from os.path import exists
 
@@ -98,7 +99,7 @@ class DemoApp(toga.App):
     def mainPage (self):
         box = toga.Box(style=Pack(direction=COLUMN))
 
-        view = toga.ImageView(id='view1', image="icons/skycloud.png")
+        view = toga.ImageView(id='view1', image="skycloud.png")
         box.add(view)
 
         label = toga.Label('Welcome to PerfectDay!')
