@@ -7,6 +7,7 @@ from toga.style import Pack
 from toga.style.pack import *
 from toga.colors import *
 from toga.fonts import *
+from toga.resources import Icon
 import tempfile
 import asyncio
 import os
@@ -33,6 +34,7 @@ def buildUI():
 
 ### TOGA SETUP
 class DemoApp(toga.App):
+
     ### Defining the main window for app + hosting selected data
     main_box = None
     mainData = None
@@ -83,6 +85,10 @@ class DemoApp(toga.App):
     #Startup
     def startup(self):
         ### check if file exists AllActivities.json
+
+        new_icon = Icon('resources/logo.ico')
+        self.icon = new_icon
+
         self.existingActivities()
         self.main_window = toga.MainWindow(title="PerfectDay")
         self.box = toga.Box()
@@ -99,7 +105,7 @@ class DemoApp(toga.App):
     def mainPage (self):
         box = toga.Box(style=Pack(direction=COLUMN))
 
-        view = toga.ImageView(id='view1', image="skycloud.png")
+        view = toga.ImageView(image="resources/logo.jpeg")
         view.style.update(padding = 50, z_index = 10)
         box.add(view)
 
