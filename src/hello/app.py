@@ -107,7 +107,6 @@ class DemoApp(toga.App):
 
         view = toga.ImageView(image="resources/logo.jpeg")
         view.style.update(padding = 50, z_index = 10)
-        box.add(view)
 
         label = toga.Label('Welcome to PerfectDay!')
         label.style.update(width = 300, padding_left = 10, padding_right = 10, padding_top = 25, padding_bottom = 25, font_size = 25, alignment = 'center')
@@ -134,6 +133,8 @@ class DemoApp(toga.App):
         activityListLabel = toga.Label('Your activities:')
         activityListLabel.style.update(width = 300, padding = 10, padding_left = 20, alignment = "center", font_size = 40)
         box.add(activityListLabel)
+
+        box.add(view)
 
         for title in subtitles:
            label = toga.Label(title)
