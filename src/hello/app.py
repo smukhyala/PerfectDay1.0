@@ -134,7 +134,7 @@ class DemoApp(toga.App):
         activityListLabel.style.update(width = 300, padding = 10, padding_left = 20, alignment = "center", font_size = 40)
         box.add(activityListLabel)
 
-        #DWNCBDLSCUQBFOLBQSLDCNUQILWBDUIQS DC
+        #DWNCBDLSCUQBFOLBQSLDCNUQILWBDUIQS DCuyguuogiugi
         box.add(view)
 
         for title in subtitles:
