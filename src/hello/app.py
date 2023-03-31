@@ -105,7 +105,7 @@ class DemoApp(toga.App):
     def mainPage (self):
         box = toga.Box(style=Pack(direction=COLUMN))
 
-        view = toga.ImageView(image="resources/logo.jpeg")
+        view = toga.ImageView(image="resources/hello.png")
         view.style.update(padding = 50, z_index = 10)
 
         label = toga.Label('Welcome to PerfectDay!')
