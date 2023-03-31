@@ -132,10 +132,12 @@ class DemoApp(toga.App):
         
         activityListLabel = toga.Label('Your activities:')
         activityListLabel.style.update(width = 300, padding = 10, padding_left = 20, alignment = "center", font_size = 40)
-        box.add(activityListLabel)
+        #box.add(activityListLabel)
 
         #DWNCBDLSCUQBFOLBQSLDCNUQILWBDUIQS DCuyguuogiugi
+        print("1")
         box.add(view)
+        print("2")
 
         for title in subtitles:
            label = toga.Label(title)
