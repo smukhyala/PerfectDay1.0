@@ -20,6 +20,7 @@ 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 <- git key
 """
 
 #Todo:
+#ASAP: IMAGE, ICON, TITLE
 #Add custom icons, handle button spam, remove hardcoded data, then major clean up
 #PerfectDay 1.1 Save weather now
 
