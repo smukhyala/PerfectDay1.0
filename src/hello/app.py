@@ -21,7 +21,7 @@ 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 <- git key
 
 #Todo:
 #ASAP: IMAGE, ICON, TITLE
-#Add custom icons, handle button spam, remove hardcoded data, then major clean up
+#Add custom icon for app, handle button spam, then major clean up
 #PerfectDay 1.1 Save weather now
 
 ### temporary directory for first time use / setting up file system on the default device
@@ -66,18 +66,6 @@ class DemoApp(toga.App):
                 "email": "smukhyala@gmail.com",
                 "activities": [
                     {
-                        "title": "Auto",
-                        "subtitle": "Brooklyn",
-                        "icon": "",
-                        "HighTemp": 91.00000262260437,
-                        "LowTemp": 0.0,
-                        "HighWind": 97.00000286102295,
-                        "LowWind": 0.0,
-                        "HighHumidity": 87.00000047683716,
-                        "LowHumidity": 11.999999731779099,
-                        "ActivityChoice": "10/19/22",
-                        "CityChoice": "Brooklyn",
-                        "user_name": "Default"
                     }
                 ]
             }
