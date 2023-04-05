@@ -7,7 +7,7 @@ from toga.style import Pack
 from toga.style.pack import *
 from toga.colors import *
 from toga.fonts import *
-from toga.resources import Icon
+from toga.images import *
 import tempfile
 import asyncio
 import os
@@ -86,10 +86,6 @@ class DemoApp(toga.App):
     #Startup
     def startup(self):
         ### check if file exists AllActivities.json
-
-        new_icon = Icon('resources/logo.ico')
-        self.icon = new_icon
-
         self.existingActivities()
         self.main_window = toga.MainWindow(title="PerfectDay")
         self.box = toga.Box()
@@ -106,8 +102,12 @@ class DemoApp(toga.App):
     def mainPage (self):
         box = toga.Box(style=Pack(direction=COLUMN))
 
-        view = toga.ImageView(image="resources/hello.png")
-        view.style.update(padding = 50, z_index = 10)
+        newimage = toga.Image(path="/Users/sanjay/projects/python_coding/beeware/hello/src/hello/resources/logo.jpeg")
+
+        view = toga.ImageView(id = "view1", image=newimage, style=Pack(width=100, height=100))
+        #view.style.update(padding = 50)
+
+        box.add(view)
 
         label = toga.Label('Welcome to PerfectDay!')
         label.style.update(width = 300, padding_left = 10, padding_right = 10, padding_top = 25, padding_bottom = 25, font_size = 25, alignment = 'center')
@@ -134,11 +134,6 @@ class DemoApp(toga.App):
         activityListLabel = toga.Label('Your activities:')
         activityListLabel.style.update(width = 300, padding = 10, padding_left = 20, alignment = "center", font_size = 40)
         #box.add(activityListLabel)
-
-        #DWNCBDLSCUQBFOLBQSLDCNUQILWBDUIQS DCuyguuogiugi
-        print("1")
-        box.add(view)
-        print("2")
 
         for title in subtitles:
            label = toga.Label(title)

@@ -4,14 +4,14 @@ bundle = "com.example"
 version = "0.0.1"
 url = "https://example.com/hello"
 license = "BSD license"
-author = 'Jane Developer'
-author_email = "jane@example.com"
+author = 'Sanjay Mukhyala'
+author_email = "smukhyala@gmail.com"
 include-package-data = true
 
 [tool.briefcase.app.hello]
-formal_name = "hello"
-description = "My first application"
-icon = "src/hello/resources/hello"
+formal_name = "PerfectDay"
+description = "Finding the Perfect Days for your outdoor activities."
+icon = "resources/logo"
 sources = ['src/hello']
 requires = [
     "requests>=2.28.1",
@@ -44,6 +44,7 @@ requires = [
 
 # Mobile deployments
 [tool.briefcase.app.hello.iOS]
+icon = "resources/logo"
 requires = [
     'toga-iOS>=0.3.0.dev34',
     'std-nslog~=1.0.0',
