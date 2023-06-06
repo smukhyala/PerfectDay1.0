@@ -66,6 +66,7 @@ class DemoApp(toga.App):
                 "email": "smukhyala@gmail.com",
                 "activities": [
                     {
+                        "title":""
                     }
                 ]
             }
@@ -90,12 +91,12 @@ class DemoApp(toga.App):
     def mainPage (self):
         box = toga.Box(style=Pack(direction=COLUMN))
 
-        newimage = toga.Image(path="/Users/sanjay/projects/python_coding/beeware/hello/src/hello/resources/logo.jpeg")
+        #newimage = toga.Image(path="/Users/sanjay/projects/python_coding/beeware/hello/src/hello/resources/logo.jpeg")
 
-        view = toga.ImageView(id = "view1", image=newimage, style=Pack(width=100, height=100))
+        #view = toga.ImageView(id = "view1", image=newimage, style=Pack(width=100, height=100))
         #view.style.update(padding = 50)
 
-        box.add(view)
+        #box.add(view)
 
         label = toga.Label('Welcome to PerfectDay!')
         label.style.update(width = 300, padding_left = 10, padding_right = 10, padding_top = 25, padding_bottom = 25, font_size = 25, alignment = 'center')
