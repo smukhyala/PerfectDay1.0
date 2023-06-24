@@ -35,6 +35,7 @@ system_requires = [
     'libpango1.0-dev',
     'libwebkitgtk-3.0-0',
     'gir1.2-webkit-3.0',
+    'libffi-dev'
 ]
 
 [tool.briefcase.app.hello.windows]
