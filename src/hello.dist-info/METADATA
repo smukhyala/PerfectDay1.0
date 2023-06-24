@@ -2,9 +2,9 @@ Metadata-Version: 2.1
 Briefcase-Version: 0.3.8
 Name: hello
 Formal-Name: hello
-App-ID: com.example.hello
+App-ID: com.sanjaymukhyala.PerfectDay
 Version: 0.0.1
-Home-page: https://example.com/hello
-Author: Jane Developer
-Author-email: jane@example.com
-Summary: My first application
+Home-page: https://github.com/smukhyala/PerfectDay
+Author: Sanjay MUkhyala
+Author-email: smukhyala@gmail.com
+Summary: Perfect Day informs you when it's a perfect day for your activities!
