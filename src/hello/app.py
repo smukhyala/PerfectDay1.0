@@ -222,7 +222,8 @@ class DemoApp(toga.App):
         user_email = "default@example.com"
         data = self.mainData
         box = toga.Box(style=Pack(direction=COLUMN))
-        nameInput = toga.TextInput(placeholder = "James Alan, John Smith, etc...", on_lose_focus = self.on_lose_focus_F)
+        nameInput = toga.TextInput(placeholder = "James Alan, John Smith, etc...")
+        nameInput.on_exit = self.on_lose_focus_F
         nameInput.style.update(width = 300, padding_left = 10)
 
         def updateNameText():
@@ -235,7 +236,8 @@ class DemoApp(toga.App):
         nameLabel = toga.Label(f'Hi {user_name}. Change your name:', style=Pack(text_align = "left"))
         nameLabel.style.update(padding_left = 10, padding_right = 10)
 
-        emailInput = toga.TextInput(placeholder = "james.alan99@gmail.com, JohnSmith123@hotmail.com, etc...", on_lose_focus = self.on_lose_focus_F)
+        emailInput = toga.TextInput(placeholder = "james.alan99@gmail.com, JohnSmith123@hotmail.com, etc...")
+        emailInput.on_exit = self.on_lose_focus_F
         emailInput.style.update(width = 300, padding_left = 10)
 
         def changeEmailFunction(widget):
@@ -407,7 +409,8 @@ class DemoApp(toga.App):
         activityList = toga.DetailedList(data = data["activities"], on_select = selection_handler)
         activityList.style.update(width = 300, height = 100, padding_left = 20, padding_bottom = 5)
         
-        cityInput = toga.TextInput(placeholder = "Brooklyn, Houston, etc...", on_change = activityChange, on_lose_focus = self.on_lose_focus_F)
+        cityInput = toga.TextInput(placeholder = "Brooklyn, Houston, etc...", on_change = activityChange)
+        cityInput.on_exit = self.on_lose_focus_F
         cityInput.style.update(width = 300, padding_left = 10, padding_bottom = 5)
        
         def updateCityText():
@@ -426,7 +429,8 @@ class DemoApp(toga.App):
         box.add(cityLabel)
         box.add(cityInput)
        
-        activityInput = toga.TextInput(placeholder = "Soccer, hiking, running, picnic, etc...", on_change = cityChange, on_lose_focus = self.on_lose_focus_F)
+        activityInput = toga.TextInput(placeholder = "Soccer, hiking, running, picnic, etc...", on_change = cityChange)
+        activityInput.on_exit = self.on_lose_focus_F
         activityInput.style.update(width = 300, padding_left = 10, padding_bottom = 10)
         activityLabel = toga.Label('Activity Name:', style=Pack(text_align = "left"))
         activityLabel.style.update(padding_left = 10, padding_right = 10, padding_top = 5)
