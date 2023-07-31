@@ -13,6 +13,8 @@ import asyncio
 import os
 from .daemon import *
 from os.path import exists
+#from toga.handlers import on_touch_down
+
 
 """
 PerfectDay, IOS app by Sanjay Mukhyala 2023.
@@ -40,13 +42,22 @@ class DemoApp(toga.App):
     def on_lose_focus_F(self, widget):
         widget.app.hide_keyboard()
 
+    def on_press_handler(self, widget):
+        if widget is not None and not isinstance(widget, toga.TextInput):
+            self.hide_keyboard()
+
+    def on_touch_down_handler(self, widget, **kwargs):
+        # Check if the widget that was tapped is not a TextInput widget
+        if widget is None or not isinstance(widget, toga.TextInput):
+            self.hide_keyboard()
+
     ### asyncronous task set-up
     async def do_background_task(self, widget, **kwargs):
         d = Daemon()
         while True:
             self.counter += 1
             d.job() 
-            await asyncio.sleep(10)
+            await asyncio.sleep(43200)
 
     ### Open and append the file
     def existingActivities(self):
@@ -78,6 +89,11 @@ class DemoApp(toga.App):
 
     #Startup
     def startup(self):
+
+        #self.main_window.on_press = self.on_press_handler
+        
+        #self.main_window.on_touch_down = self.on_touch_down_handler
+
         ### check if file exists AllActivities.json
         self.existingActivities()
         self.main_window = toga.MainWindow(title="PerfectDay")
