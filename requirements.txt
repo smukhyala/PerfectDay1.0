@@ -23,7 +23,7 @@ jinja2-time==0.2.0
 mac-alias==2.2.2
 MarkupSafe==2.1.1
 packaging==21.3
-Pillow==10.0.1
+Pillow==10.2.0
 platformdirs==2.6.0
 psutil==5.9.4
 pycparser==2.21
